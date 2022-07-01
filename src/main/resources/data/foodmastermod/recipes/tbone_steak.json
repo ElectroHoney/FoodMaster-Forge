@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "beef",
+  "ingredients": [
+    {
+      "item": "foodmastermod:pot_block"
+    }
+  ],
+  "result": {
+    "item": "foodmastermod:tbone_steak",
+    "count": 9
+  }
+}
