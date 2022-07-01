@@ -1,0 +1,11 @@
+{
+  "type": "foodmastermod:boiling",
+  "ingredients": [
+    {
+      "item": "foodmastermod:tbone_steak"
+    }
+  ],
+  "output": {
+    "item": "minecraft:cooked_beef"
+  }
+}
