@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -34,6 +35,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
@@ -52,16 +54,21 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
 
     protected final ContainerData data;
 
-    private static final int SPICE_SLOT_ID = 1;
-    public static final int RECIPE_SLOT_ID = 2;
+    private static final int SPICE_SLOT_ID = 10;
+    //public static final int RECIPE_SLOT_ID = 2;
     private static final int WATER_SLOT_ID = 0;
     private static final int RESULT_SLOT_ID = 11;
 
     private int progress = 0;
     private int maxProgress = 72;
+
+    public int getTemperature() {
+        return temperature;
+    }
+
     //my own variables
     private int temperature = 0;
-    private int maxTemperature = 200;
+    private int maxTemperature = 199;
 
     public static final int POT_DATA_SIZE = 4;
     private Fluid fluid = null;
@@ -166,10 +173,13 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
             setChanged(pLevel, pPos, pState);
         }
 
-        if(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature <= pBlockEntity.maxTemperature){
+        if(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature <= 125){
             pBlockEntity.temperature++;
         }
-        else if(!(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock()) && pBlockEntity.temperature >= 0){
+        if(Blocks.LAVA == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature <= pBlockEntity.maxTemperature){
+            pBlockEntity.temperature++;
+        }
+        else if(!(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock()) && !(Blocks.LAVA == pLevel.getBlockState(pPos.below()).getBlock()) && pBlockEntity.temperature >= 0){
             pBlockEntity.temperature--;
         }
     }
@@ -186,7 +196,19 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
 
         return match.isPresent() && canInsertAmountIntoOutputSlot(inventory)
                 && canInsertItemIntoOutputSlot(inventory, match.get().getResultItem())
-                && hasWaterInWaterSlot(entity) && hasToolsInToolSlot(entity);
+                && hasWaterInWaterSlot(entity) && hasToolsInToolSlot(entity) && isInTemperatureRange(entity, match);
+    }
+
+    private static boolean isInTemperatureRange(PotBlockEntity entity, Optional<PotBlockRecipe> match){
+        if(match.isPresent()){
+            System.out.println(match.get().minTemperature);
+            System.out.println(match.get().maxTemperature);
+            System.out.println(entity.temperature);
+            int minTemperature = match.get().minTemperature;
+            int maxTemperature = match.get().maxTemperature;
+            return minTemperature <= entity.temperature && entity.temperature <= maxTemperature;
+        }
+        else return false;
     }
 
     private static boolean hasWaterInWaterSlot(PotBlockEntity entity) {
@@ -209,7 +231,12 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
 
         if(match.isPresent()) {
             entity.itemHandler.extractItem(WATER_SLOT_ID,1, false);
-            entity.itemHandler.extractItem(RECIPE_SLOT_ID,1, false);
+            for(int i = 1;i <= 9; ++i){
+                if(entity.itemHandler.getStackInSlot(i)!=ItemStack.EMPTY){
+                    System.out.println("PotBlockEntity:" + entity.itemHandler.getStackInSlot(i));
+                    entity.itemHandler.extractItem(i, 1, false);
+                }
+            }
             //entity.itemHandler.getStackInSlot(2).hurt(1, new Random(), null);
             if(entity.itemHandler.getStackInSlot(SPICE_SLOT_ID).getDamageValue()>=entity.itemHandler.getStackInSlot(SPICE_SLOT_ID).getMaxDamage()){
                     entity.itemHandler.extractItem(SPICE_SLOT_ID, 1, false);
@@ -235,39 +262,6 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
     private static boolean canInsertAmountIntoOutputSlot(SimpleContainer inventory) {
         return inventory.getItem(RESULT_SLOT_ID).getMaxStackSize() > inventory.getItem(RESULT_SLOT_ID).getCount();
     }
-//    hardcoded
-//public static void tick(Level pLevel, BlockPos pPos, BlockState pState, PotBlockEntity pBlockEntity) {
-//    if(hasRecipe(pBlockEntity) && hasNotReachedStackLimit(pBlockEntity)) {
-//        craftItem(pBlockEntity);
-//    }
-//}
-//
-//    private static void craftItem(PotBlockEntity entity) {
-//
-//        entity.itemHandler.extractItem(0, 1, false);
-//        entity.itemHandler.extractItem(1, 1, false);
-//
-//        if(entity.itemHandler.getStackInSlot(2).getDamageValue()>=entity.itemHandler.getStackInSlot(2).getMaxDamage()){
-//            entity.itemHandler.extractItem(2, 1, false);
-//        }
-//        else {
-//            entity.itemHandler.getStackInSlot(2).hurt(1, new Random(), null);
-//        }
-//
-//        entity.itemHandler.setStackInSlot(11, new ItemStack(ModItems.TBONE_STEAK.get(),
-//                entity.itemHandler.getStackInSlot(11).getCount() + 1));
-//    }
-//
-//    private static boolean hasRecipe(PotBlockEntity entity) {
-//        boolean hasItemInWaterSlot = PotionUtils.getPotion(entity.itemHandler.getStackInSlot(0)) == Potions.WATER;
-//        boolean hasItemInFirstSlot = entity.itemHandler.getStackInSlot(1).getItem() == Items.STICK.asItem();
-//        boolean hasItemInSecondSlot = entity.itemHandler.getStackInSlot(2).getItem() == ModItems.TURMERIC.get();
-//
-//        return hasItemInWaterSlot && hasItemInFirstSlot && hasItemInSecondSlot;
-//    }
-//
-//    private static boolean hasNotReachedStackLimit(PotBlockEntity entity) {
-//        return entity.itemHandler.getStackInSlot(3).getCount() < entity.itemHandler.getStackInSlot(3).getMaxStackSize();
-//    }
+
 }
 

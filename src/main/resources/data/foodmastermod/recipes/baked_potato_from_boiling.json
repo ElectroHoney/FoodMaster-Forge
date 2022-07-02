@@ -2,15 +2,12 @@
   "type": "foodmastermod:boiling",
   "ingredients": [
     {
-      "item": "foodmastermod:tbone_steak"
-    },
-    {
-      "item": "minecraft:dirt"
+      "item": "minecraft:potato"
     }
   ],
   "min_temperature": 100,
   "max_temperature": 150,
   "output": {
-    "item": "minecraft:cooked_beef"
+    "item": "minecraft:baked_potato"
   }
 }

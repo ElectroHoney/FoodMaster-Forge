@@ -3,7 +3,6 @@ package net.electrohoney.foodmastermod.recipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.electrohoney.foodmastermod.FoodMaster;
-import net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -19,17 +18,100 @@ public class PotBlockRecipe implements Recipe<SimpleContainer> {
 //    @todo I have to modify the recipe so its not shapeless
     private final ResourceLocation id;
     private final ItemStack output;
-    private final NonNullList<Ingredient> recipeItems;
+    private final NonNullList<Ingredient> recipeIngredients;
 
-    public PotBlockRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems) {
+    private final static int listSize = 9;
+
+    public final int minTemperature;
+    public final int maxTemperature;
+
+    public PotBlockRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems, int minTemperature, int maxTemperature) {
         this.id = id;
         this.output = output;
-        this.recipeItems = recipeItems;
+        this.recipeIngredients = recipeItems;
+        this.minTemperature = minTemperature;
+        this.maxTemperature = maxTemperature;
     }
 
     @Override
     public boolean matches(SimpleContainer pContainer, Level pLevel) {
-        return recipeItems.get(0).test(pContainer.getItem(PotBlockEntity.RECIPE_SLOT_ID));
+//        NonNullList<ItemStack> recipeItems = NonNullList.withSize(recipeIngredients.size(), ItemStack.EMPTY);
+//        for (int i = 0; i < recipeIngredients.size(); i++) {
+//            recipeItems.set(i, recipeIngredients.get(i).getItems()[0]);
+//        }
+
+        boolean isFilled = false;
+        for(int g = 1; g<= 9; g++){
+
+            if(pContainer.getItem(g) != ItemStack.EMPTY){
+                isFilled = true;
+            }
+        }
+        if(!isFilled){
+            return false;
+        }
+        int allIngredients = 0;
+        for (int i = 0; i < recipeIngredients.size(); i++){
+            for (int g = 1; g <= 9; g++){
+                if(recipeIngredients.get(i).test(pContainer.getItem(g))) {
+                    allIngredients ++;
+                }
+            }
+        }
+        if(allIngredients != recipeIngredients.size()){
+            return false;
+        }
+
+        for (int g = 1; g <= 9; g++){
+            System.out.println("________________");
+            System.out.println(pContainer.getItem(g) + "<->" + g);
+            System.out.println("@@@@@@@@@@@@@@@@");
+
+            if(pContainer.getItem(g) != ItemStack.EMPTY){
+                boolean doesItemExist = false;
+                for( int i = 0; i < recipeIngredients.size(); ++ i){
+                    if(recipeIngredients.get(i).test(pContainer.getItem(g))){
+                        doesItemExist = recipeIngredients.get(i).test(pContainer.getItem(g));
+                    }
+                }
+                if(!doesItemExist){
+                    return false;
+                }
+
+            }
+
+//            boolean checkOnlyItemsInRecipe = false;
+//            for (Ingredient recipeIngredient : recipeIngredients) {
+//                if (pContainer.getItem(g) != ItemStack.EMPTY) {
+//                    System.out.println("____________________");
+//                    System.out.println(pContainer.getItem(g));
+//                    System.out.println(recipeIngredient.test(pContainer.getItem(g)));
+//                    System.out.println("____________________");
+//
+//                    checkOnlyItemsInRecipe = checkOnlyItemsInRecipe || recipeIngredient.test(pContainer.getItem(g));
+//                }
+//            }
+//            System.out.println("FINAL TEST:" + checkOnlyItemsInRecipe);
+//            if(checkOnlyItemsInRecipe == false){
+//                return false;
+//            }
+        }
+        return true;
+
+//        for (int i = 0; i < recipeIngredients.size(); i++) {
+//            boolean findIfItemInContainer = false;
+//            for(int g=0; g <= 9; g++) {
+//                if(recipeIngredients.get(i).test(pContainer.getItem(g))){
+//                    findIfItemInContainer = true;
+//                }
+//            }
+//
+////            System.out.println(findIfItemInContainer);
+//            allItemsInContainer = allItemsInContainer && findIfItemInContainer;
+//        }
+//
+//
+//        return allItemsInContainer;
     }
 
     @Override
@@ -78,14 +160,17 @@ public class PotBlockRecipe implements Recipe<SimpleContainer> {
         public PotBlockRecipe fromJson(ResourceLocation id, JsonObject json) {
             ItemStack output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "output"));
 
+            int minTemperature = GsonHelper.getAsInt(json, "min_temperature");
+            int maxTemperature = GsonHelper.getAsInt(json, "max_temperature");
             JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
-            NonNullList<Ingredient> inputs = NonNullList.withSize(1, Ingredient.EMPTY);
-
-            for (int i = 0; i < inputs.size(); i++) {
+            NonNullList<Ingredient> inputs = NonNullList.withSize(ingredients.size(), Ingredient.EMPTY);
+            System.out.println("Inputs:" + inputs);
+            for (int i = 0; i < ingredients.size(); i++) {
                 inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
             }
+            System.out.println("Ingredients:" +  ingredients);
 
-            return new PotBlockRecipe(id, output, inputs);
+            return new PotBlockRecipe(id, output, inputs, minTemperature, maxTemperature);
         }
 
         @Override
@@ -97,7 +182,9 @@ public class PotBlockRecipe implements Recipe<SimpleContainer> {
             }
 
             ItemStack output = buf.readItem();
-            return new PotBlockRecipe(id, output, inputs);
+            int minTemperature = buf.readInt();
+            int maxTemperature =  buf.readInt();
+            return new PotBlockRecipe(id, output, inputs, minTemperature, maxTemperature);
         }
 
         @Override
@@ -107,6 +194,8 @@ public class PotBlockRecipe implements Recipe<SimpleContainer> {
                 ing.toNetwork(buf);
             }
             buf.writeItemStack(recipe.getResultItem(), false);
+            buf.writeInt(recipe.minTemperature);
+            buf.writeInt(recipe.maxTemperature);
         }
 
         @Override

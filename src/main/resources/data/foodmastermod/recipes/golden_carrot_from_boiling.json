@@ -1,0 +1,16 @@
+{
+  "type": "foodmastermod:boiling",
+  "ingredients": [
+    {
+      "item": "minecraft:carrot"
+    },
+    {
+      "item": "minecraft:gold_nugget"
+    }
+  ],
+  "min_temperature": 100,
+  "max_temperature": 200,
+  "output": {
+    "item": "minecraft:golden_carrot"
+  }
+}
