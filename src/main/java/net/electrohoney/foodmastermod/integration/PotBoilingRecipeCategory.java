@@ -98,8 +98,8 @@ public class PotBoilingRecipeCategory implements IRecipeCategory<PotBlockRecipe>
     @Override
     public void draw(PotBlockRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
         if(recipe.maxTemperature > 0){
-            int temperatureBarHeight = 55; //pixels
-            int maxPossibleTemperature = 200; //degrees? i just set an arbitrary amount
+            int temperatureBarHeight = 55; //pixels, using I in comments is fun. I did stuff lol
+            int maxPossibleTemperature = 200; //degrees? I just set an arbitrary amount identical to the block entity, also it has nothing to do with the maxTemperature from the recipe
             int tMax = recipe.maxTemperature * temperatureBarHeight / maxPossibleTemperature; //i stole this from my menu function
             int tMin = recipe.minTemperature * temperatureBarHeight / maxPossibleTemperature; //i stole this from my menu function
             temperatureBar = iGuiHelper.createDrawable(TEXTURE, 195, 70-tMax, 7, tMax);

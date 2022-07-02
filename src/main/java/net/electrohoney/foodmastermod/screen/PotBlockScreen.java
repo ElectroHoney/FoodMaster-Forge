@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 public class PotBlockScreen extends AbstractContainerScreen<PotBlockMenu> {
     private static final ResourceLocation TEXTURE =
             new ResourceLocation(FoodMaster.MOD_ID, "textures/gui/pot_block_gui.png");
-    //@todo overwrite image width to correct menu
+    //@todo overwrite image width to correct menu(did that, I should delete this todo)
     private static final int imageWidth = 194;
 
     public PotBlockScreen(PotBlockMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
@@ -30,12 +30,12 @@ public class PotBlockScreen extends AbstractContainerScreen<PotBlockMenu> {
         this.blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight);
         int t = this.menu.getScaledTemperature();
         //System.out.print("Temp:" + t + "\n");
-        //todo this is good but for some reason the bar is too low
+        //todo this is good but for some reason the bar is too low(nope its perfect)
         blit(pPoseStack, x + 35, y + 16 + 53 - t, 195,  70-t,  7, t);
 
 
         if(menu.isCrafting()){
-            //todo remember to add all progress bars!
+            //todo remember to add all progress bars! I did them! ha!
 //          //x and y of arrow, offset of arrow progress, vertical offset of progress, width of image, height of image
             blit(pPoseStack, x + 110, y + 35, 195, 0,  menu.getScaledProgress(), 16);
         }
