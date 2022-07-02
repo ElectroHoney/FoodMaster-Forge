@@ -34,6 +34,10 @@ public class PotBlockRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
+    public NonNullList<Ingredient> getIngredients(){
+        return recipeIngredients;
+    }
+    @Override
     public boolean matches(SimpleContainer pContainer, Level pLevel) {
 //        NonNullList<ItemStack> recipeItems = NonNullList.withSize(recipeIngredients.size(), ItemStack.EMPTY);
 //        for (int i = 0; i < recipeIngredients.size(); i++) {
@@ -63,9 +67,9 @@ public class PotBlockRecipe implements Recipe<SimpleContainer> {
         }
 
         for (int g = 1; g <= 9; g++){
-            System.out.println("________________");
-            System.out.println(pContainer.getItem(g) + "<->" + g);
-            System.out.println("@@@@@@@@@@@@@@@@");
+            //System.out.println("________________");
+            //System.out.println(pContainer.getItem(g) + "<->" + g);
+            //System.out.println("@@@@@@@@@@@@@@@@");
 
             if(pContainer.getItem(g) != ItemStack.EMPTY){
                 boolean doesItemExist = false;
@@ -164,11 +168,11 @@ public class PotBlockRecipe implements Recipe<SimpleContainer> {
             int maxTemperature = GsonHelper.getAsInt(json, "max_temperature");
             JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
             NonNullList<Ingredient> inputs = NonNullList.withSize(ingredients.size(), Ingredient.EMPTY);
-            System.out.println("Inputs:" + inputs);
+//            System.out.println("Inputs:" + inputs);
             for (int i = 0; i < ingredients.size(); i++) {
                 inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
             }
-            System.out.println("Ingredients:" +  ingredients);
+//            System.out.println("Ingredients:" +  ingredients);
 
             return new PotBlockRecipe(id, output, inputs, minTemperature, maxTemperature);
         }

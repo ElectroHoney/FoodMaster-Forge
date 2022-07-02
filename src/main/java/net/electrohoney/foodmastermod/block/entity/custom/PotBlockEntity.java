@@ -246,7 +246,8 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
             }
             entity.itemHandler.setStackInSlot(RESULT_SLOT_ID, new ItemStack(match.get().getResultItem().getItem(),
                     entity.itemHandler.getStackInSlot(RESULT_SLOT_ID).getCount() + 1));
-
+            //todo remember to remove this if it becomes annoying
+            entity.temperature-=10;
             entity.resetProgress();
         }
     }

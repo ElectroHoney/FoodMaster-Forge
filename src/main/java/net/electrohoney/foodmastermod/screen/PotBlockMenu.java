@@ -24,6 +24,7 @@ public class PotBlockMenu extends AbstractContainerMenu {
     private final Level level;
     private final ContainerData data;
 
+
     public PotBlockMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
         //@todo the integer has to match the gecount from potblockentity constructor
         this(pContainerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()),new SimpleContainerData(POT_DATA_SIZE));
