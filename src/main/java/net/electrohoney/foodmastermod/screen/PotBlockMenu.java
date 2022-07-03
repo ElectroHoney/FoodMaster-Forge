@@ -12,6 +12,9 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.Nullable;
@@ -23,6 +26,8 @@ public class PotBlockMenu extends AbstractContainerMenu {
     private final PotBlockEntity blockEntity;
     private final Level level;
     private final ContainerData data;
+
+    private FluidStack fluid;
 
 
     public PotBlockMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
@@ -60,12 +65,25 @@ public class PotBlockMenu extends AbstractContainerMenu {
             //Result Slot
             this.addSlot(new ModResultSlot(handler, 11, 143-9, 35));
         });
-        //@todo very important!
+
+        this.blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(handler -> {
+          fluid = handler.getFluidInTank(0);
+        });
+
+        //very important!
         addDataSlots(data);
     }
 
     public boolean isCrafting(){
         return data.get(0) > 0;
+    }
+
+    public FluidStack getFluidStack(){
+        return this.fluid;
+    }
+
+    public int getFluidAmount(){
+        return this.data.get(4);
     }
 
     public int getScaledProgress(){
