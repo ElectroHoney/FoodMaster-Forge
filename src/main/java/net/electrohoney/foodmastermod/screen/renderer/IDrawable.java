@@ -1,0 +1,18 @@
+package net.electrohoney.foodmastermod.screen.renderer;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+//CREDIT : https://github.com/mezz/JustEnoughItems by mezz
+//Under MIT Licence https://github.com/mezz/JustEnoughItems/blob/1.19/LICENSE.txt
+public interface IDrawable {
+
+    int getWidth();
+
+    int getHeight();
+
+    default void draw(PoseStack poseStack) {
+        draw(poseStack, 0, 0);
+    }
+
+    void draw(PoseStack poseStack, int xOffset, int yOffset);
+
+}
