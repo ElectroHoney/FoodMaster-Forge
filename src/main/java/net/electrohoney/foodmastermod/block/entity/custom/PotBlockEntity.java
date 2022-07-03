@@ -10,6 +10,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -30,6 +33,9 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -43,6 +49,7 @@ import java.util.Random;
 
 public class PotBlockEntity extends BlockEntity implements MenuProvider {
     public final static int POT_ENTITY_CONTAINER_SIZE = 12;
+    public final static int POT_MAX_FLUID_CAPACITY = 4000;
     private final ItemStackHandler itemHandler = new ItemStackHandler(POT_ENTITY_CONTAINER_SIZE){
         @Override
         protected void onContentsChanged(int slot){
@@ -50,7 +57,17 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
         }
     };
 
+    private final FluidTank fluidTank = new FluidTank(POT_MAX_FLUID_CAPACITY){
+        @Override
+        protected void onContentsChanged() {
+            setChanged();
+            level.setBlock(getBlockPos(), getBlockState(), 4);
+        }
+
+    };
+
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
+    private LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
 
     protected final ContainerData data;
 
@@ -70,8 +87,8 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
     private int temperature = 0;
     private int maxTemperature = 199;
 
-    public static final int POT_DATA_SIZE = 4;
-    private Fluid fluid = null;
+    public static final int POT_DATA_SIZE = 5;
+    private int fluidFillAmount = 0;
     public PotBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
         super(ModBlockEntities.POT_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
         //@todo change how this works, this fields are only saved in the server
@@ -82,6 +99,7 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
                     case 1: return PotBlockEntity.this.maxProgress;
                     case 2: return PotBlockEntity.this.temperature;
                     case 3: return PotBlockEntity.this.maxTemperature;
+                    case 4: return PotBlockEntity.this.fluidFillAmount;
                     default: return 0;
                 }
             }
@@ -91,7 +109,8 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
                     case 0: PotBlockEntity.this.progress = value; break;
                     case 1: PotBlockEntity.this.maxProgress = value; break;
                     case 2: PotBlockEntity.this.temperature = value; break;
-                    case 3: PotBlockEntity.this.maxTemperature = value;
+                    case 3: PotBlockEntity.this.maxTemperature = value;break;
+                    case 4: PotBlockEntity.this.fluidFillAmount = value;
 
                 }
             }
@@ -120,6 +139,10 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
             return lazyItemHandler.cast();
         }
 
+        if(cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+            return lazyFluidHandler.cast();
+        }
+
         return super.getCapability(cap, side);
     }
 
@@ -127,12 +150,14 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
     public void onLoad() {
         super.onLoad();
         lazyItemHandler = LazyOptional.of(() -> itemHandler);
+        lazyFluidHandler = LazyOptional.of(()->fluidTank);
     }
 
     @Override
     public void invalidateCaps()  {
         super.invalidateCaps();
         lazyItemHandler.invalidate();
+        lazyFluidHandler.invalidate();
     }
 
     @Override
@@ -140,6 +165,7 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
         tag.put("inventory", itemHandler.serializeNBT());
         tag.putInt("pot_block.progress", progress);
         tag.putInt("pot_block.temperature", temperature);
+        tag = fluidTank.writeToNBT(tag);
 
         super.saveAdditional(tag);
     }
@@ -150,6 +176,8 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
         itemHandler.deserializeNBT(nbt.getCompound("inventory"));
         progress = nbt.getInt("pot_block.progress");
         temperature = nbt.getInt("pot_block.temperature");
+        fluidTank.readFromNBT(nbt);
+
     }
 
     public void drops() {
@@ -172,6 +200,8 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
             pBlockEntity.resetProgress();
             setChanged(pLevel, pPos, pState);
         }
+        //not good!!!
+        pBlockEntity.fluidFillAmount = pBlockEntity.fluidTank.getFluidAmount();
 
         if(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature <= 125){
             pBlockEntity.temperature++;
@@ -264,5 +294,17 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
         return inventory.getItem(RESULT_SLOT_ID).getMaxStackSize() > inventory.getItem(RESULT_SLOT_ID).getCount();
     }
 
+    @Nullable
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag compoundTag = saveWithoutMetadata();
+        load(compoundTag);
+        return compoundTag;
+    }
 }
 
