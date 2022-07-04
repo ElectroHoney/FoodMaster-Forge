@@ -1,10 +1,11 @@
 package net.electrohoney.foodmastermod.block.entity.custom;
 
-import net.electrohoney.foodmastermod.block.ModBlocks;
 import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
 import net.electrohoney.foodmastermod.item.ModItems;
 import net.electrohoney.foodmastermod.recipe.PotBlockRecipe;
 import net.electrohoney.foodmastermod.screen.PotBlockMenu;
+import net.electrohoney.foodmastermod.util.networking.ModMessages;
+import net.electrohoney.foodmastermod.util.networking.packets.PacketSyncFluidStackToClient;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -21,18 +22,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -41,7 +39,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
@@ -61,7 +58,7 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
         @Override
         protected void onContentsChanged() {
             setChanged();
-            level.setBlock(getBlockPos(), getBlockState(), 4);
+            ModMessages.sendToClients(new PacketSyncFluidStackToClient(this.fluid, worldPosition));
         }
 
     };
@@ -121,6 +118,13 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
         };
     }
 
+    public FluidStack getFluid() {
+        return this.fluidTank.getFluid();
+    }
+
+    public void setFluid(FluidStack fluidStack) {
+        this.fluidTank.setFluid(fluidStack);
+    }
     @Override
     public Component getDisplayName() {
         return new TextComponent("Pot Block");
@@ -139,7 +143,7 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
             return lazyItemHandler.cast();
         }
 
-        if(cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
             return lazyFluidHandler.cast();
         }
 

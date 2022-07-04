@@ -9,6 +9,7 @@ import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.electrohoney.foodmastermod.FoodMaster;
 import net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity;
 import net.electrohoney.foodmastermod.screen.renderer.FluidStackRenderer;
+import net.electrohoney.foodmastermod.util.MouseUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -18,10 +19,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.Optional;
 
 public class PotBlockScreen extends AbstractContainerScreen<PotBlockMenu> {
     private static final ResourceLocation TEXTURE =
@@ -29,6 +33,7 @@ public class PotBlockScreen extends AbstractContainerScreen<PotBlockMenu> {
     //@todo overwrite image width to correct menu(did that, I should delete this todo)
     private static final int imageWidth = 194;
     private static final int imageHeight = 166;
+    private FluidStackRenderer renderer;
 
     private final IDrawable overlay = null;
     public PotBlockScreen(PotBlockMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
@@ -36,9 +41,31 @@ public class PotBlockScreen extends AbstractContainerScreen<PotBlockMenu> {
     }
 
     @Override
+    protected void init(){
+        super.init();
+        assignFluidRenderer();
+    }
+
+    private void assignFluidRenderer() {
+        renderer = new FluidStackRenderer(PotBlockEntity.POT_MAX_FLUID_CAPACITY, true, 12, 34);
+    }
+
+
+    @Override
     protected void renderLabels(PoseStack pPoseStack, int pMouseX, int pMouseY) {
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight)/ 2;
+
         super.renderLabels(pPoseStack, pMouseX, pMouseY);
-        drawString(pPoseStack, this.font, "Fluid"+ this.menu.getFluidAmount(),28, 28, 0xffffff);
+        if(isMouseAboveArea(pMouseX, pMouseY, x, y, 10, 35/2)) {
+            renderTooltip(pPoseStack, renderer.getTooltip(menu.getFluid(), TooltipFlag.Default.NORMAL),
+                    Optional.empty(),pMouseX - x, pMouseY - y);
+        }
+//        if(isMouseAboveArea(pMouseX, pMouseY, x, y, 10, 35/2)) {
+//            renderTooltip(pPoseStack, renderer.getTooltip(menu.getFluid(), TooltipFlag.Default.NORMAL),
+//                    Optional.empty(),pMouseX - x, pMouseY - y);
+//        }
+
     }
 
     @Override
@@ -61,32 +88,34 @@ public class PotBlockScreen extends AbstractContainerScreen<PotBlockMenu> {
 //          //x and y of arrow, offset of arrow progress, vertical offset of progress, width of image, height of image
             blit(pPoseStack, x + 110, y + 35, 195, 0,  menu.getScaledProgress(), 16);
         }
+        renderer.render(pPoseStack, x+10, y+17,menu.getFluid());
 
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0,
-                getStillFluidSprite(this.menu.getFluidStack()).getName());
+//        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+//        RenderSystem.setShaderTexture(0,
+//                getStillFluidSprite(this.menu.getFluidStack()).getName());
 
         //blit(pPoseStack, x+102, y+41, 0, 0, 16, 16);
-        FluidStackRenderer renderer = new FluidStackRenderer(PotBlockEntity.POT_MAX_FLUID_CAPACITY, true, 12, 35);
-        renderer.render(pPoseStack, x+10, y+(35/4*PotBlockEntity.POT_MAX_FLUID_CAPACITY)/2000, new FluidStack(Fluids.WATER, menu.getFluidAmount()));
+//        int yOffset = menu.getFluid() != null ? (35/2*PotBlockEntity.POT_MAX_FLUID_CAPACITY)/menu.getFluid().getAmount() : 0;
+//        System.out.println("OFFSET " + yOffset);
+//        System.out.println("OFFSET " + menu.getFluid());
 //        renderer.render(pPoseStack, x+20, y+(35/4*PotBlockEntity.POT_MAX_FLUID_CAPACITY)/2000, new FluidStack(Fluids.WATER, 3000));
 //        renderer.render(pPoseStack, x+30, y+(35/4*PotBlockEntity.POT_MAX_FLUID_CAPACITY)/2000, new FluidStack(Fluids.WATER, 4000));
     }
 
-    private void renderFluid(PoseStack pPoseStack) {
-        RenderSystem.enableBlend();
-        drawFluid(pPoseStack, 16, 16, new FluidStack(Fluids.WATER, 2000));
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-//        if(overlay!=null){
-//            pPoseStack.pushPose();{
-//                pPoseStack.translate(0,0,200);
-//                overlay.draw(pPoseStack);
-//            }
-//            pPoseStack.popPose();
-//        }
-        RenderSystem.disableBlend();
-    }
+//    private void renderFluid(PoseStack pPoseStack) {
+//        RenderSystem.enableBlend();
+//        drawFluid(pPoseStack, 16, 16, new FluidStack(Fluids.WATER, 2000));
+//        RenderSystem.setShaderColor(1, 1, 1, 1);
+////        if(overlay!=null){
+////            pPoseStack.pushPose();{
+////                pPoseStack.translate(0,0,200);
+////                overlay.draw(pPoseStack);
+////            }
+////            pPoseStack.popPose();
+////        }
+//        RenderSystem.disableBlend();
+//    }
 
     public static final int TEXTURE_SIZE = 16;
     private static final int MIN_FLUID_HEIGHT = 1; // ensure tiny amounts of fluid are still visible
@@ -177,6 +206,10 @@ public class PotBlockScreen extends AbstractContainerScreen<PotBlockMenu> {
         FluidAttributes attributes = fluid.getAttributes();
         ResourceLocation fluidStill = attributes.getStillTexture(fluidStack);
         return minecraft1.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);
+    }
+
+    private boolean isMouseAboveArea(int pMouseX, int pMouseY, int x, int y, int offsetX, int offsetY) {
+        return MouseUtil.isMouseOver(pMouseX, pMouseY, x + offsetX, y + offsetY, renderer.getWidth(), renderer.getHeight());
     }
 
     @Override

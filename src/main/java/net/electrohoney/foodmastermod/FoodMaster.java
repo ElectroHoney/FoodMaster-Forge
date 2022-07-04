@@ -7,6 +7,7 @@ import net.electrohoney.foodmastermod.item.ModItems;
 import net.electrohoney.foodmastermod.recipe.ModRecipes;
 import net.electrohoney.foodmastermod.screen.ModMenuTypes;
 import net.electrohoney.foodmastermod.screen.PotBlockScreen;
+import net.electrohoney.foodmastermod.util.networking.ModMessages;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -20,6 +21,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
+//Special Thanks to Kaupeunjoe,
 @Mod(FoodMaster.MOD_ID)
 public class FoodMaster
 {
@@ -51,6 +53,8 @@ public class FoodMaster
 
     private void setup(final FMLCommonSetupEvent event)
     {
+
+        ModMessages.register();
         // some preinit code
         LOGGER.info("HELLO FROM PREINIT");
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());

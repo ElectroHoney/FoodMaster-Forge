@@ -23,12 +23,11 @@ import static net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity.
 
 public class PotBlockMenu extends AbstractContainerMenu {
 
-    private final PotBlockEntity blockEntity;
+    public final PotBlockEntity blockEntity;
     private final Level level;
     private final ContainerData data;
 
     private FluidStack fluid;
-
 
     public PotBlockMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
         //@todo the integer has to match the gecount from potblockentity constructor
@@ -41,6 +40,7 @@ public class PotBlockMenu extends AbstractContainerMenu {
         blockEntity = ((PotBlockEntity) entity);
         this.level = inv.player.level;
         this.data = data;
+        this.fluid = blockEntity.getFluid();
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
@@ -66,9 +66,9 @@ public class PotBlockMenu extends AbstractContainerMenu {
             this.addSlot(new ModResultSlot(handler, 11, 143-9, 35));
         });
 
-        this.blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(handler -> {
-          fluid = handler.getFluidInTank(0);
-        });
+//        this.blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(handler -> {
+//
+//        });
 
         //very important!
         addDataSlots(data);
@@ -78,13 +78,17 @@ public class PotBlockMenu extends AbstractContainerMenu {
         return data.get(0) > 0;
     }
 
-    public FluidStack getFluidStack(){
-        return this.fluid;
+    public void setFluid(FluidStack fluidStack){
+        this.fluid = fluidStack;
     }
 
-    public int getFluidAmount(){
-        return this.data.get(4);
+    public FluidStack getFluid(){
+        return this.fluid;
     }
+//
+//    public int getFluidAmount(){
+//        return this.data.get(4);
+//    }
 
     public int getScaledProgress(){
         int progress = this.data.get(0);
