@@ -66,10 +66,6 @@ public class PotBlockMenu extends AbstractContainerMenu {
             this.addSlot(new ModResultSlot(handler, 11, 143-9, 35));
         });
 
-//        this.blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).ifPresent(handler -> {
-//
-//        });
-
         //very important!
         addDataSlots(data);
     }
@@ -85,10 +81,6 @@ public class PotBlockMenu extends AbstractContainerMenu {
     public FluidStack getFluid(){
         return this.fluid;
     }
-//
-//    public int getFluidAmount(){
-//        return this.data.get(4);
-//    }
 
     public int getScaledProgress(){
         int progress = this.data.get(0);
@@ -106,6 +98,14 @@ public class PotBlockMenu extends AbstractContainerMenu {
 
         return (maxTemperature != 0 && temperature !=0) ? temperature * temperatureBarHeight / maxTemperature : 0;
 
+    }
+
+    public int getTemperature(){
+        return this.data.get(2);
+    }
+
+    public int getMaxTemperature(){
+        return this.data.get(3);
     }
 
 
