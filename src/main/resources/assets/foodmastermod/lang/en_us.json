@@ -4,5 +4,9 @@
 
   "block.foodmastermod.pot_block": "Iron Pot",
 
-  "itemGroup.foodmastermodtab": "Foodalicios"
+  "itemGroup.foodmastermodtab": "Foodalicios",
+
+  "jei.tooltip.liquid.amount.with.capacity": "%s / %s mB",
+
+  "foodmaster.tooltip.temperature.out.of.max": "%s / %s °C"
 }
