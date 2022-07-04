@@ -16,6 +16,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -25,6 +26,9 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class PotBlockScreen extends AbstractContainerScreen<PotBlockMenu> {
@@ -34,6 +38,8 @@ public class PotBlockScreen extends AbstractContainerScreen<PotBlockMenu> {
     private static final int imageWidth = 194;
     private static final int imageHeight = 166;
     private FluidStackRenderer renderer;
+    private static final NumberFormat nf = NumberFormat.getIntegerInstance();
+
 
     private final IDrawable overlay = null;
     public PotBlockScreen(PotBlockMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
@@ -55,16 +61,19 @@ public class PotBlockScreen extends AbstractContainerScreen<PotBlockMenu> {
     protected void renderLabels(PoseStack pPoseStack, int pMouseX, int pMouseY) {
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight)/ 2;
-
+        //render all labels
         super.renderLabels(pPoseStack, pMouseX, pMouseY);
+        //render fluid tooltip
         if(isMouseAboveArea(pMouseX, pMouseY, x, y, 10, 35/2)) {
             renderTooltip(pPoseStack, renderer.getTooltip(menu.getFluid(), TooltipFlag.Default.NORMAL),
                     Optional.empty(),pMouseX - x, pMouseY - y);
         }
-//        if(isMouseAboveArea(pMouseX, pMouseY, x, y, 10, 35/2)) {
-//            renderTooltip(pPoseStack, renderer.getTooltip(menu.getFluid(), TooltipFlag.Default.NORMAL),
-//                    Optional.empty(),pMouseX - x, pMouseY - y);
-//        }
+        //render temperature tooltip
+        Component displayTemperature =
+                new TranslatableComponent("foodmaster.tooltip.temperature.out.of.max", nf.format(menu.getTemperature()), nf.format(menu.getMaxTemperature()));
+        if(isMouseAboveArea(pMouseX, pMouseY, x, y, 36, 35/2)) {
+            renderTooltip(pPoseStack,displayTemperature, pMouseX-x, pMouseY-y);
+        }
 
     }
 
