@@ -81,8 +81,9 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     //my own variables
-    private int temperature = 0;
-    private int maxTemperature = 199;
+    private int temperature = 25;
+    private int minTemperature = 25;
+    private int maxTemperature = 200;
 
     public static final int POT_DATA_SIZE = 5;
     private int fluidFillAmount = 0;
@@ -213,7 +214,7 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
         if(Blocks.LAVA == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature <= pBlockEntity.maxTemperature){
             pBlockEntity.temperature++;
         }
-        else if(!(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock()) && !(Blocks.LAVA == pLevel.getBlockState(pPos.below()).getBlock()) && pBlockEntity.temperature >= 0){
+        else if(!(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock()) && !(Blocks.LAVA == pLevel.getBlockState(pPos.below()).getBlock()) && pBlockEntity.temperature > pBlockEntity.minTemperature){
             pBlockEntity.temperature--;
         }
     }
