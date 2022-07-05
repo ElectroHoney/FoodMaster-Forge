@@ -10,6 +10,14 @@
   ],
   "min_temperature": 100,
   "max_temperature": 200,
+  "fluid": {
+    "fluid_amount": 250,
+    "fluid_namespace": "minecraft",
+    "fluid_name": "lava"
+  },
+  "tool": {
+    "item": "foodmastermod:ladle"
+  },
   "output": {
     "item": "minecraft:golden_carrot"
   }

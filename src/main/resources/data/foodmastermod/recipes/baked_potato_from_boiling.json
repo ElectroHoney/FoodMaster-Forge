@@ -7,6 +7,14 @@
   ],
   "min_temperature": 100,
   "max_temperature": 150,
+  "fluid": {
+    "fluid_amount": 100,
+    "fluid_namespace": "minecraft",
+    "fluid_name": "water"
+  },
+  "tool": {
+    "item": "foodmastermod:ladle"
+  },
   "output": {
     "item": "minecraft:baked_potato"
   }
