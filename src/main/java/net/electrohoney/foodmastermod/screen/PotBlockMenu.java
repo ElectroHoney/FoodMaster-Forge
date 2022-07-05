@@ -1,23 +1,18 @@
 package net.electrohoney.foodmastermod.screen;
 
 import net.electrohoney.foodmastermod.block.ModBlocks;
-import net.electrohoney.foodmastermod.block.custom.PotBlock;
 import net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity;
 import net.electrohoney.foodmastermod.screen.slot.ModResultSlot;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import org.jetbrains.annotations.Nullable;
 
 import static net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity.POT_DATA_SIZE;
 
@@ -40,7 +35,7 @@ public class PotBlockMenu extends AbstractContainerMenu {
         blockEntity = ((PotBlockEntity) entity);
         this.level = inv.player.level;
         this.data = data;
-        this.fluid = blockEntity.getFluid();
+        this.fluid = blockEntity.getFluidStack();
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);

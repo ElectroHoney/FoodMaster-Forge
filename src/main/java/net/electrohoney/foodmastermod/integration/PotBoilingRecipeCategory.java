@@ -36,6 +36,7 @@ public class PotBoilingRecipeCategory implements IRecipeCategory<PotBlockRecipe>
 
     private final IGuiHelper iGuiHelper;
 
+
     public PotBoilingRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 194, 85);
 

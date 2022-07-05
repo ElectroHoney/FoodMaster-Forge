@@ -71,7 +71,7 @@ public class PotBlockScreen extends AbstractContainerScreen<PotBlockMenu> {
         //render temperature tooltip
         Component displayTemperature =
                 new TranslatableComponent("foodmaster.tooltip.temperature.out.of.max", nf.format(menu.getTemperature()), nf.format(menu.getMaxTemperature()));
-        if(isMouseAboveArea(pMouseX, pMouseY, x, y, 36, 35/2)) {
+        if(isMouseAboveArea(pMouseX, pMouseY, x, y, 36, 35/2, 7, 54)) {
             renderTooltip(pPoseStack,displayTemperature, pMouseX-x, pMouseY-y);
         }
 
@@ -219,6 +219,10 @@ public class PotBlockScreen extends AbstractContainerScreen<PotBlockMenu> {
 
     private boolean isMouseAboveArea(int pMouseX, int pMouseY, int x, int y, int offsetX, int offsetY) {
         return MouseUtil.isMouseOver(pMouseX, pMouseY, x + offsetX, y + offsetY, renderer.getWidth(), renderer.getHeight());
+    }
+
+    private boolean isMouseAboveArea(int pMouseX, int pMouseY, int x, int y, int offsetX, int offsetY, int areaWidth, int areaHeight) {
+        return MouseUtil.isMouseOver(pMouseX, pMouseY, x + offsetX, y + offsetY, areaWidth, areaHeight);
     }
 
     @Override

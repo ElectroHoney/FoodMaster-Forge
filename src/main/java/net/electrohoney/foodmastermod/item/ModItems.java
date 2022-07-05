@@ -20,6 +20,10 @@ public class ModItems {
             ()-> new Item(new Item.Properties().tab(ModCreativeModTab.FOODMASTER_TAB).stacksTo(1).durability(4).food(new FoodProperties.Builder().saturationMod(1f).nutrition(2).fast().alwaysEat().build()))
     );
 
+    public static final RegistryObject<Item> LADLE = ITEMS.register("ladle",
+            ()-> new Item(new Item.Properties().tab(ModCreativeModTab.FOODMASTER_TAB).stacksTo(1))
+    );
+
     public static void register(IEventBus eventBus){
         ITEMS.register(eventBus);
     }

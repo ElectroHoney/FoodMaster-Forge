@@ -22,8 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -68,7 +66,7 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
 
     protected final ContainerData data;
 
-    private static final int SPICE_SLOT_ID = 10;
+    public static final int UTENSIL_SLOT_ID = 10;
     //public static final int RECIPE_SLOT_ID = 2;
     private static final int WATER_SLOT_ID = 0;
     private static final int RESULT_SLOT_ID = 11;
@@ -119,7 +117,7 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
         };
     }
 
-    public FluidStack getFluid() {
+    public FluidStack getFluidStack() {
         return this.fluidTank.getFluid();
     }
 
@@ -208,10 +206,10 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
         //not good!!!
         pBlockEntity.fluidFillAmount = pBlockEntity.fluidTank.getFluidAmount();
 
-        if(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature <= 125){
+        if(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature < 125){
             pBlockEntity.temperature++;
         }
-        if(Blocks.LAVA == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature <= pBlockEntity.maxTemperature){
+        if(Blocks.LAVA == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature < pBlockEntity.maxTemperature){
             pBlockEntity.temperature++;
         }
         else if(!(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock()) && !(Blocks.LAVA == pLevel.getBlockState(pPos.below()).getBlock()) && pBlockEntity.temperature > pBlockEntity.minTemperature){
@@ -231,14 +229,11 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
 
         return match.isPresent() && canInsertAmountIntoOutputSlot(inventory)
                 && canInsertItemIntoOutputSlot(inventory, match.get().getResultItem())
-                && hasWaterInWaterSlot(entity) && hasToolsInToolSlot(entity) && isInTemperatureRange(entity, match);
+                && hasRecipeFluidInTank(entity, match) && isInTemperatureRange(entity, match);
     }
 
     private static boolean isInTemperatureRange(PotBlockEntity entity, Optional<PotBlockRecipe> match){
         if(match.isPresent()){
-            System.out.println(match.get().minTemperature);
-            System.out.println(match.get().maxTemperature);
-            System.out.println(entity.temperature);
             int minTemperature = match.get().minTemperature;
             int maxTemperature = match.get().maxTemperature;
             return minTemperature <= entity.temperature && entity.temperature <= maxTemperature;
@@ -246,13 +241,14 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
         else return false;
     }
 
-    private static boolean hasWaterInWaterSlot(PotBlockEntity entity) {
-        return PotionUtils.getPotion(entity.itemHandler.getStackInSlot(WATER_SLOT_ID)) == Potions.WATER;
+    private static boolean hasRecipeFluidInTank(PotBlockEntity entity, Optional<PotBlockRecipe> recipe) {
+        return entity.getFluidStack().getAmount() >= recipe.get().fluidStack.getAmount()
+                && entity.getFluidStack().getFluid().equals(recipe.get().fluidStack.getFluid());
     }
 
-    private static boolean hasToolsInToolSlot(PotBlockEntity entity) {
-        return entity.itemHandler.getStackInSlot(SPICE_SLOT_ID).getItem() == ModItems.TURMERIC.get();
-    }
+//    private static boolean hasToolsInToolSlot(PotBlockEntity entity) {
+//        return entity.itemHandler.getStackInSlot(UTENSIL_SLOT_ID).getItem() == ModItems.TURMERIC.get();
+//    }
 
     private static void craftItem(PotBlockEntity entity) {
         Level level = entity.level;
@@ -265,24 +261,22 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
                 .getRecipeFor(PotBlockRecipe.Type.INSTANCE, inventory, level);
 
         if(match.isPresent()) {
-            entity.itemHandler.extractItem(WATER_SLOT_ID,1, false);
             for(int i = 1;i <= 9; ++i){
                 if(entity.itemHandler.getStackInSlot(i)!=ItemStack.EMPTY){
-                    System.out.println("PotBlockEntity:" + entity.itemHandler.getStackInSlot(i));
                     entity.itemHandler.extractItem(i, 1, false);
                 }
             }
-            //entity.itemHandler.getStackInSlot(2).hurt(1, new Random(), null);
-            if(entity.itemHandler.getStackInSlot(SPICE_SLOT_ID).getDamageValue()>=entity.itemHandler.getStackInSlot(SPICE_SLOT_ID).getMaxDamage()){
-                    entity.itemHandler.extractItem(SPICE_SLOT_ID, 1, false);
-            }
-            else {
-                    entity.itemHandler.getStackInSlot(SPICE_SLOT_ID).hurt(1, new Random(), null);
-            }
+//            if(entity.itemHandler.getStackInSlot(UTENSIL_SLOT_ID).getDamageValue()>=entity.itemHandler.getStackInSlot(UTENSIL_SLOT_ID).getMaxDamage()){
+//                    entity.itemHandler.extractItem(UTENSIL_SLOT_ID, 1, false);
+//            }
+//            else {
+//                    entity.itemHandler.getStackInSlot(UTENSIL_SLOT_ID).hurt(1, new Random(), null);
+//            }
             entity.itemHandler.setStackInSlot(RESULT_SLOT_ID, new ItemStack(match.get().getResultItem().getItem(),
                     entity.itemHandler.getStackInSlot(RESULT_SLOT_ID).getCount() + 1));
             //todo remember to remove this if it becomes annoying
-            entity.temperature-=10;
+            entity.temperature-=5;
+            entity.fluidTank.drain(match.get().getFluidStack().getAmount(), IFluidHandler.FluidAction.EXECUTE);
             entity.resetProgress();
         }
     }
