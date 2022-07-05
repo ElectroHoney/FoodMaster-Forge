@@ -42,7 +42,9 @@ public class PotBlockRecipe implements Recipe<SimpleContainer> {
         this.fluidStack = fluidStack;
         this.tool = tool;
     }
-
+    public Ingredient getUtensil() {
+        return this.tool;
+    }
     @Override
     public NonNullList<Ingredient> getIngredients(){
         return recipeIngredients;
