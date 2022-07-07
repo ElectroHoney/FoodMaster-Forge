@@ -1,9 +1,8 @@
 package net.electrohoney.foodmastermod.block.entity.custom;
 
 import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
-import net.electrohoney.foodmastermod.item.ModItems;
 import net.electrohoney.foodmastermod.recipe.PotBlockRecipe;
-import net.electrohoney.foodmastermod.screen.PotBlockMenu;
+import net.electrohoney.foodmastermod.screen.menus.PotBlockMenu;
 import net.electrohoney.foodmastermod.util.networking.ModMessages;
 import net.electrohoney.foodmastermod.util.networking.packets.PacketSyncFluidStackToClient;
 import net.minecraft.core.BlockPos;
@@ -40,7 +39,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
-import java.util.Random;
 
 public class PotBlockEntity extends BlockEntity implements MenuProvider {
     public final static int POT_ENTITY_CONTAINER_SIZE = 12;
