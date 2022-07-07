@@ -1,17 +1,15 @@
-package net.electrohoney.foodmastermod.screen;
+package net.electrohoney.foodmastermod.screen.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
-import jdk.jfr.FlightRecorder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.electrohoney.foodmastermod.FoodMaster;
 import net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity;
+import net.electrohoney.foodmastermod.screen.menus.PotBlockMenu;
 import net.electrohoney.foodmastermod.screen.renderer.FluidStackRenderer;
 import net.electrohoney.foodmastermod.util.MouseUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -27,8 +25,6 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class PotBlockScreen extends AbstractContainerScreen<PotBlockMenu> {

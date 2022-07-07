@@ -1,7 +1,8 @@
-package net.electrohoney.foodmastermod.screen;
+package net.electrohoney.foodmastermod.screen.menus;
 
 import net.electrohoney.foodmastermod.block.ModBlocks;
 import net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity;
+import net.electrohoney.foodmastermod.screen.ModMenuTypes;
 import net.electrohoney.foodmastermod.screen.slot.ModResultSlot;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
