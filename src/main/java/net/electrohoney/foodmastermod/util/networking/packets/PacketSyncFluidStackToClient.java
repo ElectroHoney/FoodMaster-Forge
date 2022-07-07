@@ -1,8 +1,7 @@
 package net.electrohoney.foodmastermod.util.networking.packets;
 
 import net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity;
-import net.electrohoney.foodmastermod.screen.PotBlockMenu;
-import net.electrohoney.foodmastermod.screen.PotBlockScreen;
+import net.electrohoney.foodmastermod.screen.menus.PotBlockMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
