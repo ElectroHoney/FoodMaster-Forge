@@ -6,7 +6,8 @@ import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
 import net.electrohoney.foodmastermod.item.ModItems;
 import net.electrohoney.foodmastermod.recipe.ModRecipes;
 import net.electrohoney.foodmastermod.screen.ModMenuTypes;
-import net.electrohoney.foodmastermod.screen.PotBlockScreen;
+import net.electrohoney.foodmastermod.screen.screens.AgerBlockScreen;
+import net.electrohoney.foodmastermod.screen.screens.PotBlockScreen;
 import net.electrohoney.foodmastermod.util.networking.ModMessages;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -49,6 +50,7 @@ public class FoodMaster
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POT_BLOCK.get(), RenderType.translucent());
 
         MenuScreens.register(ModMenuTypes.POT_BLOCK_MENU.get(), PotBlockScreen::new);
+        MenuScreens.register(ModMenuTypes.AGER_BLOCK_MENU.get(), AgerBlockScreen::new);
     }
 
     private void setup(final FMLCommonSetupEvent event)
