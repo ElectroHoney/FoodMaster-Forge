@@ -1,7 +1,7 @@
 package net.electrohoney.foodmastermod.block;
 
 import net.electrohoney.foodmastermod.FoodMaster;
-import net.electrohoney.foodmastermod.block.custom.PotBlock;
+import net.electrohoney.foodmastermod.block.custom.*;
 import net.electrohoney.foodmastermod.item.ModCreativeModTab;
 import net.electrohoney.foodmastermod.item.ModItems;
 import net.minecraft.world.item.BlockItem;
@@ -15,26 +15,68 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(ForgeRegistries.BLOCKS, FoodMaster.MOD_ID);
 
+    public static List<RegistryObject<Item>> itemsList = new ArrayList<>();
     public static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab){
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn, tab);
         return toReturn;
     }
 
+
     public static final RegistryObject<Block> POT_BLOCK = registerBlock("pot_block",
             () -> new PotBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
 
+    public static final RegistryObject<Block> AGER_BLOCK = registerBlock("ager",
+            () -> new AgerBlock(BlockBehaviour.Properties.of(Material.WOOD).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            ModCreativeModTab.FOODMASTER_TAB);
+
+    public static final RegistryObject<Block> BAKER = registerBlock("baker",
+            () -> new Baker(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            ModCreativeModTab.FOODMASTER_TAB);
+    public static final RegistryObject<Block> SKILLET = registerBlock("skillet",
+            () -> new Skillet(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            ModCreativeModTab.FOODMASTER_TAB);
+//    public static final RegistryObject<Block> BREWERY = registerBlock("brewery",
+//            () -> new Skillet(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+//            ModCreativeModTab.FOODMASTER_TAB);
+    public static final RegistryObject<Block> BUTTER_CHURN = registerBlock("butter_churn",
+            () -> new ButterChurn(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            ModCreativeModTab.FOODMASTER_TAB);
+    public static final RegistryObject<Block> DRYER = registerBlock("dryer",
+            () -> new Dryer(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            ModCreativeModTab.FOODMASTER_TAB);
+    public static final RegistryObject<Block> FREEZER = registerBlock("freezer",
+            () -> new Freezer(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            ModCreativeModTab.FOODMASTER_TAB);
+    public static final RegistryObject<Block> GRILLER = registerBlock("griller",
+            () -> new Griller(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            ModCreativeModTab.FOODMASTER_TAB);
+    public static final RegistryObject<Block> INFUSER = registerBlock("infuser",
+            () -> new Infuser(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            ModCreativeModTab.FOODMASTER_TAB);
+    public static final RegistryObject<Block> MIXER = registerBlock("mixer",
+            () -> new Mixer(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            ModCreativeModTab.FOODMASTER_TAB);
+    public static final RegistryObject<Block> PRESSER = registerBlock("presser",
+            () -> new Presser(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            ModCreativeModTab.FOODMASTER_TAB);
+
     public static <T extends Block>RegistryObject<Item>registerBlockItem(String name, RegistryObject<T> block, CreativeModeTab tab){
-        return ModItems.ITEMS.register(name, ()-> new BlockItem(block.get(),
-                new Item.Properties().tab(tab)));
+        //I have a list of all the block items that is used for optional JEI support
+        itemsList.add(ModItems.ITEMS.register(name, ()-> new BlockItem(block.get(),
+                new Item.Properties().tab(tab))));
+        return itemsList.get(itemsList.size()-1);
     }
+
     public static void register(IEventBus eventBus){
         BLOCKS.register(eventBus);
     }
