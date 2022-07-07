@@ -18,6 +18,9 @@ public class ModRecipes {
     public static final RegistryObject<RecipeSerializer<PotBlockRecipe>> POT_BOILING_SERIALIZER =
             SERIALIZERS.register("boiling", ()-> PotBlockRecipe.Serializer.INSTANCE);
 
+    public static final RegistryObject<RecipeSerializer<AgerBlockRecipe>> BARREL_AGEING_SERIALIZER =
+            SERIALIZERS.register("ageing", ()-> AgerBlockRecipe.Serializer.INSTANCE);
+
     public static void register(IEventBus eventBus){
         SERIALIZERS.register(eventBus);
     }
