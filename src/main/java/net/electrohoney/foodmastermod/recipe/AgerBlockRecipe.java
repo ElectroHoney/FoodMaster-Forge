@@ -140,7 +140,7 @@ public class AgerBlockRecipe implements Recipe<SimpleContainer> {
     public static class Serializer implements RecipeSerializer<AgerBlockRecipe> {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID =
-                new ResourceLocation(FoodMaster.MOD_ID,"boiling");
+                new ResourceLocation(FoodMaster.MOD_ID,"ageing");
 
         @Override
         public AgerBlockRecipe fromJson(ResourceLocation id, JsonObject json) {
