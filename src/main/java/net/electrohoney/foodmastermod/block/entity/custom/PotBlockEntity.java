@@ -54,7 +54,10 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
         @Override
         protected void onContentsChanged() {
             setChanged();
-            ModMessages.sendToClients(new PacketSyncFluidStackToClient(this.fluid, worldPosition));
+            assert level != null;
+            if(!level.isClientSide()){
+                ModMessages.sendToClients(new PacketSyncFluidStackToClient(this.fluid, worldPosition));
+            }
         }
 
     };
