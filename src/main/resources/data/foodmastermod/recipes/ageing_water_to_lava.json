@@ -1,0 +1,16 @@
+{
+  "type": "foodmastermod:ageing",
+  "timePiece": {
+    "item": "minecraft:clock"
+  },
+  "input_fluid": {
+    "fluid_amount": 1000,
+    "fluid_namespace": "minecraft",
+    "fluid_name": "water"
+  },
+  "output_fluid": {
+    "fluid_amount": 1000,
+    "fluid_namespace": "minecraft",
+    "fluid_name": "lava"
+  }
+}
