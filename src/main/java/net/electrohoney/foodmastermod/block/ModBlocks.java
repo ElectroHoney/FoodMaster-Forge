@@ -2,6 +2,7 @@ package net.electrohoney.foodmastermod.block;
 
 import net.electrohoney.foodmastermod.FoodMaster;
 import net.electrohoney.foodmastermod.block.custom.*;
+import net.electrohoney.foodmastermod.block.entity.custom.ButterChurnBlockEntity;
 import net.electrohoney.foodmastermod.item.ModCreativeModTab;
 import net.electrohoney.foodmastermod.item.ModItems;
 import net.minecraft.world.item.BlockItem;
@@ -39,9 +40,10 @@ public class ModBlocks {
             () -> new AgerBlock(BlockBehaviour.Properties.of(Material.WOOD).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
 
-    public static final RegistryObject<Block> BAKER = registerBlock("baker",
-            () -> new Baker(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+    public static final RegistryObject<Block> BAKER_BLOCK = registerBlock("baker",
+            () -> new BakerBlock(BlockBehaviour.Properties.of(Material.STONE).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
+
     public static final RegistryObject<Block> SKILLET = registerBlock("skillet",
             () -> new Skillet(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
@@ -49,7 +51,7 @@ public class ModBlocks {
 //            () -> new Skillet(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
 //            ModCreativeModTab.FOODMASTER_TAB);
     public static final RegistryObject<Block> BUTTER_CHURN = registerBlock("butter_churn",
-            () -> new ButterChurn(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            () -> new ButterChurn(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion(), ButterChurnBlockEntity.class),
             ModCreativeModTab.FOODMASTER_TAB);
     public static final RegistryObject<Block> DRYER = registerBlock("dryer",
             () -> new Dryer(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),

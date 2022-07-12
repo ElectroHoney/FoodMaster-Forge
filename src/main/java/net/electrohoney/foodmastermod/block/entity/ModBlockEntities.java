@@ -3,6 +3,8 @@ package net.electrohoney.foodmastermod.block.entity;
 import net.electrohoney.foodmastermod.FoodMaster;
 import net.electrohoney.foodmastermod.block.ModBlocks;
 import net.electrohoney.foodmastermod.block.entity.custom.AgerBlockEntity;
+import net.electrohoney.foodmastermod.block.entity.custom.BakerBlockEntity;
+import net.electrohoney.foodmastermod.block.entity.custom.ButterChurnBlockEntity;
 import net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -24,6 +26,16 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("ager_block_entity",
                     ()-> BlockEntityType.Builder.of(AgerBlockEntity::new,
                             ModBlocks.AGER_BLOCK.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<BakerBlockEntity>> BAKER_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("baker_block_entity",
+                    ()-> BlockEntityType.Builder.of(BakerBlockEntity::new,
+                            ModBlocks.BAKER_BLOCK.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<ButterChurnBlockEntity>> BUTTER_CHURN_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("butter_churn_block_entity",
+                    ()-> BlockEntityType.Builder.of(ButterChurnBlockEntity::new,
+                            ModBlocks.BUTTER_CHURN.get()).build(null));
     public static void register(IEventBus eventBus){
         BLOCK_ENTITIES.register(eventBus);
     }
