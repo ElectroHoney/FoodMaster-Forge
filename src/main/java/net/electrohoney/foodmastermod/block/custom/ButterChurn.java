@@ -1,7 +1,7 @@
 package net.electrohoney.foodmastermod.block.custom;
 
 import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
-import net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity;
+import net.electrohoney.foodmastermod.block.entity.custom.ButterChurnBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -28,7 +28,7 @@ public class ButterChurn extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    public ButterChurn(Properties properties) {
+    public ButterChurn(Properties properties, Class<ButterChurnBlockEntity> entityBlockClass) {
         super(properties);
     }
     //needs tweaking
@@ -73,8 +73,8 @@ public class ButterChurn extends BaseEntityBlock {
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if (blockEntity instanceof PotBlockEntity) {
-                ((PotBlockEntity) blockEntity).drops();
+            if (blockEntity instanceof ButterChurnBlockEntity) {
+                ((ButterChurnBlockEntity) blockEntity).drops();
             }
         }
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
@@ -85,8 +85,8 @@ public class ButterChurn extends BaseEntityBlock {
                                  Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pPos);
-            if(entity instanceof PotBlockEntity) {
-                NetworkHooks.openGui(((ServerPlayer)pPlayer), (PotBlockEntity)entity, pPos);
+            if(entity instanceof ButterChurnBlockEntity) {
+                NetworkHooks.openGui(((ServerPlayer)pPlayer), (ButterChurnBlockEntity)entity, pPos);
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
@@ -98,14 +98,14 @@ public class ButterChurn extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return new PotBlockEntity(pPos, pState);
+        return new ButterChurnBlockEntity(pPos, pState);
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return createTickerHelper(pBlockEntityType, ModBlockEntities.POT_BLOCK_ENTITY.get(),
-                PotBlockEntity::tick);
+        return createTickerHelper(pBlockEntityType, ModBlockEntities.BUTTER_CHURN_BLOCK_ENTITY.get(),
+                ButterChurnBlockEntity::tick);
     }
 }
 
