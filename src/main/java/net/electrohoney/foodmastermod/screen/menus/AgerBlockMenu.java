@@ -4,7 +4,6 @@ import net.electrohoney.foodmastermod.block.ModBlocks;
 import net.electrohoney.foodmastermod.block.entity.custom.AgerBlockEntity;
 import net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity;
 import net.electrohoney.foodmastermod.screen.ModMenuTypes;
-import net.electrohoney.foodmastermod.screen.slot.ModResultSlot;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -17,7 +16,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import static net.electrohoney.foodmastermod.block.entity.custom.AgerBlockEntity.AGER_DATA_SIZE;
-import static net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity.POT_DATA_SIZE;
 
 public class AgerBlockMenu extends AbstractContainerMenu {
 
@@ -25,44 +23,27 @@ public class AgerBlockMenu extends AbstractContainerMenu {
     private final Level level;
     private final ContainerData data;
 
-    private FluidStack fluid;
+    private FluidStack inputFluid;
+    private FluidStack outputFluid;
 
     public AgerBlockMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        //@todo the integer has to match the gecount from potblockentity constructor
         this(pContainerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()),new SimpleContainerData(AGER_DATA_SIZE));
     }
 
     public AgerBlockMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
         super(ModMenuTypes.AGER_BLOCK_MENU.get(), pContainerId);
-        checkContainerSize(inv, AgerBlockEntity.AGER_ENTITY_CONTAINER_SIZE);
         blockEntity = ((AgerBlockEntity) entity);
         this.level = inv.player.level;
         this.data = data;
-        this.fluid = blockEntity.getFluidStack();
+        this.inputFluid = blockEntity.getInputFluidStack();
+        this.outputFluid = blockEntity.getOutputFluidStack();
+
+        this.blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
+            this.addSlot(new SlotItemHandler(handler, AgerBlockEntity.TIME_PIECE_SLOT, 80, 35));
+        });
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
-
-        this.blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
-//          // Fluid Slot
-            this.addSlot(new SlotItemHandler(handler, 0, 8-9, 53));
-
-
-            //Item Craft Grid
-            int gridIndex = 1;
-            for(int i = 0; i<=2; i++){
-                for(int j = 0; j<=2; j++){
-                    this.addSlot(
-                            new SlotItemHandler(handler, gridIndex,
-                                    53-9+18*(i%3), 17+18*(j%3)));
-                    gridIndex += 1;
-                }
-            }
-            // Dish Slot
-            this.addSlot(new SlotItemHandler(handler, 10, 143-9, 59));
-            //Result Slot
-            this.addSlot(new ModResultSlot(handler, 11, 143-9, 35));
-        });
 
         //very important!
         addDataSlots(data);
@@ -72,40 +53,21 @@ public class AgerBlockMenu extends AbstractContainerMenu {
         return data.get(0) > 0;
     }
 
-    public void setFluid(FluidStack fluidStack){
-        this.fluid = fluidStack;
+    public void setInputFluid(FluidStack fluidStack){
+        this.inputFluid = fluidStack;
     }
 
-    public FluidStack getFluid(){
-        return this.fluid;
+    public FluidStack getInputFluid(){
+        return this.inputFluid;
     }
 
-    public int getScaledProgress(){
-        int progress = this.data.get(0);
-        int maxProgress = this.data.get(1);
-        int progressArrowSize = 24;//24 //Arrow height/length(in the video it was downwards mine is sideways) in pixels
-
-        //System.out.print("Hey progress! " + ((maxProgress != 0 && progress !=0) ? progress * progressArrowSize / maxProgress : 0));
-        return (maxProgress != 0 && progress !=0) ? progress * progressArrowSize / maxProgress : 0;
+    public void setOutputFluid(FluidStack fluidStack){
+        this.outputFluid = fluidStack;
     }
 
-    public int getScaledTemperature(){
-        int temperature = this.data.get(2);
-        int maxTemperature = this.data.get(3);
-        int temperatureBarHeight = 54; //size in pixels of the gray bar
-
-        return (maxTemperature != 0 && temperature !=0) ? temperature * temperatureBarHeight / maxTemperature : 0;
-
+    public FluidStack getOutputFluid(){
+        return this.outputFluid;
     }
-
-    public int getTemperature(){
-        return this.data.get(2);
-    }
-
-    public int getMaxTemperature(){
-        return this.data.get(3);
-    }
-
 
     // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
     // must assign a slot number to each of the slots used by the GUI.
@@ -123,8 +85,7 @@ public class AgerBlockMenu extends AbstractContainerMenu {
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
     // THIS YOU HAVE TO DEFINE!@todo change number
-    private static final int TE_INVENTORY_SLOT_COUNT = AgerBlockEntity.AGER_ENTITY_CONTAINER_SIZE;  // must be the number of slots you have!
-
+    private static final int TE_INVENTORY_SLOT_COUNT = AgerBlockEntity.AGER_ENTITY_CONTAINER_SIZE;
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {
         Slot sourceSlot = slots.get(index);
@@ -156,6 +117,13 @@ public class AgerBlockMenu extends AbstractContainerMenu {
         }
         sourceSlot.onTake(playerIn, sourceStack);
         return copyOfSourceStack;
+    }
+
+    public int getScaledAgeing(){
+        int ageing = this.data.get(0);
+        int maxAgeing = this.data.get(1);
+        int progressArrowSize = 16;//its a clock maybe????
+        return (maxAgeing != 0 && ageing !=0) ? ageing * progressArrowSize / maxAgeing : 0;
     }
 
     @Override

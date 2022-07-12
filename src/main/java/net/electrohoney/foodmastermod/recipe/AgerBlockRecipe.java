@@ -1,9 +1,7 @@
 package net.electrohoney.foodmastermod.recipe;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.electrohoney.foodmastermod.FoodMaster;
-import net.electrohoney.foodmastermod.block.entity.custom.AgerBlockEntity;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -21,89 +19,38 @@ import javax.annotation.Nullable;
 public class AgerBlockRecipe implements Recipe<SimpleContainer> {
 //    @todo I have to modify the recipe so its not shapeless
     private final ResourceLocation id;
-    private final ItemStack output;
-    private final NonNullList<Ingredient> recipeIngredients;
+    private final FluidStack output;
 
-    private final static int listSize = 9;
+    public final FluidStack input;
 
-    public final int minTemperature;
-    public final int maxTemperature;
+    public final Ingredient timePiece;
 
-    public final FluidStack fluidStack;
 
-    private final Ingredient tool;
-
-    public AgerBlockRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems, int minTemperature, int maxTemperature, FluidStack fluidStack, Ingredient tool) {
+    public AgerBlockRecipe(ResourceLocation id, FluidStack output, FluidStack input, Ingredient timePiece) {
         this.id = id;
         this.output = output;
-        this.recipeIngredients = recipeItems;
-        this.minTemperature = minTemperature;
-        this.maxTemperature = maxTemperature;
-        this.fluidStack = fluidStack;
-        this.tool = tool;
+        this.input = input;
+        this.timePiece = timePiece;
     }
-    public Ingredient getUtensil() {
-        return this.tool;
+
+    public FluidStack getInput(){
+        return input;
     }
-    @Override
-    public NonNullList<Ingredient> getIngredients(){
-        return recipeIngredients;
-    }
-    public FluidStack getFluidStack(){
-        return fluidStack;
+    public FluidStack getOutput(){
+        return output;
     }
     @Override
     public boolean matches(SimpleContainer pContainer, Level pLevel) {
-
-        if(!tool.test(pContainer.getItem(AgerBlockEntity.UTENSIL_SLOT_ID))){
-            return false;
-        }
-
-        boolean isFilled = false;
-        for(int g = 1; g<= 9; g++){
-
-            if(pContainer.getItem(g) != ItemStack.EMPTY){
-                isFilled = true;
-            }
-        }
-        if(!isFilled){
-            return false;
-        }
-
-        int allIngredients = 0;
-        for (int i = 0; i < recipeIngredients.size(); i++){
-            for (int g = 1; g <= 9; g++){
-                if(recipeIngredients.get(i).test(pContainer.getItem(g))) {
-                    allIngredients ++;
-                }
-            }
-        }
-        if(allIngredients != recipeIngredients.size()){
-            return false;
-        }
-
-        for (int g = 1; g <= 9; g++){
-            if(pContainer.getItem(g) != ItemStack.EMPTY){
-                boolean doesItemExist = false;
-                for( int i = 0; i < recipeIngredients.size(); ++ i){
-                    if(recipeIngredients.get(i).test(pContainer.getItem(g))){
-                        doesItemExist = recipeIngredients.get(i).test(pContainer.getItem(g));
-                    }
-                }
-                if(!doesItemExist){
-                    return false;
-                }
-
-            }
-
-        }
-        return true;
+        System.out.println(timePiece.test(pContainer.getItem(0)));
+        System.out.println(pContainer.getItem(0).getItem());
+        return timePiece.test(pContainer.getItem(0));
     }
 
     @Override
     public ItemStack assemble(SimpleContainer pContainer) {
-        return output;
+        return null;
     }
+
 
     @Override
     public boolean canCraftInDimensions(int pWidth, int pHeight) {
@@ -112,7 +59,12 @@ public class AgerBlockRecipe implements Recipe<SimpleContainer> {
 
     @Override
     public ItemStack getResultItem() {
-        return output.copy();
+        return null;
+    }
+
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        return Recipe.super.getIngredients();
     }
 
     @Override
@@ -132,7 +84,7 @@ public class AgerBlockRecipe implements Recipe<SimpleContainer> {
     public static class Type implements RecipeType<AgerBlockRecipe>{
         private Type(){}
             public static final Type INSTANCE = new Type();
-            public static final String ID = "boiling";
+            public static final String ID = "ageing";
     }
 
     //thanks a lot Kaupenjoe!! :)
@@ -144,51 +96,43 @@ public class AgerBlockRecipe implements Recipe<SimpleContainer> {
 
         @Override
         public AgerBlockRecipe fromJson(ResourceLocation id, JsonObject json) {
-            ItemStack output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "output"));
+            JsonObject timePieceJson = GsonHelper.getAsJsonObject(json, "timePiece");
+            //Might be a "catalyst"
+            Ingredient timePiece = Ingredient.fromJson(timePieceJson);
 
-            int minTemperature = GsonHelper.getAsInt(json, "min_temperature");
-            int maxTemperature = GsonHelper.getAsInt(json, "max_temperature");
-            JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
-            NonNullList<Ingredient> inputs = NonNullList.withSize(ingredients.size(), Ingredient.EMPTY);
-            for (int i = 0; i < ingredients.size(); i++) {
-                inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
-            }
-            JsonObject fluidJson = GsonHelper.getAsJsonObject(json, "fluid");
-            Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(GsonHelper.getAsString(fluidJson,"fluid_namespace"), GsonHelper.getAsString(fluidJson,"fluid_name")));
-            FluidStack fluidStack1 = new FluidStack(fluid, GsonHelper.getAsInt(fluidJson,"fluid_amount"));
-            JsonObject toolJson = GsonHelper.getAsJsonObject(json, "tool");
-            Ingredient tool = Ingredient.fromJson(toolJson);
+            JsonObject inputFluidJson = GsonHelper.getAsJsonObject(json, "input_fluid");
+            Fluid inputFluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(GsonHelper.getAsString(inputFluidJson,"fluid_namespace"), GsonHelper.getAsString(inputFluidJson,"fluid_name")));
+            assert inputFluid != null;
+            FluidStack fluidStackInput = new FluidStack(inputFluid, GsonHelper.getAsInt(inputFluidJson,"fluid_amount"));
 
-            return new AgerBlockRecipe(id, output, inputs, minTemperature, maxTemperature, fluidStack1, tool);
+            JsonObject outputFluidJson = GsonHelper.getAsJsonObject(json, "output_fluid");
+            Fluid outputFluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(GsonHelper.getAsString(outputFluidJson,"fluid_namespace"), GsonHelper.getAsString(outputFluidJson,"fluid_name")));
+            assert outputFluid != null;
+            FluidStack fluidStackOutput = new FluidStack(outputFluid, GsonHelper.getAsInt(outputFluidJson,"fluid_amount"));
+
+            System.out.println("timePiece");
+            System.out.println(timePiece.getItems()[0]);
+            System.out.println("fluidStack I");
+            System.out.println(fluidStackInput.getFluid());
+            System.out.println("fluidStack O");
+            System.out.println(fluidStackOutput.getFluid());
+
+            return new AgerBlockRecipe(id, fluidStackOutput, fluidStackInput, timePiece);
         }
 
         @Override
         public AgerBlockRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
-            NonNullList<Ingredient> inputs = NonNullList.withSize(buf.readInt(), Ingredient.EMPTY);
-
-            for (int i = 0; i < inputs.size(); i++) {
-                inputs.set(i, Ingredient.fromNetwork(buf));
-            }
-
-            ItemStack output = buf.readItem();
-            int minTemperature = buf.readInt();
-            int maxTemperature =  buf.readInt();
-            FluidStack fluidStack1 = buf.readFluidStack();
-            Ingredient tool = Ingredient.fromNetwork(buf);
-            return new AgerBlockRecipe(id, output, inputs, minTemperature, maxTemperature, fluidStack1, tool);
+            Ingredient timePiece = Ingredient.fromNetwork(buf);
+            FluidStack outputFluidStack = buf.readFluidStack();
+            FluidStack inputFluidStack = buf.readFluidStack();
+            return new AgerBlockRecipe(id, outputFluidStack, inputFluidStack, timePiece);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buf, AgerBlockRecipe recipe) {
-            buf.writeInt(recipe.getIngredients().size());
-            for (Ingredient ing : recipe.getIngredients()) {
-                ing.toNetwork(buf);
-            }
-            buf.writeItemStack(recipe.getResultItem(), false);
-            buf.writeInt(recipe.minTemperature);
-            buf.writeInt(recipe.maxTemperature);
-            buf.writeFluidStack(recipe.fluidStack);
-            recipe.tool.toNetwork(buf);
+            recipe.timePiece.toNetwork(buf);
+            buf.writeFluidStack(recipe.input);
+            buf.writeFluidStack(recipe.output);
         }
 
         @Override

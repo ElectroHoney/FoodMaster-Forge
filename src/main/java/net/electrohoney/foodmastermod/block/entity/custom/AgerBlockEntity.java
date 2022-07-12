@@ -1,11 +1,11 @@
 package net.electrohoney.foodmastermod.block.entity.custom;
 
 import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
-import net.electrohoney.foodmastermod.recipe.PotBlockRecipe;
+import net.electrohoney.foodmastermod.recipe.AgerBlockRecipe;
 import net.electrohoney.foodmastermod.screen.menus.AgerBlockMenu;
-import net.electrohoney.foodmastermod.screen.menus.PotBlockMenu;
 import net.electrohoney.foodmastermod.util.networking.ModMessages;
-import net.electrohoney.foodmastermod.util.networking.packets.PacketSyncFluidStackToClient;
+import net.electrohoney.foodmastermod.util.networking.packets.AgerPacketSyncFluidStackToClient;
+import net.electrohoney.foodmastermod.util.networking.packets.PotPacketSyncFluidStackToClient;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -21,9 +21,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -42,8 +40,9 @@ import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public class AgerBlockEntity extends BlockEntity implements MenuProvider {
-    public final static int AGER_ENTITY_CONTAINER_SIZE = 12;
-    public final static int AGER_MAX_FLUID_CAPACITY = 4000;
+    public final static int AGER_MAX_FLUID_CAPACITY = 8000;
+    public final static int AGER_ENTITY_CONTAINER_SIZE = 1;
+
     private final ItemStackHandler itemHandler = new ItemStackHandler(AGER_ENTITY_CONTAINER_SIZE){
         @Override
         protected void onContentsChanged(int slot){
@@ -51,62 +50,62 @@ public class AgerBlockEntity extends BlockEntity implements MenuProvider {
         }
     };
 
-    private final FluidTank fluidTank = new FluidTank(AGER_MAX_FLUID_CAPACITY){
+    final int INPUT = 1, OUTPUT = 0;
+    private final FluidTank inputFluidTank = new FluidTank(AGER_MAX_FLUID_CAPACITY){
         @Override
         protected void onContentsChanged() {
             setChanged();
-            ModMessages.sendToClients(new PacketSyncFluidStackToClient(this.fluid, worldPosition));
+            assert level != null;
+            if(!level.isClientSide()){
+                ModMessages.sendToClients(new AgerPacketSyncFluidStackToClient(this.fluid, INPUT, worldPosition));
+            }
+        }
+
+    };
+    private final FluidTank outputFluidTank = new FluidTank(AGER_MAX_FLUID_CAPACITY){
+        @Override
+        protected void onContentsChanged() {
+            setChanged();
+            assert level != null;
+            if(!level.isClientSide()){
+                ModMessages.sendToClients(new AgerPacketSyncFluidStackToClient(this.fluid, OUTPUT, worldPosition));
+            }
         }
 
     };
 
+    private LazyOptional<IFluidHandler> lazyInputFluidHandler = LazyOptional.empty();
+    private LazyOptional<IFluidHandler> lazyOutputFluidHandler = LazyOptional.empty();
+
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
-    private LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
 
     protected final ContainerData data;
 
-    public static final int UTENSIL_SLOT_ID = 10;
-    //public static final int RECIPE_SLOT_ID = 2;
-    private static final int WATER_SLOT_ID = 0;
-    private static final int RESULT_SLOT_ID = 11;
+    public static final int TIME_PIECE_SLOT = 0;
+    private int ageing = 0;
+    private int maxAgeing = 500;
 
-    private int progress = 0;
-    private int maxProgress = 72;
+    private int ageingRate = 1;
 
-    public int getTemperature() {
-        return temperature;
-    }
-
-    //my own variables
-    private int temperature = 25;
-    private int minTemperature = 25;
-    private int maxTemperature = 200;
-
-    public static final int AGER_DATA_SIZE = 5;
-    private int fluidFillAmount = 0;
+    public static final int AGER_DATA_SIZE = 3;
     public AgerBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
         super(ModBlockEntities.AGER_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
         //@todo change how this works, this fields are only saved in the server
         this.data = new ContainerData() {
             public int get(int index) {
                 switch (index) {
-                    case 0: return AgerBlockEntity.this.progress;
-                    case 1: return AgerBlockEntity.this.maxProgress;
-                    case 2: return AgerBlockEntity.this.temperature;
-                    case 3: return AgerBlockEntity.this.maxTemperature;
-                    case 4: return AgerBlockEntity.this.fluidFillAmount;
+                    case 0: return AgerBlockEntity.this.ageing;
+                    case 1: return AgerBlockEntity.this.maxAgeing;
+                    case 2: return AgerBlockEntity.this.ageingRate;
                     default: return 0;
                 }
             }
 
             public void set(int index, int value) {
                 switch(index) {
-                    case 0: AgerBlockEntity.this.progress = value; break;
-                    case 1: AgerBlockEntity.this.maxProgress = value; break;
-                    case 2: AgerBlockEntity.this.temperature = value; break;
-                    case 3: AgerBlockEntity.this.maxTemperature = value;break;
-                    case 4: AgerBlockEntity.this.fluidFillAmount = value;
-
+                    case 0: AgerBlockEntity.this.ageing = value; break;
+                    case 1: AgerBlockEntity.this.maxAgeing = value; break;
+                    case 2: AgerBlockEntity.this.ageingRate = value; break;
                 }
             }
 
@@ -116,12 +115,17 @@ public class AgerBlockEntity extends BlockEntity implements MenuProvider {
         };
     }
 
-    public FluidStack getFluidStack() {
-        return this.fluidTank.getFluid();
+    public FluidStack getInputFluidStack() {
+        return this.inputFluidTank.getFluid();
     }
-
-    public void setFluid(FluidStack fluidStack) {
-        this.fluidTank.setFluid(fluidStack);
+    public FluidStack getOutputFluidStack() {
+        return this.outputFluidTank.getFluid();
+    }
+    public void setInputFluid(FluidStack fluidStack) {
+        this.inputFluidTank.setFluid(fluidStack);
+    }
+    public void setOutputFluid(FluidStack fluidStack) {
+        this.outputFluidTank.setFluid(fluidStack);
     }
     @Override
     public Component getDisplayName() {
@@ -130,7 +134,7 @@ public class AgerBlockEntity extends BlockEntity implements MenuProvider {
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
+    public AbstractContainerMenu createMenu(int pContainerId, @NotNull Inventory pPlayerInventory, @NotNull Player pPlayer) {
         return new AgerBlockMenu(pContainerId, pPlayerInventory, this, this.data);
     }
 
@@ -142,7 +146,7 @@ public class AgerBlockEntity extends BlockEntity implements MenuProvider {
         }
 
         if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-            return lazyFluidHandler.cast();
+            return lazyInputFluidHandler.cast();
         }
 
         return super.getCapability(cap, side);
@@ -152,102 +156,100 @@ public class AgerBlockEntity extends BlockEntity implements MenuProvider {
     public void onLoad() {
         super.onLoad();
         lazyItemHandler = LazyOptional.of(() -> itemHandler);
-        lazyFluidHandler = LazyOptional.of(()->fluidTank);
+        lazyInputFluidHandler = LazyOptional.of(()->inputFluidTank);
+//        lazyOutputFluidHandler = LazyOptional.of(()->outputFluidTank);
     }
 
     @Override
     public void invalidateCaps()  {
         super.invalidateCaps();
         lazyItemHandler.invalidate();
-        lazyFluidHandler.invalidate();
+        lazyInputFluidHandler.invalidate();
+        //lazyOutputFluidHandler.invalidate();
     }
 
     @Override
     protected void saveAdditional(@NotNull CompoundTag tag) {
         tag.put("inventory", itemHandler.serializeNBT());
-        tag.putInt("ager_block.progress", progress);
-        tag.putInt("ager_block.temperature", temperature);
-        tag = fluidTank.writeToNBT(tag);
+        tag.putInt("ager_block.ageing", ageing);
+        tag.putInt("ager_block.maxAgeing", maxAgeing);
+        CompoundTag inputFluidTag = new CompoundTag();
+        CompoundTag outputFluidTag = new CompoundTag();
+        inputFluidTank.writeToNBT(inputFluidTag);
+        outputFluidTank.writeToNBT(outputFluidTag);
+        tag.put("ager_block.inputFluidTag", inputFluidTag);
+        tag.put("ager_block.outputFluidTag", outputFluidTag);
 
         super.saveAdditional(tag);
     }
 
+
+
     @Override
-    public void load(CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         itemHandler.deserializeNBT(nbt.getCompound("inventory"));
-        progress = nbt.getInt("ager_block.progress");
-        temperature = nbt.getInt("ager_block.temperature");
-        fluidTank.readFromNBT(nbt);
+        ageing = nbt.getInt("ager_block.ageing");
+        maxAgeing = nbt.getInt("ager_block.maxAgeing");
+        CompoundTag inputFluidTag = (CompoundTag) nbt.get("ager_block.inputFluidTag");
+        CompoundTag outputFluidTag = (CompoundTag) nbt.get("ager_block.outputFluidTag");
+        inputFluidTank.readFromNBT(inputFluidTag);
+        outputFluidTank.readFromNBT(outputFluidTag);
 
     }
-
     public void drops() {
         SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
+        //might have more than 1 slot
         for (int i = 0; i < itemHandler.getSlots(); i++) {
             inventory.setItem(i, itemHandler.getStackInSlot(i));
         }
-
         Containers.dropContents(this.level, this.worldPosition, inventory);
     }
-
     public static void tick(Level pLevel, BlockPos pPos, BlockState pState, AgerBlockEntity pBlockEntity) {
         if(hasRecipe(pBlockEntity)) {
-            pBlockEntity.progress++;
+            pBlockEntity.ageing+=50;
             setChanged(pLevel, pPos, pState);
-            if(pBlockEntity.progress > pBlockEntity.maxProgress) {
+            if(pBlockEntity.ageing > pBlockEntity.maxAgeing) {
                 craftItem(pBlockEntity);
             }
         } else {
-            pBlockEntity.resetProgress();
+            pBlockEntity.resetAgeing();
             setChanged(pLevel, pPos, pState);
         }
-        //not good!!!
-        pBlockEntity.fluidFillAmount = pBlockEntity.fluidTank.getFluidAmount();
 
-        if(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature < 125){
-            pBlockEntity.temperature++;
-        }
-        if(Blocks.LAVA == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature < pBlockEntity.maxTemperature){
-            pBlockEntity.temperature++;
-        }
-        else if(!(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock()) && !(Blocks.LAVA == pLevel.getBlockState(pPos.below()).getBlock()) && pBlockEntity.temperature > pBlockEntity.minTemperature){
-            pBlockEntity.temperature--;
-        }
     }
 
     private static boolean hasRecipe(AgerBlockEntity entity) {
         Level level = entity.level;
+        //this wont work 100%, like how will I detect what liquid is inside??? will it match??
+        //simple container
         SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
         for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
             inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
         }
+        System.out.println("ITEMS???");
+        System.out.println(inventory.getItem(0));
+        System.out.println(entity.itemHandler.getStackInSlot(0));
+        assert level != null;
+        Optional<AgerBlockRecipe> match = level.getRecipeManager()
+                .getRecipeFor(AgerBlockRecipe.Type.INSTANCE, inventory, level);
 
-        Optional<PotBlockRecipe> match = level.getRecipeManager()
-                .getRecipeFor(PotBlockRecipe.Type.INSTANCE, inventory, level);
+        return match.isPresent() && hasRecipeFluidInTank(entity, match) && OutputTankIsNotFull(entity);
+    }
+    private  static boolean OutputTankIsNotFull(AgerBlockEntity entity){
+        return entity.getOutputFluidStack().getAmount() < AgerBlockEntity.AGER_MAX_FLUID_CAPACITY;
 
-        return match.isPresent() && canInsertAmountIntoOutputSlot(inventory)
-                && canInsertItemIntoOutputSlot(inventory, match.get().getResultItem())
-                && hasRecipeFluidInTank(entity, match) && isInTemperatureRange(entity, match);
+//        entity.getFluidStack().getAmount() >= recipe.get().fluidStack.getAmount()
+//                && entity.getFluidStack().getFluid().equals(recipe.get().fluidStack.getFluid());
+    }
+    private static boolean hasRecipeFluidInTank(AgerBlockEntity entity, Optional<AgerBlockRecipe> recipe) {
+        System.out.println("hasRecipeInTank");
+        System.out.println(entity.getInputFluidStack().getFluid().equals(recipe.get().input.getFluid()));
+        System.out.println(entity.getInputFluidStack().getFluid());
+        System.out.println(recipe.get().input.getFluid());
+        return entity.getInputFluidStack().getFluid().equals(recipe.get().input.getFluid());
     }
 
-    private static boolean isInTemperatureRange(AgerBlockEntity entity, Optional<PotBlockRecipe> match){
-        if(match.isPresent()){
-            int minTemperature = match.get().minTemperature;
-            int maxTemperature = match.get().maxTemperature;
-            return minTemperature <= entity.temperature && entity.temperature <= maxTemperature;
-        }
-        else return false;
-    }
-
-    private static boolean hasRecipeFluidInTank(AgerBlockEntity entity, Optional<PotBlockRecipe> recipe) {
-        return entity.getFluidStack().getAmount() >= recipe.get().fluidStack.getAmount()
-                && entity.getFluidStack().getFluid().equals(recipe.get().fluidStack.getFluid());
-    }
-
-//    private static boolean hasToolsInToolSlot(PotBlockEntity entity) {
-//        return entity.itemHandler.getStackInSlot(UTENSIL_SLOT_ID).getItem() == ModItems.TURMERIC.get();
-//    }
 
     private static void craftItem(AgerBlockEntity entity) {
         Level level = entity.level;
@@ -256,48 +258,26 @@ public class AgerBlockEntity extends BlockEntity implements MenuProvider {
             inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
         }
 
-        Optional<PotBlockRecipe> match = level.getRecipeManager()
-                .getRecipeFor(PotBlockRecipe.Type.INSTANCE, inventory, level);
+        Optional<AgerBlockRecipe> match = level.getRecipeManager()
+                .getRecipeFor(AgerBlockRecipe.Type.INSTANCE, inventory, level);
 
         if(match.isPresent()) {
-            for(int i = 1;i <= 9; ++i){
-                if(entity.itemHandler.getStackInSlot(i)!=ItemStack.EMPTY){
-                    entity.itemHandler.extractItem(i, 1, false);
-                }
-            }
-//            if(entity.itemHandler.getStackInSlot(UTENSIL_SLOT_ID).getDamageValue()>=entity.itemHandler.getStackInSlot(UTENSIL_SLOT_ID).getMaxDamage()){
-//                    entity.itemHandler.extractItem(UTENSIL_SLOT_ID, 1, false);
-//            }
-//            else {
-//                    entity.itemHandler.getStackInSlot(UTENSIL_SLOT_ID).hurt(1, new Random(), null);
-//            }
-            entity.itemHandler.setStackInSlot(RESULT_SLOT_ID, new ItemStack(match.get().getResultItem().getItem(),
-                    entity.itemHandler.getStackInSlot(RESULT_SLOT_ID).getCount() + 1));
-            //todo remember to remove this if it becomes annoying
-            entity.temperature-=5;
-            entity.fluidTank.drain(match.get().getFluidStack().getAmount(), IFluidHandler.FluidAction.EXECUTE);
-            entity.resetProgress();
+            entity.inputFluidTank.drain(match.get().getInput().getAmount(), IFluidHandler.FluidAction.EXECUTE);
+            entity.outputFluidTank.fill(match.get().getOutput(), IFluidHandler.FluidAction.EXECUTE);
+            entity.resetAgeing();
         }
     }
 
-    private void resetProgress() {
-        this.progress = 0;
+    private void resetAgeing() {
+        this.ageing = 0;
     }
-
-    private static boolean canInsertItemIntoOutputSlot(SimpleContainer inventory, ItemStack output) {
-        return inventory.getItem(RESULT_SLOT_ID).getItem() == output.getItem() || inventory.getItem(RESULT_SLOT_ID).isEmpty();
-    }
-
-    private static boolean canInsertAmountIntoOutputSlot(SimpleContainer inventory) {
-        return inventory.getItem(RESULT_SLOT_ID).getMaxStackSize() > inventory.getItem(RESULT_SLOT_ID).getCount();
-    }
+    
 
     @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
-
     @Override
     public CompoundTag getUpdateTag() {
         CompoundTag compoundTag = saveWithoutMetadata();
