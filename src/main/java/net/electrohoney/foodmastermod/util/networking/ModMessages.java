@@ -1,7 +1,8 @@
 package net.electrohoney.foodmastermod.util.networking;
 
 import net.electrohoney.foodmastermod.FoodMaster;
-import net.electrohoney.foodmastermod.util.networking.packets.PacketSyncFluidStackToClient;
+import net.electrohoney.foodmastermod.util.networking.packets.AgerPacketSyncFluidStackToClient;
+import net.electrohoney.foodmastermod.util.networking.packets.PotPacketSyncFluidStackToClient;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
@@ -12,10 +13,14 @@ import net.minecraftforge.network.simple.SimpleChannel;
 public class ModMessages {
 
     private static SimpleChannel INSTANCE;
-
     private static int packetId = 0;
+    private static int agerPacketId = 1;
     private static int id(){
         return packetId++;
+    }
+
+    private static int idAger(){
+        return agerPacketId++;
     }
 
     public static void register(){
@@ -28,11 +33,18 @@ public class ModMessages {
 
         INSTANCE = net;
 
-        net.messageBuilder(PacketSyncFluidStackToClient.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(PacketSyncFluidStackToClient::new)
-                .encoder(PacketSyncFluidStackToClient::toBytes)
-                .consumer(PacketSyncFluidStackToClient::handle)
+        net.messageBuilder(PotPacketSyncFluidStackToClient.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(PotPacketSyncFluidStackToClient::new)
+                .encoder(PotPacketSyncFluidStackToClient::toBytes)
+                .consumer(PotPacketSyncFluidStackToClient::handle)
                 .add();
+
+        net.messageBuilder(AgerPacketSyncFluidStackToClient.class, idAger(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(AgerPacketSyncFluidStackToClient::new)
+                .encoder(AgerPacketSyncFluidStackToClient::toBytes)
+                .consumer(AgerPacketSyncFluidStackToClient::handle)
+                .add();
+
     }
 
     public static <MSG> void sendToClients(MSG message){
