@@ -11,16 +11,16 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 //Credit https://github.com/Kaupenjoe/Resource-Slimes by kaupenjoe
 //Under MIT Licence https://github.com/Kaupenjoe/Resource-Slimes/blob/master/LICENSE
-public class PacketSyncFluidStackToClient {
+public class PotPacketSyncFluidStackToClient {
     private FluidStack fluidStack;
     private final BlockPos pos;
 
-    public PacketSyncFluidStackToClient(FluidStack stack, BlockPos pos){
+    public PotPacketSyncFluidStackToClient(FluidStack stack, BlockPos pos){
         this.fluidStack = stack;
         this.pos = pos;
     }
 
-    public PacketSyncFluidStackToClient(FriendlyByteBuf buf){
+    public PotPacketSyncFluidStackToClient(FriendlyByteBuf buf){
        this.fluidStack = buf.readFluidStack();
        this.pos = buf.readBlockPos();
     }
@@ -43,11 +43,7 @@ public class PacketSyncFluidStackToClient {
             if(Minecraft.getInstance().player.containerMenu instanceof PotBlockMenu menu && menu.blockEntity.getBlockPos().equals(pos)){
                 menu.setFluid(this.fluidStack);
             }
-//            System.out.println("Network " + Minecraft.getInstance().screen);
-//            //System.out.println(Minecraft.getInstance().screen.getTitle());
-//            if(Minecraft.getInstance().screen instanceof PotBlockScreen screen){
-//                screen.setFluid(this.fluidStack);
-//            }
+
         });
         return true;
     }
