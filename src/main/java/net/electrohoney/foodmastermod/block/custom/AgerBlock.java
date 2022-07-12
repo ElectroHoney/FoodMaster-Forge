@@ -2,6 +2,7 @@ package net.electrohoney.foodmastermod.block.custom;
 
 import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
 import net.electrohoney.foodmastermod.block.entity.custom.AgerBlockEntity;
+import net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
