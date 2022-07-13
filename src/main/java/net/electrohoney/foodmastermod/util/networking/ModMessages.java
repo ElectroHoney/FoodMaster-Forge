@@ -1,8 +1,8 @@
 package net.electrohoney.foodmastermod.util.networking;
 
 import net.electrohoney.foodmastermod.FoodMaster;
-import net.electrohoney.foodmastermod.util.networking.packets.AgerPacketSyncFluidStackToClient;
-import net.electrohoney.foodmastermod.util.networking.packets.PotPacketSyncFluidStackToClient;
+import net.electrohoney.foodmastermod.util.networking.packets.PacketSyncTwoFluidStacksToClient;
+import net.electrohoney.foodmastermod.util.networking.packets.PacketSyncOneFluidStackToClient;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
@@ -33,16 +33,16 @@ public class ModMessages {
 
         INSTANCE = net;
 
-        net.messageBuilder(PotPacketSyncFluidStackToClient.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(PotPacketSyncFluidStackToClient::new)
-                .encoder(PotPacketSyncFluidStackToClient::toBytes)
-                .consumer(PotPacketSyncFluidStackToClient::handle)
+        net.messageBuilder(PacketSyncOneFluidStackToClient.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(PacketSyncOneFluidStackToClient::new)
+                .encoder(PacketSyncOneFluidStackToClient::toBytes)
+                .consumer(PacketSyncOneFluidStackToClient::handle)
                 .add();
 
-        net.messageBuilder(AgerPacketSyncFluidStackToClient.class, idAger(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(AgerPacketSyncFluidStackToClient::new)
-                .encoder(AgerPacketSyncFluidStackToClient::toBytes)
-                .consumer(AgerPacketSyncFluidStackToClient::handle)
+        net.messageBuilder(PacketSyncTwoFluidStacksToClient.class, idAger(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(PacketSyncTwoFluidStacksToClient::new)
+                .encoder(PacketSyncTwoFluidStacksToClient::toBytes)
+                .consumer(PacketSyncTwoFluidStacksToClient::handle)
                 .add();
 
     }
