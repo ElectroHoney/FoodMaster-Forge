@@ -11,16 +11,16 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 //Credit https://github.com/Kaupenjoe/Resource-Slimes by kaupenjoe
 //Under MIT Licence https://github.com/Kaupenjoe/Resource-Slimes/blob/master/LICENSE
-public class PotPacketSyncFluidStackToClient {
+public class PacketSyncOneFluidStackToClient {
     private FluidStack fluidStack;
     private final BlockPos pos;
 
-    public PotPacketSyncFluidStackToClient(FluidStack stack, BlockPos pos){
+    public PacketSyncOneFluidStackToClient(FluidStack stack, BlockPos pos){
         this.fluidStack = stack;
         this.pos = pos;
     }
 
-    public PotPacketSyncFluidStackToClient(FriendlyByteBuf buf){
+    public PacketSyncOneFluidStackToClient(FriendlyByteBuf buf){
        this.fluidStack = buf.readFluidStack();
        this.pos = buf.readBlockPos();
     }
@@ -32,7 +32,7 @@ public class PotPacketSyncFluidStackToClient {
 
     public boolean handle(Supplier<NetworkEvent.Context> contextSupplier){
         NetworkEvent.Context context = contextSupplier.get();
-        System.out.println("Network " + Minecraft.getInstance().screen);
+//        System.out.println("Network " + Minecraft.getInstance().screen);
 
         context.enqueueWork(()->{
             //setting the data for the client to read

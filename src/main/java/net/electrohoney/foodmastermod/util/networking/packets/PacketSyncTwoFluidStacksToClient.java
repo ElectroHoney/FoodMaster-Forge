@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 
 //Credit https://github.com/Kaupenjoe/Resource-Slimes by kaupenjoe
 //Under MIT Licence https://github.com/Kaupenjoe/Resource-Slimes/blob/master/LICENSE
-public class AgerPacketSyncFluidStackToClient {
+public class PacketSyncTwoFluidStacksToClient {
 
     private FluidStack AgerFluidStack;
     private final BlockPos pos;
@@ -20,12 +20,12 @@ public class AgerPacketSyncFluidStackToClient {
     // 0 for output and 1 for input
     private final int fluidInputType;
 
-    public AgerPacketSyncFluidStackToClient(FluidStack fluidStack, int fluidInputType, BlockPos pos){
+    public PacketSyncTwoFluidStacksToClient(FluidStack fluidStack, int fluidInputType, BlockPos pos){
         this.fluidInputType = fluidInputType;
         this.AgerFluidStack = fluidStack;
         this.pos = pos;
     }
-    public AgerPacketSyncFluidStackToClient(FriendlyByteBuf buf){
+    public PacketSyncTwoFluidStacksToClient(FriendlyByteBuf buf){
         this.fluidInputType = buf.readInt();
         this.AgerFluidStack = buf.readFluidStack();
         this.pos = buf.readBlockPos();
@@ -39,7 +39,6 @@ public class AgerPacketSyncFluidStackToClient {
 
     public boolean handle(Supplier<NetworkEvent.Context> contextSupplier){
         NetworkEvent.Context context = contextSupplier.get();
-        System.out.println("Network " + Minecraft.getInstance().screen);
 
         context.enqueueWork(()->{
             //setting the data for the client to read
