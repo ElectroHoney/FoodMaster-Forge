@@ -4,8 +4,7 @@ import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
 import net.electrohoney.foodmastermod.recipe.AgerBlockRecipe;
 import net.electrohoney.foodmastermod.screen.menus.AgerBlockMenu;
 import net.electrohoney.foodmastermod.util.networking.ModMessages;
-import net.electrohoney.foodmastermod.util.networking.packets.AgerPacketSyncFluidStackToClient;
-import net.electrohoney.foodmastermod.util.networking.packets.PotPacketSyncFluidStackToClient;
+import net.electrohoney.foodmastermod.util.networking.packets.PacketSyncTwoFluidStacksToClient;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -57,7 +56,7 @@ public class AgerBlockEntity extends BlockEntity implements MenuProvider {
             setChanged();
             assert level != null;
             if(!level.isClientSide()){
-                ModMessages.sendToClients(new AgerPacketSyncFluidStackToClient(this.fluid, INPUT, worldPosition));
+                ModMessages.sendToClients(new PacketSyncTwoFluidStacksToClient(this.fluid, INPUT, worldPosition));
             }
         }
 
@@ -68,7 +67,7 @@ public class AgerBlockEntity extends BlockEntity implements MenuProvider {
             setChanged();
             assert level != null;
             if(!level.isClientSide()){
-                ModMessages.sendToClients(new AgerPacketSyncFluidStackToClient(this.fluid, OUTPUT, worldPosition));
+                ModMessages.sendToClients(new PacketSyncTwoFluidStacksToClient(this.fluid, OUTPUT, worldPosition));
             }
         }
 
@@ -82,10 +81,10 @@ public class AgerBlockEntity extends BlockEntity implements MenuProvider {
     protected final ContainerData data;
 
     public static final int TIME_PIECE_SLOT = 0;
+    //todo this have to be inside the recipe!!!!!!
     private int ageing = 0;
-    private int maxAgeing = 500;
-
-    private int ageingRate = 1;
+    private int maxAgeing = 24000;
+    private int ageingRate = 50;
 
     public static final int AGER_DATA_SIZE = 3;
     public AgerBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
@@ -207,7 +206,7 @@ public class AgerBlockEntity extends BlockEntity implements MenuProvider {
     }
     public static void tick(Level pLevel, BlockPos pPos, BlockState pState, AgerBlockEntity pBlockEntity) {
         if(hasRecipe(pBlockEntity)) {
-            pBlockEntity.ageing+=50;
+            pBlockEntity.ageing+= pBlockEntity.ageingRate;
             setChanged(pLevel, pPos, pState);
             if(pBlockEntity.ageing > pBlockEntity.maxAgeing) {
                 craftItem(pBlockEntity);
@@ -227,9 +226,6 @@ public class AgerBlockEntity extends BlockEntity implements MenuProvider {
         for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
             inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
         }
-        System.out.println("ITEMS???");
-        System.out.println(inventory.getItem(0));
-        System.out.println(entity.itemHandler.getStackInSlot(0));
         assert level != null;
         Optional<AgerBlockRecipe> match = level.getRecipeManager()
                 .getRecipeFor(AgerBlockRecipe.Type.INSTANCE, inventory, level);
@@ -238,15 +234,8 @@ public class AgerBlockEntity extends BlockEntity implements MenuProvider {
     }
     private  static boolean OutputTankIsNotFull(AgerBlockEntity entity){
         return entity.getOutputFluidStack().getAmount() < AgerBlockEntity.AGER_MAX_FLUID_CAPACITY;
-
-//        entity.getFluidStack().getAmount() >= recipe.get().fluidStack.getAmount()
-//                && entity.getFluidStack().getFluid().equals(recipe.get().fluidStack.getFluid());
     }
     private static boolean hasRecipeFluidInTank(AgerBlockEntity entity, Optional<AgerBlockRecipe> recipe) {
-        System.out.println("hasRecipeInTank");
-        System.out.println(entity.getInputFluidStack().getFluid().equals(recipe.get().input.getFluid()));
-        System.out.println(entity.getInputFluidStack().getFluid());
-        System.out.println(recipe.get().input.getFluid());
         return entity.getInputFluidStack().getFluid().equals(recipe.get().input.getFluid());
     }
 

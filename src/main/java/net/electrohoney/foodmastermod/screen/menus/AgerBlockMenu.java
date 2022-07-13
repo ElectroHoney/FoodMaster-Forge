@@ -61,6 +61,14 @@ public class AgerBlockMenu extends AbstractContainerMenu {
         return this.inputFluid;
     }
 
+    public int getAgeing(){
+        return data.get(0);
+    }
+
+    public int getMaxAgeing(){
+        return data.get(1);
+    }
+
     public void setOutputFluid(FluidStack fluidStack){
         this.outputFluid = fluidStack;
     }
@@ -84,7 +92,6 @@ public class AgerBlockMenu extends AbstractContainerMenu {
     private static final int VANILLA_FIRST_SLOT_INDEX = 0;
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
-    // THIS YOU HAVE TO DEFINE!@todo change number
     private static final int TE_INVENTORY_SLOT_COUNT = AgerBlockEntity.AGER_ENTITY_CONTAINER_SIZE;
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {

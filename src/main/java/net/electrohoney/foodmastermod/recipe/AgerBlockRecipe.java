@@ -41,8 +41,6 @@ public class AgerBlockRecipe implements Recipe<SimpleContainer> {
     }
     @Override
     public boolean matches(SimpleContainer pContainer, Level pLevel) {
-        System.out.println(timePiece.test(pContainer.getItem(0)));
-        System.out.println(pContainer.getItem(0).getItem());
         return timePiece.test(pContainer.getItem(0));
     }
 
@@ -81,6 +79,11 @@ public class AgerBlockRecipe implements Recipe<SimpleContainer> {
     public RecipeType<?> getType() {
         return Type.INSTANCE;
     }
+
+    public Ingredient getTimePiece() {
+        return timePiece;
+    }
+
     public static class Type implements RecipeType<AgerBlockRecipe>{
         private Type(){}
             public static final Type INSTANCE = new Type();
@@ -109,13 +112,6 @@ public class AgerBlockRecipe implements Recipe<SimpleContainer> {
             Fluid outputFluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(GsonHelper.getAsString(outputFluidJson,"fluid_namespace"), GsonHelper.getAsString(outputFluidJson,"fluid_name")));
             assert outputFluid != null;
             FluidStack fluidStackOutput = new FluidStack(outputFluid, GsonHelper.getAsInt(outputFluidJson,"fluid_amount"));
-
-            System.out.println("timePiece");
-            System.out.println(timePiece.getItems()[0]);
-            System.out.println("fluidStack I");
-            System.out.println(fluidStackInput.getFluid());
-            System.out.println("fluidStack O");
-            System.out.println(fluidStackOutput.getFluid());
 
             return new AgerBlockRecipe(id, fluidStackOutput, fluidStackInput, timePiece);
         }

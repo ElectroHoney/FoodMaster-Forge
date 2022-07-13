@@ -14,6 +14,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -27,11 +28,14 @@ import java.text.NumberFormat;
 import java.util.Optional;
 
 public class AgerBlockScreen extends AbstractContainerScreen<AgerBlockMenu> {
+
+    final int MINECRAFT_DAY_IN_TICKS = 24000;
+
     private static final ResourceLocation TEXTURE =
             new ResourceLocation(FoodMaster.MOD_ID, "textures/gui/ager_gui.png");
     //@todo overwrite image width to correct menu(did that, I should delete this todo)
     private FluidStackRenderer renderer;
-    private static final NumberFormat nf = NumberFormat.getIntegerInstance();
+    private static final NumberFormat nf = NumberFormat.getNumberInstance();
 
 
     private final IDrawable overlay = null;
@@ -67,6 +71,12 @@ public class AgerBlockScreen extends AbstractContainerScreen<AgerBlockMenu> {
                     Optional.empty(),pMouseX - x, pMouseY - y);
         }
 
+        Component displayTemperature =
+                new TranslatableComponent("foodmaster.tooltip.ageing.out.of.max", nf.format((float)menu.getAgeing()/(float)MINECRAFT_DAY_IN_TICKS), nf.format(menu.getMaxAgeing()/MINECRAFT_DAY_IN_TICKS));
+        if(isMouseAboveArea(pMouseX, pMouseY, x, y, 79, 16, 16, 16)) {
+            renderTooltip(pPoseStack,displayTemperature, pMouseX-x, pMouseY-y);
+        }
+
     }
 
     @Override
@@ -82,16 +92,12 @@ public class AgerBlockScreen extends AbstractContainerScreen<AgerBlockMenu> {
         if(menu.isCrafting()){
             //todo remember to add all progress bars! I did them! ha!
             //x and y of arrow, offset of arrow progress, vertical offset of progress, width of image, height of image
-            blit(pPoseStack, x + 79, y + 16, 177, 0,  menu.getScaledAgeing(), 16);
+            blit(pPoseStack, x + 81, y + 16, 177, 0,  menu.getScaledAgeing(), 16);
         }
         renderer.render(pPoseStack, x+8, y+17,menu.getInputFluid());
         renderer.render(pPoseStack, x+116, y+17,menu.getOutputFluid());
 
 }
-
-
-    public static final int TEXTURE_SIZE = 16;
-    private static final int MIN_FLUID_HEIGHT = 1; // ensure tiny amounts of fluid are still visible
 
     private boolean isMouseAboveArea(int pMouseX, int pMouseY, int x, int y, int offsetX, int offsetY) {
         return MouseUtil.isMouseOver(pMouseX, pMouseY, x + offsetX, y + offsetY, renderer.getWidth(), renderer.getHeight());
