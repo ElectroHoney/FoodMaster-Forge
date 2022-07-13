@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "foodmastermod:pot_block"
+    "foodmastermod:pot_block",
+    "foodmastermod:ager",
+    "foodmastermod:baker"
   ]
 }
