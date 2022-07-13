@@ -4,7 +4,7 @@ import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
 import net.electrohoney.foodmastermod.recipe.PotBlockRecipe;
 import net.electrohoney.foodmastermod.screen.menus.PotBlockMenu;
 import net.electrohoney.foodmastermod.util.networking.ModMessages;
-import net.electrohoney.foodmastermod.util.networking.packets.PotPacketSyncFluidStackToClient;
+import net.electrohoney.foodmastermod.util.networking.packets.PacketSyncOneFluidStackToClient;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -56,7 +56,7 @@ public class ButterChurnBlockEntity extends BlockEntity implements MenuProvider 
             setChanged();
             assert level != null;
             if(!level.isClientSide()){
-                ModMessages.sendToClients(new PotPacketSyncFluidStackToClient(this.fluid, worldPosition));
+                ModMessages.sendToClients(new PacketSyncOneFluidStackToClient(this.fluid, worldPosition));
             }
         }
 
