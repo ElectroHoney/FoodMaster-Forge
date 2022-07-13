@@ -6,8 +6,7 @@
   "block.foodmastermod.ager": "Aging Barrels",
   "block.foodmastermod.pot_block": "Iron Pot",
   "block.foodmastermod.skillet": "Iron Skillet",
-  "block.foodmastermod.baker": "Baker",
-  "block.foodmastermod.brewery": "Brewery",
+  "block.foodmastermod.baker": "Brick Oven",
   "block.foodmastermod.butter_churn": "Butter Churn",
   "block.foodmastermod.drying_rack": "Drying Rack",
   "block.foodmastermod.freezer": "Freezer",
@@ -20,5 +19,6 @@
 
   "jei.tooltip.liquid.amount.with.capacity": "%s / %s mB",
 
-  "foodmaster.tooltip.temperature.out.of.max": "%s / %s °C"
+  "foodmaster.tooltip.temperature.out.of.max": "%s / %s °C",
+  "foodmaster.tooltip.ageing.out.of.max": "%s / %s Days"
 }
