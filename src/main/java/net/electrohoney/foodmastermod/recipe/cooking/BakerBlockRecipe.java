@@ -1,9 +1,9 @@
-package net.electrohoney.foodmastermod.recipe;
+package net.electrohoney.foodmastermod.recipe.cooking;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.electrohoney.foodmastermod.FoodMaster;
-import net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity;
+import net.electrohoney.foodmastermod.block.entity.custom.BakerBlockEntity;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -23,9 +23,6 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
     private final ResourceLocation id;
     private final ItemStack output;
     private final NonNullList<Ingredient> recipeIngredients;
-
-    private final static int listSize = 9;
-
     public final int minTemperature;
     public final int maxTemperature;
 
@@ -33,7 +30,9 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
 
     private final Ingredient tool;
 
-    public BakerBlockRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems, int minTemperature, int maxTemperature, FluidStack fluidStack, Ingredient tool) {
+    private final int cookingTime;
+
+    public BakerBlockRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems, int minTemperature, int maxTemperature, FluidStack fluidStack, Ingredient tool, int cookingTime) {
         this.id = id;
         this.output = output;
         this.recipeIngredients = recipeItems;
@@ -41,6 +40,7 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
         this.maxTemperature = maxTemperature;
         this.fluidStack = fluidStack;
         this.tool = tool;
+        this.cookingTime = cookingTime;
     }
     public Ingredient getUtensil() {
         return this.tool;
@@ -55,12 +55,13 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
     @Override
     public boolean matches(SimpleContainer pContainer, Level pLevel) {
 
-        if(!tool.test(pContainer.getItem(PotBlockEntity.UTENSIL_SLOT_ID))){
+        if(!tool.test(pContainer.getItem(BakerBlockEntity.UTENSIL_SLOT_ID))){
             return false;
         }
 
+
         boolean isFilled = false;
-        for(int g = 1; g<= 9; g++){
+        for(int g = 0; g< 6; g++){
 
             if(pContainer.getItem(g) != ItemStack.EMPTY){
                 isFilled = true;
@@ -72,7 +73,7 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
 
         int allIngredients = 0;
         for (int i = 0; i < recipeIngredients.size(); i++){
-            for (int g = 1; g <= 9; g++){
+            for (int g = 0; g < 6; g++){
                 if(recipeIngredients.get(i).test(pContainer.getItem(g))) {
                     allIngredients ++;
                 }
@@ -82,7 +83,7 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
             return false;
         }
 
-        for (int g = 1; g <= 9; g++){
+        for (int g = 0; g < 6; g++){
             if(pContainer.getItem(g) != ItemStack.EMPTY){
                 boolean doesItemExist = false;
                 for( int i = 0; i < recipeIngredients.size(); ++ i){
@@ -132,7 +133,7 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
     public static class Type implements RecipeType<BakerBlockRecipe>{
         private Type(){}
             public static final Type INSTANCE = new Type();
-            public static final String ID = "boiling";
+            public static final String ID = "baking";
     }
 
     //thanks a lot Kaupenjoe!! :)
@@ -140,7 +141,7 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
     public static class Serializer implements RecipeSerializer<BakerBlockRecipe> {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID =
-                new ResourceLocation(FoodMaster.MOD_ID,"boiling");
+                new ResourceLocation(FoodMaster.MOD_ID,"baking");
 
         @Override
         public BakerBlockRecipe fromJson(ResourceLocation id, JsonObject json) {
@@ -156,10 +157,18 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
             JsonObject fluidJson = GsonHelper.getAsJsonObject(json, "fluid");
             Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(GsonHelper.getAsString(fluidJson,"fluid_namespace"), GsonHelper.getAsString(fluidJson,"fluid_name")));
             FluidStack fluidStack1 = new FluidStack(fluid, GsonHelper.getAsInt(fluidJson,"fluid_amount"));
-            JsonObject toolJson = GsonHelper.getAsJsonObject(json, "tool");
-            Ingredient tool = Ingredient.fromJson(toolJson);
 
-            return new BakerBlockRecipe(id, output, inputs, minTemperature, maxTemperature, fluidStack1, tool);
+            JsonObject toolJson = GsonHelper.getAsJsonObject(json, "tool", null);
+            //The utensil is optional
+            Ingredient tool = Ingredient.EMPTY;
+            if(toolJson != null){
+                tool = Ingredient.fromJson(toolJson);
+            }
+            //this has fallback so I should implement one for everything
+            int cookingTime = GsonHelper.getAsInt(json, "cookingTime", 200);
+
+            //System.out.println("fluid->" + fluid + "tool" + tool + "cooking" + cookingTime);
+            return new BakerBlockRecipe(id, output, inputs, minTemperature, maxTemperature, fluidStack1, tool, cookingTime);
         }
 
         @Override
@@ -173,9 +182,10 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
             ItemStack output = buf.readItem();
             int minTemperature = buf.readInt();
             int maxTemperature =  buf.readInt();
+            int cookingTime = buf.readInt();
             FluidStack fluidStack1 = buf.readFluidStack();
             Ingredient tool = Ingredient.fromNetwork(buf);
-            return new BakerBlockRecipe(id, output, inputs, minTemperature, maxTemperature, fluidStack1, tool);
+            return new BakerBlockRecipe(id, output, inputs, minTemperature, maxTemperature, fluidStack1, tool, cookingTime);
         }
 
         @Override
@@ -187,6 +197,7 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
             buf.writeItemStack(recipe.getResultItem(), false);
             buf.writeInt(recipe.minTemperature);
             buf.writeInt(recipe.maxTemperature);
+            buf.writeInt(recipe.cookingTime);
             buf.writeFluidStack(recipe.fluidStack);
             recipe.tool.toNetwork(buf);
         }

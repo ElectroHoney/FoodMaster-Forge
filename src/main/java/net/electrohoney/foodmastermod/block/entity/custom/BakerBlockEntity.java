@@ -1,8 +1,10 @@
 package net.electrohoney.foodmastermod.block.entity.custom;
 
 import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
-import net.electrohoney.foodmastermod.recipe.PotBlockRecipe;
-import net.electrohoney.foodmastermod.screen.menus.PotBlockMenu;
+import net.electrohoney.foodmastermod.recipe.ModRecipeTypes;
+import net.electrohoney.foodmastermod.recipe.ModRecipes;
+import net.electrohoney.foodmastermod.recipe.cooking.BakerBlockRecipe;
+import net.electrohoney.foodmastermod.screen.menus.BakerBlockMenu;
 import net.electrohoney.foodmastermod.util.networking.ModMessages;
 import net.electrohoney.foodmastermod.util.networking.packets.PacketSyncOneFluidStackToClient;
 import net.minecraft.core.BlockPos;
@@ -20,11 +22,14 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -41,7 +46,7 @@ import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public class BakerBlockEntity extends BlockEntity implements MenuProvider {
-    public final static int BAKER_ENTITY_CONTAINER_SIZE = 8;
+    public final static int BAKER_ENTITY_CONTAINER_SIZE = 10;
     public final static int BAKER_MAX_FLUID_CAPACITY = 8000;
     private final ItemStackHandler itemHandler = new ItemStackHandler(BAKER_ENTITY_CONTAINER_SIZE){
         @Override
@@ -67,13 +72,15 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
 
     protected final ContainerData data;
 
-    public static final int UTENSIL_SLOT_ID = 10;
-    //public static final int RECIPE_SLOT_ID = 2;
-    private static final int WATER_SLOT_ID = 0;
-    private static final int RESULT_SLOT_ID = 11;
+    public static final int BROIL_SLOT_ID = 6;
+    public static final int BAKE_SLOT_ID = 7;
+
+    public static final int UTENSIL_SLOT_ID = 8;
+    public static final int RESULT_SLOT_ID = 9;
+
 
     private int progress = 0;
-    private int maxProgress = 72;
+    private int maxProgress = 100;
 
     public int getTemperature() {
         return temperature;
@@ -81,11 +88,16 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
 
     //my own variables
     private int temperature = 25;
-    private int minTemperature = 25;
-    private int maxTemperature = 200;
+    private final int minTemperature = 25;
+    private int maxTemperature = 500;
+    //Lower slot
+    private int bakeTime = 0;
+    private int bakeDuration = 0;
+    //Upper slot
+    private int broilTime = 0;
+    private int broilDuration = 0;
 
-    public static final int BAKER_DATA_SIZE = 5;
-    private int fluidFillAmount = 0;
+    public static final int BAKER_DATA_SIZE = 8;
     public BakerBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
         super(ModBlockEntities.BAKER_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
         //@todo change how this works, this fields are only saved in the server
@@ -96,7 +108,10 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
                     case 1: return BakerBlockEntity.this.maxProgress;
                     case 2: return BakerBlockEntity.this.temperature;
                     case 3: return BakerBlockEntity.this.maxTemperature;
-                    case 4: return BakerBlockEntity.this.fluidFillAmount;
+                    case 4: return BakerBlockEntity.this.bakeTime;
+                    case 5: return BakerBlockEntity.this.bakeDuration;
+                    case 6: return BakerBlockEntity.this.broilTime;
+                    case 7: return BakerBlockEntity.this.broilDuration;
                     default: return 0;
                 }
             }
@@ -107,8 +122,10 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
                     case 1: BakerBlockEntity.this.maxProgress = value; break;
                     case 2: BakerBlockEntity.this.temperature = value; break;
                     case 3: BakerBlockEntity.this.maxTemperature = value;break;
-                    case 4: BakerBlockEntity.this.fluidFillAmount = value;
-
+                    case 4: BakerBlockEntity.this.bakeTime = value;break;
+                    case 5: BakerBlockEntity.this.bakeDuration = value;break;
+                    case 6: BakerBlockEntity.this.broilTime = value;break;
+                    case 7: BakerBlockEntity.this.broilDuration = value;break;
                 }
             }
 
@@ -122,18 +139,19 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
         return this.fluidTank.getFluid();
     }
 
+
     public void setFluid(FluidStack fluidStack) {
         this.fluidTank.setFluid(fluidStack);
     }
     @Override
     public Component getDisplayName() {
-        return new TextComponent("Baker Block");
+        return new TextComponent("Brick Oven");
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        return new PotBlockMenu(pContainerId, pPlayerInventory, this, this.data);
+        return new BakerBlockMenu(pContainerId, pPlayerInventory, this, this.data);
     }
 
     @Nonnull
@@ -167,8 +185,12 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
     @Override
     protected void saveAdditional(@NotNull CompoundTag tag) {
         tag.put("inventory", itemHandler.serializeNBT());
-        tag.putInt("pot_block.progress", progress);
-        tag.putInt("pot_block.temperature", temperature);
+        tag.putInt("baker_block.progress", progress);
+        tag.putInt("baker_block.temperature", temperature);
+        tag.putInt("baker_block.bakeTime", bakeTime);
+        tag.putInt("baker_block.bakeDuration", bakeDuration);
+        tag.putInt("baker_block.broilTime", broilTime);
+        tag.putInt("baker_block.broilDuration", broilDuration);
         tag = fluidTank.writeToNBT(tag);
 
         super.saveAdditional(tag);
@@ -178,8 +200,12 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
     public void load(CompoundTag nbt) {
         super.load(nbt);
         itemHandler.deserializeNBT(nbt.getCompound("inventory"));
-        progress = nbt.getInt("pot_block.progress");
-        temperature = nbt.getInt("pot_block.temperature");
+        progress = nbt.getInt("baker_block.progress");
+        temperature = nbt.getInt("baker_block.temperature");
+        bakeTime = nbt.getInt("baker_block.bakeTime");
+        bakeDuration = nbt.getInt("baker_block.bakeDuration");
+        broilTime = nbt.getInt("baker_block.broilTime");
+        broilDuration = nbt.getInt("baker_block.broilDuration");
         fluidTank.readFromNBT(nbt);
 
     }
@@ -204,36 +230,66 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
             pBlockEntity.resetProgress();
             setChanged(pLevel, pPos, pState);
         }
-        //not good!!!
-        pBlockEntity.fluidFillAmount = pBlockEntity.fluidTank.getFluidAmount();
-
-        if(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature < 125){
-            pBlockEntity.temperature++;
-        }
-        if(Blocks.LAVA == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature < pBlockEntity.maxTemperature){
-            pBlockEntity.temperature++;
-        }
-        else if(!(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock()) && !(Blocks.LAVA == pLevel.getBlockState(pPos.below()).getBlock()) && pBlockEntity.temperature > pBlockEntity.minTemperature){
-            pBlockEntity.temperature--;
-        }
     }
 
     private static boolean hasRecipe(BakerBlockEntity entity) {
+        if (isBaking(entity)) {
+            --entity.bakeTime;
+        }
+
         Level level = entity.level;
         SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
         for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
             inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
         }
 
-        Optional<PotBlockRecipe> match = level.getRecipeManager()
-                .getRecipeFor(PotBlockRecipe.Type.INSTANCE, inventory, level);
+        Optional<BakerBlockRecipe> match = level.getRecipeManager()
+                .getRecipeFor(BakerBlockRecipe.Type.INSTANCE, inventory, level);
+
+        if(!isBaking(entity) && match.isPresent() && canInsertAmountIntoOutputSlot(inventory)
+                && canInsertItemIntoOutputSlot(inventory, match.get().getResultItem())
+                && hasRecipeFluidInTank(entity, match) && isInTemperatureRange(entity, match)){
+            entity.bakeTime = ForgeHooks.getBurnTime(inventory.getItem(BAKE_SLOT_ID), RecipeType.SMELTING);
+            if(entity.bakeTime > 0 && entity.itemHandler.getStackInSlot(BAKE_SLOT_ID)!=ItemStack.EMPTY){
+                entity.itemHandler.extractItem(BAKE_SLOT_ID, 1, false);
+            }
+            entity.bakeDuration = entity.bakeTime;
+        }
 
         return match.isPresent() && canInsertAmountIntoOutputSlot(inventory)
                 && canInsertItemIntoOutputSlot(inventory, match.get().getResultItem())
-                && hasRecipeFluidInTank(entity, match) && isInTemperatureRange(entity, match);
+                //todo add or for broiling
+                && hasRecipeFluidInTank(entity, match) && isInTemperatureRange(entity, match) && isBaking(entity);
     }
 
-    private static boolean isInTemperatureRange(BakerBlockEntity entity, Optional<PotBlockRecipe> match){
+    private static boolean isBaking(BakerBlockEntity entity) {
+        return entity.bakeTime > 0;
+    }
+    private static boolean isBroiling(BakerBlockEntity entity) {
+        return entity.broilTime > 0;
+    }
+
+    protected static int getBurnDuration(ItemStack pFuel) {
+        if (pFuel.isEmpty()) {
+            return 0;
+        } else {
+            Item item = pFuel.getItem();
+            return ForgeHooks.getBurnTime(pFuel, RecipeType.SMELTING);
+        }
+    }
+
+    private static boolean isFuelInBroilSlot(BakerBlockEntity entity, SimpleContainer inventory){;
+        return ForgeHooks.getBurnTime(inventory.getItem(BROIL_SLOT_ID), RecipeType.SMELTING) > 0;
+    }
+
+    private static boolean isFuelInBakeSlot(BakerBlockEntity entity, SimpleContainer inventory){
+        System.out.println("ForgeHooks Works?-bake");
+        System.out.println(ForgeHooks.getBurnTime(inventory.getItem(BAKE_SLOT_ID), RecipeType.SMELTING));
+        System.out.println(inventory.getItem(BAKE_SLOT_ID));
+        return ForgeHooks.getBurnTime(inventory.getItem(BAKE_SLOT_ID), RecipeType.SMELTING) > 0;
+    }
+
+    private static boolean isInTemperatureRange(BakerBlockEntity entity, Optional<BakerBlockRecipe> match){
         if(match.isPresent()){
             int minTemperature = match.get().minTemperature;
             int maxTemperature = match.get().maxTemperature;
@@ -242,10 +298,11 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
         else return false;
     }
 
-    private static boolean hasRecipeFluidInTank(BakerBlockEntity entity, Optional<PotBlockRecipe> recipe) {
+    private static boolean hasRecipeFluidInTank(BakerBlockEntity entity, Optional<BakerBlockRecipe> recipe) {
         return entity.getFluidStack().getAmount() >= recipe.get().fluidStack.getAmount()
                 && entity.getFluidStack().getFluid().equals(recipe.get().fluidStack.getFluid());
     }
+
 
 
     private static void craftItem(BakerBlockEntity entity) {
@@ -255,11 +312,11 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
             inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
         }
 
-        Optional<PotBlockRecipe> match = level.getRecipeManager()
-                .getRecipeFor(PotBlockRecipe.Type.INSTANCE, inventory, level);
-
+        Optional<BakerBlockRecipe> match = level.getRecipeManager()
+                .getRecipeFor(BakerBlockRecipe.Type.INSTANCE, inventory, level);
         if(match.isPresent()) {
-            for(int i = 1;i <= 9; ++i){
+            //todo remember to change this
+            for(int i = 0;i <= 6; ++i){
                 if(entity.itemHandler.getStackInSlot(i)!=ItemStack.EMPTY){
                     entity.itemHandler.extractItem(i, 1, false);
                 }
@@ -267,7 +324,6 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
             entity.itemHandler.setStackInSlot(RESULT_SLOT_ID, new ItemStack(match.get().getResultItem().getItem(),
                     entity.itemHandler.getStackInSlot(RESULT_SLOT_ID).getCount() + 1));
             //todo remember to remove this if it becomes annoying
-            entity.temperature-=5;
             entity.fluidTank.drain(match.get().getFluidStack().getAmount(), IFluidHandler.FluidAction.EXECUTE);
             entity.resetProgress();
         }
@@ -296,6 +352,53 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
         CompoundTag compoundTag = saveWithoutMetadata();
         load(compoundTag);
         return compoundTag;
+    }
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    public int getMaxProgress() {
+        return maxProgress;
+    }
+
+    public void setMaxProgress(int maxProgress) {
+        this.maxProgress = maxProgress;
+    }
+
+    public void setTemperature(int temperature) {
+        this.temperature = temperature;
+    }
+
+    public int getMinTemperature() {
+        return minTemperature;
+    }
+
+    public int getMaxTemperature() {
+        return maxTemperature;
+    }
+
+    public void setMaxTemperature(int maxTemperature) {
+        this.maxTemperature = maxTemperature;
+    }
+
+    public int getBakeTime() {
+        return bakeTime;
+    }
+
+    public void setBakeTime(int bakeTime) {
+        this.bakeTime = bakeTime;
+    }
+
+    public int getBroilTime() {
+        return broilTime;
+    }
+
+    public void setBroilTime(int broilTime) {
+        this.broilTime = broilTime;
     }
 }
 

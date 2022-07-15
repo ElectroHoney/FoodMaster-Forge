@@ -1,0 +1,19 @@
+{
+  "type": "foodmastermod:baking",
+  "ingredients": [
+    {
+      "item": "minecraft:beef"
+    }
+  ],
+  "min_temperature": 10,
+  "max_temperature": 30,
+  "fluid": {
+    "fluid_amount": 500,
+    "fluid_namespace": "minecraft",
+    "fluid_name": "water"
+  },
+  "cookingTime": 300,
+  "output": {
+    "item": "minecraft:cooked_beef"
+  }
+}

@@ -1,11 +1,9 @@
 package net.electrohoney.foodmastermod.event;
 
 import net.electrohoney.foodmastermod.FoodMaster;
-import net.electrohoney.foodmastermod.block.custom.PotBlock;
-import net.electrohoney.foodmastermod.recipe.PotBlockRecipe;
+import net.electrohoney.foodmastermod.recipe.cooking.PotBlockRecipe;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
