@@ -1,7 +1,7 @@
 package net.electrohoney.foodmastermod.block.entity.custom;
 
 import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
-import net.electrohoney.foodmastermod.recipe.PotBlockRecipe;
+import net.electrohoney.foodmastermod.recipe.cooking.PotBlockRecipe;
 import net.electrohoney.foodmastermod.screen.menus.PotBlockMenu;
 import net.electrohoney.foodmastermod.util.networking.ModMessages;
 import net.electrohoney.foodmastermod.util.networking.packets.PacketSyncOneFluidStackToClient;

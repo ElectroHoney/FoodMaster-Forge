@@ -50,7 +50,6 @@ public class PacketSyncTwoFluidStacksToClient {
                     blockEntity.setInputFluid(this.AgerFluidStack);
                 }
             }
-
             if(Minecraft.getInstance().player.containerMenu instanceof AgerBlockMenu menu && menu.blockEntity.getBlockPos().equals(pos)){
                 if(fluidInputType == 0) {
                     menu.setOutputFluid(this.AgerFluidStack);
@@ -62,6 +61,5 @@ public class PacketSyncTwoFluidStacksToClient {
         });
         return true;
     }
-
 
 }

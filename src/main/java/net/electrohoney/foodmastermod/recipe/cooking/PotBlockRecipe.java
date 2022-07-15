@@ -1,4 +1,4 @@
-package net.electrohoney.foodmastermod.recipe;
+package net.electrohoney.foodmastermod.recipe.cooking;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

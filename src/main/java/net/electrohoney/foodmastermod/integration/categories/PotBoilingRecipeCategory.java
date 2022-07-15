@@ -1,4 +1,4 @@
-package net.electrohoney.foodmastermod.integration;
+package net.electrohoney.foodmastermod.integration.categories;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
@@ -12,19 +12,14 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.electrohoney.foodmastermod.FoodMaster;
 import net.electrohoney.foodmastermod.block.ModBlocks;
 import net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity;
-import net.electrohoney.foodmastermod.item.ModItems;
-import net.electrohoney.foodmastermod.recipe.PotBlockRecipe;
+import net.electrohoney.foodmastermod.recipe.cooking.PotBlockRecipe;
 import net.electrohoney.foodmastermod.screen.renderer.FluidStackRenderer;
-import net.electrohoney.foodmastermod.util.MouseUtil;
-import net.minecraft.network.CompressionEncoder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nonnull;
 import java.text.NumberFormat;
@@ -74,7 +69,7 @@ public class PotBoilingRecipeCategory implements IRecipeCategory<PotBlockRecipe>
 
     @Override
     public Component getTitle() {
-        return new TextComponent("Pot Boiling");
+        return new TextComponent("Boiling");
     }
 
     @Override

@@ -52,7 +52,7 @@ public class PotBlockMenu extends AbstractContainerMenu {
                 for(int j = 0; j<=2; j++){
                     this.addSlot(
                             new SlotItemHandler(handler, gridIndex,
-                                    53-9+18*(i%3), 17+18*(j%3)));
+                                    53-9+18*(j%3), 17+18*(i%3)));
                     gridIndex += 1;
                 }
             }
