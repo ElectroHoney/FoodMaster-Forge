@@ -1,0 +1,22 @@
+{
+  "type": "foodmastermod:baking",
+  "ingredients": [
+    {
+      "item": "minecraft:potato"
+    }
+  ],
+  "min_temperature": 10,
+  "max_temperature": 30,
+  "fluid": {
+    "fluid_amount": 100,
+    "fluid_namespace": "minecraft",
+    "fluid_name": "water"
+  },
+  "tool": {
+    "item": "foodmastermod:ladle"
+  },
+  "cookingTime": 300,
+  "output": {
+    "item": "minecraft:baked_potato"
+  }
+}
