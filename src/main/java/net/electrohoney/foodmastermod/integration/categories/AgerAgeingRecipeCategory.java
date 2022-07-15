@@ -1,4 +1,4 @@
-package net.electrohoney.foodmastermod.integration;
+package net.electrohoney.foodmastermod.integration.categories;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
@@ -12,11 +12,10 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.electrohoney.foodmastermod.FoodMaster;
 import net.electrohoney.foodmastermod.block.ModBlocks;
 import net.electrohoney.foodmastermod.block.entity.custom.AgerBlockEntity;
-import net.electrohoney.foodmastermod.recipe.AgerBlockRecipe;
+import net.electrohoney.foodmastermod.recipe.cooking.AgerBlockRecipe;
 import net.electrohoney.foodmastermod.screen.renderer.FluidStackRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -24,7 +23,6 @@ import net.minecraft.world.item.TooltipFlag;
 import javax.annotation.Nonnull;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 //bad idea but I hate to see those warnings!
