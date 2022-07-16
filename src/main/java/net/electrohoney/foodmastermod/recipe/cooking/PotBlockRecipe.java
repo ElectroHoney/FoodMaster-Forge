@@ -146,16 +146,16 @@ public class PotBlockRecipe implements Recipe<SimpleContainer> {
         public PotBlockRecipe fromJson(ResourceLocation id, JsonObject json) {
             ItemStack output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "output"));
 
-            int minTemperature = GsonHelper.getAsInt(json, "min_temperature");
-            int maxTemperature = GsonHelper.getAsInt(json, "max_temperature");
+            int minTemperature = GsonHelper.getAsInt(json, "minTemperature");
+            int maxTemperature = GsonHelper.getAsInt(json, "maxTemperature");
             JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
             NonNullList<Ingredient> inputs = NonNullList.withSize(ingredients.size(), Ingredient.EMPTY);
             for (int i = 0; i < ingredients.size(); i++) {
                 inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
             }
             JsonObject fluidJson = GsonHelper.getAsJsonObject(json, "fluid");
-            Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(GsonHelper.getAsString(fluidJson,"fluid_namespace"), GsonHelper.getAsString(fluidJson,"fluid_name")));
-            FluidStack fluidStack1 = new FluidStack(fluid, GsonHelper.getAsInt(fluidJson,"fluid_amount"));
+            Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(GsonHelper.getAsString(fluidJson,"fluidNamespace"), GsonHelper.getAsString(fluidJson,"fluidName")));
+            FluidStack fluidStack1 = new FluidStack(fluid, GsonHelper.getAsInt(fluidJson,"fluidAmount"));
             JsonObject toolJson = GsonHelper.getAsJsonObject(json, "tool");
             Ingredient tool = Ingredient.fromJson(toolJson);
 
