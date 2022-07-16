@@ -103,15 +103,15 @@ public class AgerBlockRecipe implements Recipe<SimpleContainer> {
             //Might be a "catalyst"
             Ingredient timePiece = Ingredient.fromJson(timePieceJson);
 
-            JsonObject inputFluidJson = GsonHelper.getAsJsonObject(json, "input_fluid");
-            Fluid inputFluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(GsonHelper.getAsString(inputFluidJson,"fluid_namespace"), GsonHelper.getAsString(inputFluidJson,"fluid_name")));
+            JsonObject inputFluidJson = GsonHelper.getAsJsonObject(json, "inputFluid");
+            Fluid inputFluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(GsonHelper.getAsString(inputFluidJson,"fluidNamespace"), GsonHelper.getAsString(inputFluidJson,"fluidName")));
             assert inputFluid != null;
-            FluidStack fluidStackInput = new FluidStack(inputFluid, GsonHelper.getAsInt(inputFluidJson,"fluid_amount"));
+            FluidStack fluidStackInput = new FluidStack(inputFluid, GsonHelper.getAsInt(inputFluidJson,"fluidAmount"));
 
-            JsonObject outputFluidJson = GsonHelper.getAsJsonObject(json, "output_fluid");
-            Fluid outputFluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(GsonHelper.getAsString(outputFluidJson,"fluid_namespace"), GsonHelper.getAsString(outputFluidJson,"fluid_name")));
+            JsonObject outputFluidJson = GsonHelper.getAsJsonObject(json, "outputFluid");
+            Fluid outputFluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(GsonHelper.getAsString(outputFluidJson,"fluidNamespace"), GsonHelper.getAsString(outputFluidJson,"fluidName")));
             assert outputFluid != null;
-            FluidStack fluidStackOutput = new FluidStack(outputFluid, GsonHelper.getAsInt(outputFluidJson,"fluid_amount"));
+            FluidStack fluidStackOutput = new FluidStack(outputFluid, GsonHelper.getAsInt(outputFluidJson,"fluidAmount"));
 
             return new AgerBlockRecipe(id, fluidStackOutput, fluidStackInput, timePiece);
         }
