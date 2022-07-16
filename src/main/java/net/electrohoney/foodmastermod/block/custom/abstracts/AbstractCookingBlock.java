@@ -1,7 +1,6 @@
 //package net.electrohoney.foodmastermod.block.custom.abstracts;
 //
 //import net.electrohoney.foodmastermod.block.entity.custom.AgerBlockEntity;
-//import net.electrohoney.foodmastermod.block.entity.custom.abstracts.AbstractCookingBlockEntity;
 //import net.minecraft.core.BlockPos;
 //import net.minecraft.server.level.ServerPlayer;
 //import net.minecraft.world.InteractionHand;
@@ -26,23 +25,14 @@
 //import net.minecraftforge.network.NetworkHooks;
 //import org.jetbrains.annotations.Nullable;
 //
-//public abstract class AbstractCookingBlock<CBE extends BlockEntity> extends BaseEntityBlock {
-//
-//
+//public abstract class AbstractCookingBlock extends BaseEntityBlock {
 //
 //    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 //
-//
-//    //needs to be overwritten
-//
 //    private static final VoxelShape SHAPE = Block.box(3, 3,3, 13, 13, 13);
 //
-//    private final Class<CBE> type;
-//
-//
-//    protected AbstractCookingBlock(Properties properties, Class<CBE> type) {
+//    protected AbstractCookingBlock(Properties properties) {
 //        super(properties);
-//        this.type = type;
 //    }
 //
 //    @Override
@@ -81,34 +71,18 @@
 //
 //    @Override
 //    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
-//        if (pState.getBlock() != pNewState.getBlock()) {
-//            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-//            if (type.isInstance(blockEntity)) {
-//                (type.cast(blockEntity)).drops();
-//            }
-//        }
 //        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
 //    }
 //
 //    @Nullable
 //    @Override
 //    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-//        Class<CBE> blockEntity = new Class<>(pPos, pState);
-//        return BlockEntity.class.cast(blockEntity);
+//        return null;
 //    }
 //
 //    @Override
 //    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos,
 //                                 Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-//        if (!pLevel.isClientSide()) {
-//            BlockEntity entity = pLevel.getBlockEntity(pPos);
-//            if(type.isInstance(entity)) {
-//                NetworkHooks.openGui(((ServerPlayer)pPlayer), (MenuProvider) type.cast(entity), pPos);
-//            } else {
-//                throw new IllegalStateException("Our Container provider is missing!");
-//            }
-//        }
-//
 //        return InteractionResult.sidedSuccess(pLevel.isClientSide());
 //    }
 //

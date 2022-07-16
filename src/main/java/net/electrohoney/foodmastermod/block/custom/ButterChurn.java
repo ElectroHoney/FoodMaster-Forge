@@ -19,10 +19,14 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.stream.Stream;
 
 public class ButterChurn extends BaseEntityBlock {
 
@@ -32,7 +36,11 @@ public class ButterChurn extends BaseEntityBlock {
         super(properties);
     }
     //needs tweaking
-    private static final VoxelShape SHAPE = Block.box(3, 3,3, 13, 13, 13);
+    private static final VoxelShape SHAPE = Stream.of(
+            Block.box(3, 9, 3, 13, 18, 13),
+            Block.box(2, 0, 2, 14, 9, 14),
+            Block.box(7, 18, 7, 9, 28, 9)
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
