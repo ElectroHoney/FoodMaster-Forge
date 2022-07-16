@@ -3,14 +3,14 @@
   "timePiece": {
     "item": "minecraft:clock"
   },
-  "input_fluid": {
-    "fluid_amount": 1000,
-    "fluid_namespace": "minecraft",
-    "fluid_name": "water"
+  "inputFluid": {
+    "fluidAmount": 1000,
+    "fluidNamespace": "minecraft",
+    "fluidName": "water"
   },
-  "output_fluid": {
-    "fluid_amount": 1000,
-    "fluid_namespace": "minecraft",
-    "fluid_name": "lava"
+  "outputFluid": {
+    "fluidAmount": 1000,
+    "fluidNamespace": "minecraft",
+    "fluidName": "lava"
   }
 }

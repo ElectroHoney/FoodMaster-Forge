@@ -5,12 +5,12 @@
       "item": "minecraft:beef"
     }
   ],
-  "min_temperature": 10,
-  "max_temperature": 30,
+  "minTemperature": 10,
+  "maxTemperature": 30,
   "fluid": {
-    "fluid_amount": 500,
-    "fluid_namespace": "minecraft",
-    "fluid_name": "water"
+    "fluidAmount": 500,
+    "fluidNamespace": "minecraft",
+    "fluidName": "water"
   },
   "cookingTime": 300,
   "output": {

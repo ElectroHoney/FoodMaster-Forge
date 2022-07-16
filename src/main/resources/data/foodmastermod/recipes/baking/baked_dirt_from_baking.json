@@ -2,13 +2,13 @@
   "type": "foodmastermod:baking",
   "ingredients": [
     {
-      "item": "minecraft:potato"
+      "item": "minecraft:podzol"
     }
   ],
-  "minTemperature": 10,
-  "maxTemperature": 30,
+  "minTemperature": 123,
+  "maxTemperature": 354,
   "fluid": {
-    "fluidAmount": 100,
+    "fluidAmount": 1670,
     "fluidNamespace": "minecraft",
     "fluidName": "water"
   },
@@ -17,6 +17,6 @@
   },
   "cookingTime": 300,
   "output": {
-    "item": "minecraft:baked_potato"
+    "item": "minecraft:dirt"
   }
 }

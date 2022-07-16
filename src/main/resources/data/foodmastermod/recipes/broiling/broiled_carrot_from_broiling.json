@@ -1,12 +1,12 @@
 {
-  "type": "foodmastermod:boiling",
+  "type": "foodmastermod:broiling",
   "ingredients": [
     {
-      "item": "minecraft:potato"
+      "item": "minecraft:carrot"
     }
   ],
-  "minTemperature": 100,
-  "maxTemperature": 150,
+  "minTemperature": 10,
+  "maxTemperature": 30,
   "fluid": {
     "fluidAmount": 100,
     "fluidNamespace": "minecraft",
@@ -15,6 +15,7 @@
   "tool": {
     "item": "foodmastermod:ladle"
   },
+  "cookingTime": 300,
   "output": {
     "item": "minecraft:baked_potato"
   }
