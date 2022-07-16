@@ -1,9 +1,8 @@
 package net.electrohoney.foodmastermod.block.entity.custom;
 
 import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
-import net.electrohoney.foodmastermod.recipe.ModRecipeTypes;
-import net.electrohoney.foodmastermod.recipe.ModRecipes;
-import net.electrohoney.foodmastermod.recipe.cooking.BakerBlockRecipe;
+import net.electrohoney.foodmastermod.recipe.cooking.baker.BakerBlockRecipe;
+import net.electrohoney.foodmastermod.recipe.cooking.baker.BroilerBlockRecipe;
 import net.electrohoney.foodmastermod.screen.menus.BakerBlockMenu;
 import net.electrohoney.foodmastermod.util.networking.ModMessages;
 import net.electrohoney.foodmastermod.util.networking.packets.PacketSyncOneFluidStackToClient;
@@ -26,7 +25,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
@@ -43,6 +41,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 import java.util.Optional;
 
 public class BakerBlockEntity extends BlockEntity implements MenuProvider {
@@ -237,18 +236,26 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
             --entity.bakeTime;
         }
 
+        if (isBroiling(entity)) {
+            --entity.broilTime;
+        }
+
         Level level = entity.level;
         SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
         for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
             inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
         }
 
-        Optional<BakerBlockRecipe> match = level.getRecipeManager()
+        Optional<BakerBlockRecipe> matchBake = level.getRecipeManager()
                 .getRecipeFor(BakerBlockRecipe.Type.INSTANCE, inventory, level);
 
-        if(!isBaking(entity) && match.isPresent() && canInsertAmountIntoOutputSlot(inventory)
-                && canInsertItemIntoOutputSlot(inventory, match.get().getResultItem())
-                && hasRecipeFluidInTank(entity, match) && isInTemperatureRange(entity, match)){
+        Optional<BroilerBlockRecipe> matchBroil = level.getRecipeManager()
+                .getRecipeFor(BroilerBlockRecipe.Type.INSTANCE, inventory, level);
+
+        if(!isBaking(entity) && matchBake.isPresent() && canInsertAmountIntoOutputSlot(inventory)
+                && canInsertItemIntoOutputSlot(inventory, matchBake.get().getResultItem())
+                && hasRecipeFluidInTank(entity, matchBake) && isInTemperatureRangeBaker(entity, matchBake))
+        {
             entity.bakeTime = ForgeHooks.getBurnTime(inventory.getItem(BAKE_SLOT_ID), RecipeType.SMELTING);
             if(entity.bakeTime > 0 && entity.itemHandler.getStackInSlot(BAKE_SLOT_ID)!=ItemStack.EMPTY){
                 entity.itemHandler.extractItem(BAKE_SLOT_ID, 1, false);
@@ -256,10 +263,26 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
             entity.bakeDuration = entity.bakeTime;
         }
 
-        return match.isPresent() && canInsertAmountIntoOutputSlot(inventory)
-                && canInsertItemIntoOutputSlot(inventory, match.get().getResultItem())
-                //todo add or for broiling
-                && hasRecipeFluidInTank(entity, match) && isInTemperatureRange(entity, match) && isBaking(entity);
+        if(!isBroiling(entity) && matchBroil.isPresent() && canInsertAmountIntoOutputSlot(inventory)
+                && canInsertItemIntoOutputSlot(inventory, matchBroil.get().getResultItem())
+                && hasRecipeFluidInTankBroiler(entity, matchBroil) && isInTemperatureRangeBroiler(entity, matchBroil))
+        {
+            entity.broilTime = ForgeHooks.getBurnTime(inventory.getItem(BROIL_SLOT_ID), RecipeType.SMELTING);
+            if(entity.broilTime > 0 && entity.itemHandler.getStackInSlot(BROIL_SLOT_ID)!=ItemStack.EMPTY){
+                entity.itemHandler.extractItem(BROIL_SLOT_ID, 1, false);
+            }
+            entity.broilDuration = entity.broilTime;
+        }
+
+        return (matchBake.isPresent() && canInsertAmountIntoOutputSlot(inventory)
+                && canInsertItemIntoOutputSlot(inventory, matchBake.get().getResultItem())
+                && hasRecipeFluidInTank(entity, matchBake) && isInTemperatureRangeBaker(entity, matchBake) && isBaking(entity))
+
+                ||
+
+                (matchBroil.isPresent() && canInsertAmountIntoOutputSlot(inventory)
+                        && canInsertItemIntoOutputSlot(inventory, matchBroil.get().getResultItem())
+                        && hasRecipeFluidInTankBroiler(entity, matchBroil) && isInTemperatureRangeBroiler(entity, matchBroil) && isBroiling(entity));
     }
 
     private static boolean isBaking(BakerBlockEntity entity) {
@@ -289,7 +312,15 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
         return ForgeHooks.getBurnTime(inventory.getItem(BAKE_SLOT_ID), RecipeType.SMELTING) > 0;
     }
 
-    private static boolean isInTemperatureRange(BakerBlockEntity entity, Optional<BakerBlockRecipe> match){
+    private static boolean isInTemperatureRangeBaker(BakerBlockEntity entity, Optional<BakerBlockRecipe> match){
+        if(match.isPresent()){
+            int minTemperature = match.get().minTemperature;
+            int maxTemperature = match.get().maxTemperature;
+            return minTemperature <= entity.temperature && entity.temperature <= maxTemperature;
+        }
+        else return false;
+    }
+    private static boolean isInTemperatureRangeBroiler(BakerBlockEntity entity, Optional<BroilerBlockRecipe> match){
         if(match.isPresent()){
             int minTemperature = match.get().minTemperature;
             int maxTemperature = match.get().maxTemperature;
@@ -303,7 +334,10 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
                 && entity.getFluidStack().getFluid().equals(recipe.get().fluidStack.getFluid());
     }
 
-
+    private static boolean hasRecipeFluidInTankBroiler(BakerBlockEntity entity, Optional<BroilerBlockRecipe> recipe) {
+        return entity.getFluidStack().getAmount() >= recipe.get().fluidStack.getAmount()
+                && entity.getFluidStack().getFluid().equals(recipe.get().fluidStack.getFluid());
+    }
 
     private static void craftItem(BakerBlockEntity entity) {
         Level level = entity.level;
@@ -312,19 +346,30 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
             inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
         }
 
-        Optional<BakerBlockRecipe> match = level.getRecipeManager()
+        Optional<BakerBlockRecipe> matchBaker = level.getRecipeManager()
                 .getRecipeFor(BakerBlockRecipe.Type.INSTANCE, inventory, level);
-        if(match.isPresent()) {
-            //todo remember to change this
-            for(int i = 0;i <= 6; ++i){
+        Optional<BroilerBlockRecipe> matchBroiler = level.getRecipeManager()
+                .getRecipeFor(BroilerBlockRecipe.Type.INSTANCE, inventory, level);
+        if(matchBaker.isPresent()) {
+            for(int i = 0;i < 6; ++i){
                 if(entity.itemHandler.getStackInSlot(i)!=ItemStack.EMPTY){
                     entity.itemHandler.extractItem(i, 1, false);
                 }
             }
-            entity.itemHandler.setStackInSlot(RESULT_SLOT_ID, new ItemStack(match.get().getResultItem().getItem(),
+            entity.itemHandler.setStackInSlot(RESULT_SLOT_ID, new ItemStack(matchBaker.get().getResultItem().getItem(),
                     entity.itemHandler.getStackInSlot(RESULT_SLOT_ID).getCount() + 1));
-            //todo remember to remove this if it becomes annoying
-            entity.fluidTank.drain(match.get().getFluidStack().getAmount(), IFluidHandler.FluidAction.EXECUTE);
+            entity.fluidTank.drain(matchBaker.get().getFluidStack().getAmount(), IFluidHandler.FluidAction.EXECUTE);
+            entity.resetProgress();
+        }
+        else if(matchBroiler.isPresent()){
+            for(int i = 0;i < 6; ++i){
+                if(entity.itemHandler.getStackInSlot(i)!=ItemStack.EMPTY){
+                    entity.itemHandler.extractItem(i, 1, false);
+                }
+            }
+            entity.itemHandler.setStackInSlot(RESULT_SLOT_ID, new ItemStack(matchBroiler.get().getResultItem().getItem(),
+                    entity.itemHandler.getStackInSlot(RESULT_SLOT_ID).getCount() + 1));
+            entity.fluidTank.drain(matchBroiler.get().getFluidStack().getAmount(), IFluidHandler.FluidAction.EXECUTE);
             entity.resetProgress();
         }
     }

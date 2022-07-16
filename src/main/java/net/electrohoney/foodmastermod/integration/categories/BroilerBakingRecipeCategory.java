@@ -13,6 +13,7 @@ import net.electrohoney.foodmastermod.FoodMaster;
 import net.electrohoney.foodmastermod.block.ModBlocks;
 import net.electrohoney.foodmastermod.block.entity.custom.BakerBlockEntity;
 import net.electrohoney.foodmastermod.recipe.cooking.baker.BakerBlockRecipe;
+import net.electrohoney.foodmastermod.recipe.cooking.baker.BroilerBlockRecipe;
 import net.electrohoney.foodmastermod.screen.renderer.FluidStackRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -25,12 +26,14 @@ import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 
 import javax.annotation.Nonnull;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 //bad idea but I hate to see those warnings!
 @SuppressWarnings("removal")
-public class BakerBakingRecipeCategory implements IRecipeCategory<BakerBlockRecipe> {
-    public final static ResourceLocation UID = new ResourceLocation(FoodMaster.MOD_ID, "baking");
+public class BroilerBakingRecipeCategory implements IRecipeCategory<BroilerBlockRecipe> {
+    public final static ResourceLocation UID = new ResourceLocation(FoodMaster.MOD_ID, "broiling");
     public final static ResourceLocation TEXTURE =
             new ResourceLocation(FoodMaster.MOD_ID, "textures/gui/baker_gui.png");
 
@@ -46,7 +49,7 @@ public class BakerBakingRecipeCategory implements IRecipeCategory<BakerBlockReci
 
 
 
-    public BakerBakingRecipeCategory(IGuiHelper helper) {
+    public BroilerBakingRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 176, 95+20);
 
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(ModBlocks.BAKER_BLOCK.get()));
@@ -65,13 +68,13 @@ public class BakerBakingRecipeCategory implements IRecipeCategory<BakerBlockReci
     }
 
     @Override
-    public Class<? extends BakerBlockRecipe> getRecipeClass() {
-        return BakerBlockRecipe.class;
+    public Class<? extends BroilerBlockRecipe> getRecipeClass() {
+        return BroilerBlockRecipe.class;
     }
 
     @Override
     public Component getTitle() {
-        return new TextComponent("Baking");
+        return new TextComponent("Broiling");
     }
 
     @Override
@@ -87,7 +90,7 @@ public class BakerBakingRecipeCategory implements IRecipeCategory<BakerBlockReci
 
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull BakerBlockRecipe recipe, @Nonnull IFocusGroup focusGroup) {
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, @Nonnull BroilerBlockRecipe recipe, @Nonnull IFocusGroup focusGroup) {
 
         int ingredientIndex = 0;
         for(int i = 0; i<=2; i++){
@@ -108,7 +111,7 @@ public class BakerBakingRecipeCategory implements IRecipeCategory<BakerBlockReci
             fuelStacks.add(new ItemStack(fuels.get(i), 1));
         }
 
-        builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 62, 94).addItemStacks(fuelStacks);
+        builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 62, 6).addItemStacks(fuelStacks);
 
         if(recipe.getUtensil()!=null){
             builder.addSlot(RecipeIngredientRole.CATALYST, 141,71).addIngredients(recipe.getUtensil());
@@ -118,7 +121,7 @@ public class BakerBakingRecipeCategory implements IRecipeCategory<BakerBlockReci
     }
 
     @Override
-    public void draw(BakerBlockRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
+    public void draw(BroilerBlockRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY) {
         if(recipe.maxTemperature > 0){
             int temperatureBarHeight = 55; //pixels, using I in comments is fun. I did stuff lol
             int maxPossibleTemperature = 500; //degrees? I just set an arbitrary amount identical to the block entity, also it has nothing to do with the maxTemperature from the recipe
@@ -136,7 +139,7 @@ public class BakerBakingRecipeCategory implements IRecipeCategory<BakerBlockReci
     }
 
     @Override
-    public List<Component> getTooltipStrings(BakerBlockRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
+    public List<Component> getTooltipStrings(BroilerBlockRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         int temperatureBarHeight = 55; //pixels, using I in comments is fun. I did stuff lol
         int maxPossibleTemperature = 500; //degrees? I just set an arbitrary amount identical to the block entity, also it has nothing to do with the maxTemperature from the recipe
         int tMax = recipe.maxTemperature * temperatureBarHeight / maxPossibleTemperature; //i stole this from my menu function

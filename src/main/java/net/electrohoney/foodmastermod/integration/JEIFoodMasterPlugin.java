@@ -8,10 +8,12 @@ import net.electrohoney.foodmastermod.FoodMaster;
 import net.electrohoney.foodmastermod.block.ModBlocks;
 import net.electrohoney.foodmastermod.integration.categories.AgerAgeingRecipeCategory;
 import net.electrohoney.foodmastermod.integration.categories.BakerBakingRecipeCategory;
+import net.electrohoney.foodmastermod.integration.categories.BroilerBakingRecipeCategory;
 import net.electrohoney.foodmastermod.integration.categories.PotBoilingRecipeCategory;
 import net.electrohoney.foodmastermod.recipe.cooking.AgerBlockRecipe;
-import net.electrohoney.foodmastermod.recipe.cooking.BakerBlockRecipe;
+import net.electrohoney.foodmastermod.recipe.cooking.baker.BakerBlockRecipe;
 import net.electrohoney.foodmastermod.recipe.cooking.PotBlockRecipe;
+import net.electrohoney.foodmastermod.recipe.cooking.baker.BroilerBlockRecipe;
 import net.electrohoney.foodmastermod.screen.screens.AgerBlockScreen;
 import net.electrohoney.foodmastermod.screen.screens.BakerBlockScreen;
 import net.electrohoney.foodmastermod.screen.screens.PotBlockScreen;
@@ -41,6 +43,9 @@ public class JEIFoodMasterPlugin implements IModPlugin {
 
         registration.addRecipeCategories(new
                 BakerBakingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+
+        registration.addRecipeCategories(new
+                BroilerBakingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
@@ -50,6 +55,7 @@ public class JEIFoodMasterPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.itemsList.get(1).get()),new RecipeType<>(AgerAgeingRecipeCategory.UID, AgerBlockRecipe.class));
 
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.itemsList.get(2).get()),new RecipeType<>(BakerBakingRecipeCategory.UID, BakerBlockRecipe.class));
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.itemsList.get(2).get()),new RecipeType<>(BroilerBakingRecipeCategory.UID, BroilerBlockRecipe.class));
     }
 
     @Override
@@ -59,6 +65,7 @@ public class JEIFoodMasterPlugin implements IModPlugin {
         registration.addRecipeClickArea(AgerBlockScreen.class, 79, 2, 16, 16, new RecipeType<>(AgerAgeingRecipeCategory.UID, AgerBlockRecipe.class));
 
         registration.addRecipeClickArea(BakerBlockScreen.class, 107, 48-15, 23, 15, new RecipeType<>(BakerBakingRecipeCategory.UID, BakerBlockRecipe.class));
+        registration.addRecipeClickArea(BakerBlockScreen.class, 107, 48-15, 23, 15, new RecipeType<>(BroilerBakingRecipeCategory.UID, BroilerBlockRecipe.class));
     }
 
 //    @Override
@@ -76,11 +83,13 @@ public class JEIFoodMasterPlugin implements IModPlugin {
         List<AgerBlockRecipe> agerRecipes = rm.getAllRecipesFor(AgerBlockRecipe.Type.INSTANCE);
 
         List<BakerBlockRecipe> bakerRecipes = rm.getAllRecipesFor(BakerBlockRecipe.Type.INSTANCE);
+        List<BroilerBlockRecipe> broilerRecipes = rm.getAllRecipesFor(BroilerBlockRecipe.Type.INSTANCE);
 
         registration.addRecipes(new RecipeType<>(PotBoilingRecipeCategory.UID, PotBlockRecipe.class), potRecipes);
 
         registration.addRecipes(new RecipeType<>(AgerAgeingRecipeCategory.UID, AgerBlockRecipe.class), agerRecipes);
 
         registration.addRecipes(new RecipeType<>(BakerBakingRecipeCategory.UID, BakerBlockRecipe.class), bakerRecipes);
+        registration.addRecipes(new RecipeType<>(BroilerBakingRecipeCategory.UID, BroilerBlockRecipe.class), broilerRecipes);
     }
 }

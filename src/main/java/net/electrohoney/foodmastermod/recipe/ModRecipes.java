@@ -3,8 +3,9 @@ package net.electrohoney.foodmastermod.recipe;
 
 import net.electrohoney.foodmastermod.FoodMaster;
 import net.electrohoney.foodmastermod.recipe.cooking.AgerBlockRecipe;
-import net.electrohoney.foodmastermod.recipe.cooking.BakerBlockRecipe;
+import net.electrohoney.foodmastermod.recipe.cooking.baker.BakerBlockRecipe;
 import net.electrohoney.foodmastermod.recipe.cooking.PotBlockRecipe;
+import net.electrohoney.foodmastermod.recipe.cooking.baker.BroilerBlockRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -23,6 +24,8 @@ public class ModRecipes {
 
     public static final RegistryObject<RecipeSerializer<BakerBlockRecipe>> BAKER_BAKING_SERIALIZER =
             SERIALIZERS.register("baking", ()->BakerBlockRecipe.Serializer.INSTANCE);
+    public static final RegistryObject<RecipeSerializer<BroilerBlockRecipe>> BAKER_BROILING_SERIALIZER =
+            SERIALIZERS.register("broiling", ()-> BroilerBlockRecipe.Serializer.INSTANCE);
 
     public static void register(IEventBus eventBus){
         SERIALIZERS.register(eventBus);

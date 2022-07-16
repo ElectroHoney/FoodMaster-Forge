@@ -89,6 +89,9 @@ public class BakerBlockScreen extends AbstractContainerScreen<BakerBlockMenu> {
         int f = this.menu.getScaledBakeTime();
         blit(pPoseStack, x + 63, y+91 - f, 176, 13-f, 14 , f);
 
+        int b = this.menu.getScaledBroilTime();
+        blit(pPoseStack, x + 63, y+24+14 - b, 191, 13-b, 14 , b);
+
         if(menu.isCrafting()){
             //x and y of arrow, offset of arrow progress, vertical offset of progress, width of image, height of image
             blit(pPoseStack, x + 107, y + 48, 176, 14,  menu.getScaledProgress(), 16);

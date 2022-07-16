@@ -103,6 +103,14 @@ public class BakerBlockMenu extends AbstractContainerMenu {
         return (bakeDuration != 0 && bakeTime !=0) ? bakeTime * progressFlameSize / bakeDuration : 0;
     }
 
+    public int getScaledBroilTime(){
+        int broilTime = this.data.get(6);
+        int broilDuration = this.data.get(7);
+        int progressFlameSize = 14;//14 //Flame height/length(in the video it was downwards mine is upwards) in pixels
+
+        //System.out.print("Hey progress! " + ((maxProgress != 0 && progress !=0) ? progress * progressArrowSize / maxProgress : 0));
+        return (broilDuration != 0 && broilTime !=0) ? broilTime * progressFlameSize / broilDuration : 0;
+    }
     public int getTemperature(){
         return this.data.get(2);
     }

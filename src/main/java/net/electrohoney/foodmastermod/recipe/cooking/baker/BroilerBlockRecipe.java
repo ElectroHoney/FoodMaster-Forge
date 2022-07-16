@@ -1,4 +1,4 @@
-package net.electrohoney.foodmastermod.recipe.cooking;
+package net.electrohoney.foodmastermod.recipe.cooking.baker;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -18,8 +18,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 
-public class BakerBlockRecipe implements Recipe<SimpleContainer> {
-//    @todo I have to modify the recipe so its not shapeless
+public class BroilerBlockRecipe implements Recipe<SimpleContainer> {
     private final ResourceLocation id;
     private final ItemStack output;
     private final NonNullList<Ingredient> recipeIngredients;
@@ -32,7 +31,7 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
 
     private final int cookingTime;
 
-    public BakerBlockRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems, int minTemperature, int maxTemperature, FluidStack fluidStack, Ingredient tool, int cookingTime) {
+    public BroilerBlockRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems, int minTemperature, int maxTemperature, FluidStack fluidStack, Ingredient tool, int cookingTime) {
         this.id = id;
         this.output = output;
         this.recipeIngredients = recipeItems;
@@ -42,6 +41,7 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
         this.tool = tool;
         this.cookingTime = cookingTime;
     }
+
     public Ingredient getUtensil() {
         return this.tool;
     }
@@ -130,33 +130,33 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
     public RecipeType<?> getType() {
         return Type.INSTANCE;
     }
-    public static class Type implements RecipeType<BakerBlockRecipe>{
+    public static class Type implements RecipeType<BroilerBlockRecipe>{
         private Type(){}
-            public static final Type INSTANCE = new Type();
-            public static final String ID = "baking";
+        public static final Type INSTANCE = new Type();
+        public static final String ID = "broiling";
     }
 
     //thanks a lot Kaupenjoe!! :)
     //a modified version of this from https://github.com/Tutorials-By-Kaupenjoe/Forge-Tutorial-1.18.1/blob/45-recipeTypes/src/main/java/net/kaupenjoe/tutorialmod/recipe/GemCuttingStationRecipe.java
-    public static class Serializer implements RecipeSerializer<BakerBlockRecipe> {
+    public static class Serializer implements RecipeSerializer<BroilerBlockRecipe> {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID =
-                new ResourceLocation(FoodMaster.MOD_ID,"baking");
+                new ResourceLocation(FoodMaster.MOD_ID,"broiling");
 
         @Override
-        public BakerBlockRecipe fromJson(ResourceLocation id, JsonObject json) {
+        public BroilerBlockRecipe fromJson(ResourceLocation id, JsonObject json) {
             ItemStack output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "output"));
 
-            int minTemperature = GsonHelper.getAsInt(json, "min_temperature");
-            int maxTemperature = GsonHelper.getAsInt(json, "max_temperature");
+            int minTemperature = GsonHelper.getAsInt(json, "minTemperature");
+            int maxTemperature = GsonHelper.getAsInt(json, "maxTemperature");
             JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
             NonNullList<Ingredient> inputs = NonNullList.withSize(ingredients.size(), Ingredient.EMPTY);
             for (int i = 0; i < ingredients.size(); i++) {
                 inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
             }
             JsonObject fluidJson = GsonHelper.getAsJsonObject(json, "fluid");
-            Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(GsonHelper.getAsString(fluidJson,"fluid_namespace"), GsonHelper.getAsString(fluidJson,"fluid_name")));
-            FluidStack fluidStack1 = new FluidStack(fluid, GsonHelper.getAsInt(fluidJson,"fluid_amount"));
+            Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(GsonHelper.getAsString(fluidJson,"fluidNamespace"), GsonHelper.getAsString(fluidJson,"fluidName")));
+            FluidStack fluidStack1 = new FluidStack(fluid, GsonHelper.getAsInt(fluidJson,"fluidAmount"));
 
             JsonObject toolJson = GsonHelper.getAsJsonObject(json, "tool", null);
             //The utensil is optional
@@ -168,11 +168,11 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
             int cookingTime = GsonHelper.getAsInt(json, "cookingTime", 200);
 
             //System.out.println("fluid->" + fluid + "tool" + tool + "cooking" + cookingTime);
-            return new BakerBlockRecipe(id, output, inputs, minTemperature, maxTemperature, fluidStack1, tool, cookingTime);
+            return new BroilerBlockRecipe(id, output, inputs, minTemperature, maxTemperature, fluidStack1, tool, cookingTime);
         }
 
         @Override
-        public BakerBlockRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
+        public BroilerBlockRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
             NonNullList<Ingredient> inputs = NonNullList.withSize(buf.readInt(), Ingredient.EMPTY);
 
             for (int i = 0; i < inputs.size(); i++) {
@@ -185,11 +185,11 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
             int cookingTime = buf.readInt();
             FluidStack fluidStack1 = buf.readFluidStack();
             Ingredient tool = Ingredient.fromNetwork(buf);
-            return new BakerBlockRecipe(id, output, inputs, minTemperature, maxTemperature, fluidStack1, tool, cookingTime);
+            return new BroilerBlockRecipe(id, output, inputs, minTemperature, maxTemperature, fluidStack1, tool, cookingTime);
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf buf, BakerBlockRecipe recipe) {
+        public void toNetwork(FriendlyByteBuf buf, BroilerBlockRecipe recipe) {
             buf.writeInt(recipe.getIngredients().size());
             for (Ingredient ing : recipe.getIngredients()) {
                 ing.toNetwork(buf);
@@ -224,3 +224,4 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
         }
     }
 }
+
