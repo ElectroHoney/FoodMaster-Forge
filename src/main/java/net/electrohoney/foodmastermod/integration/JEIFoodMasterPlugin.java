@@ -6,16 +6,15 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.*;
 import net.electrohoney.foodmastermod.FoodMaster;
 import net.electrohoney.foodmastermod.block.ModBlocks;
-import net.electrohoney.foodmastermod.integration.categories.AgerAgeingRecipeCategory;
-import net.electrohoney.foodmastermod.integration.categories.BakerBakingRecipeCategory;
-import net.electrohoney.foodmastermod.integration.categories.BroilerBakingRecipeCategory;
-import net.electrohoney.foodmastermod.integration.categories.PotBoilingRecipeCategory;
+import net.electrohoney.foodmastermod.integration.categories.*;
 import net.electrohoney.foodmastermod.recipe.cooking.AgerBlockRecipe;
+import net.electrohoney.foodmastermod.recipe.cooking.ButterChurnBlockRecipe;
 import net.electrohoney.foodmastermod.recipe.cooking.baker.BakerBlockRecipe;
 import net.electrohoney.foodmastermod.recipe.cooking.PotBlockRecipe;
 import net.electrohoney.foodmastermod.recipe.cooking.baker.BroilerBlockRecipe;
 import net.electrohoney.foodmastermod.screen.screens.AgerBlockScreen;
 import net.electrohoney.foodmastermod.screen.screens.BakerBlockScreen;
+import net.electrohoney.foodmastermod.screen.screens.ButterChurnBlockScreen;
 import net.electrohoney.foodmastermod.screen.screens.PotBlockScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -46,16 +45,21 @@ public class JEIFoodMasterPlugin implements IModPlugin {
 
         registration.addRecipeCategories(new
                 BroilerBakingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+
+        registration.addRecipeCategories(new
+                ChurnerChurningRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(new ItemStack(ModBlocks.itemsList.get(0).get()),new RecipeType<>(PotBoilingRecipeCategory.UID, PotBlockRecipe.class));
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.POT_BLOCK.get()),new RecipeType<>(PotBoilingRecipeCategory.UID, PotBlockRecipe.class));
         //this is the order of the block registration in Mod Blocks
-        registration.addRecipeCatalyst(new ItemStack(ModBlocks.itemsList.get(1).get()),new RecipeType<>(AgerAgeingRecipeCategory.UID, AgerBlockRecipe.class));
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.AGER_BLOCK.get()),new RecipeType<>(AgerAgeingRecipeCategory.UID, AgerBlockRecipe.class));
 
-        registration.addRecipeCatalyst(new ItemStack(ModBlocks.itemsList.get(2).get()),new RecipeType<>(BakerBakingRecipeCategory.UID, BakerBlockRecipe.class));
-        registration.addRecipeCatalyst(new ItemStack(ModBlocks.itemsList.get(2).get()),new RecipeType<>(BroilerBakingRecipeCategory.UID, BroilerBlockRecipe.class));
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.BAKER_BLOCK.get()),new RecipeType<>(BakerBakingRecipeCategory.UID, BakerBlockRecipe.class));
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.BAKER_BLOCK.get()),new RecipeType<>(BroilerBakingRecipeCategory.UID, BroilerBlockRecipe.class));
+
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.BUTTER_CHURN.get()),new RecipeType<>(ChurnerChurningRecipeCategory.UID, ButterChurnBlockRecipe.class));
     }
 
     @Override
@@ -66,6 +70,8 @@ public class JEIFoodMasterPlugin implements IModPlugin {
 
         registration.addRecipeClickArea(BakerBlockScreen.class, 107, 48-15, 23, 15, new RecipeType<>(BakerBakingRecipeCategory.UID, BakerBlockRecipe.class));
         registration.addRecipeClickArea(BakerBlockScreen.class, 107, 48-15, 23, 15, new RecipeType<>(BroilerBakingRecipeCategory.UID, BroilerBlockRecipe.class));
+
+        registration.addRecipeClickArea(ButterChurnBlockScreen.class, 98, 37, 12, 27, new RecipeType<>(ChurnerChurningRecipeCategory.UID, ButterChurnBlockRecipe.class));
     }
 
 //    @Override
@@ -85,11 +91,15 @@ public class JEIFoodMasterPlugin implements IModPlugin {
         List<BakerBlockRecipe> bakerRecipes = rm.getAllRecipesFor(BakerBlockRecipe.Type.INSTANCE);
         List<BroilerBlockRecipe> broilerRecipes = rm.getAllRecipesFor(BroilerBlockRecipe.Type.INSTANCE);
 
+        List<ButterChurnBlockRecipe> churningRecipes = rm.getAllRecipesFor(ButterChurnBlockRecipe.Type.INSTANCE);
+
         registration.addRecipes(new RecipeType<>(PotBoilingRecipeCategory.UID, PotBlockRecipe.class), potRecipes);
 
         registration.addRecipes(new RecipeType<>(AgerAgeingRecipeCategory.UID, AgerBlockRecipe.class), agerRecipes);
 
         registration.addRecipes(new RecipeType<>(BakerBakingRecipeCategory.UID, BakerBlockRecipe.class), bakerRecipes);
         registration.addRecipes(new RecipeType<>(BroilerBakingRecipeCategory.UID, BroilerBlockRecipe.class), broilerRecipes);
+
+        registration.addRecipes(new RecipeType<>(ChurnerChurningRecipeCategory.UID, ButterChurnBlockRecipe.class), churningRecipes);
     }
 }
