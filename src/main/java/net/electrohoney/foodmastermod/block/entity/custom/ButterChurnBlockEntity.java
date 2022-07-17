@@ -1,7 +1,9 @@
 package net.electrohoney.foodmastermod.block.entity.custom;
 
 import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
+import net.electrohoney.foodmastermod.recipe.cooking.ButterChurnBlockRecipe;
 import net.electrohoney.foodmastermod.recipe.cooking.PotBlockRecipe;
+import net.electrohoney.foodmastermod.screen.menus.ButterChurnBlockMenu;
 import net.electrohoney.foodmastermod.screen.menus.PotBlockMenu;
 import net.electrohoney.foodmastermod.util.networking.ModMessages;
 import net.electrohoney.foodmastermod.util.networking.packets.PacketSyncOneFluidStackToClient;
@@ -41,16 +43,16 @@ import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public class ButterChurnBlockEntity extends BlockEntity implements MenuProvider {
-    public final static int POT_ENTITY_CONTAINER_SIZE = 12;
-    public final static int POT_MAX_FLUID_CAPACITY = 4000;
-    private final ItemStackHandler itemHandler = new ItemStackHandler(POT_ENTITY_CONTAINER_SIZE){
+    public final static int CHURN_ENTITY_CONTAINER_SIZE = 1;
+    public final static int CHURN_MAX_FLUID_CAPACITY = 16000;
+    private final ItemStackHandler itemHandler = new ItemStackHandler(CHURN_ENTITY_CONTAINER_SIZE){
         @Override
         protected void onContentsChanged(int slot){
             setChanged();
         }
     };
 
-    private final FluidTank fluidTank = new FluidTank(POT_MAX_FLUID_CAPACITY){
+    private final FluidTank fluidTank = new FluidTank(CHURN_MAX_FLUID_CAPACITY){
         @Override
         protected void onContentsChanged() {
             setChanged();
@@ -66,37 +68,19 @@ public class ButterChurnBlockEntity extends BlockEntity implements MenuProvider 
     private LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
 
     protected final ContainerData data;
-
-    public static final int UTENSIL_SLOT_ID = 10;
-    //public static final int RECIPE_SLOT_ID = 2;
-    private static final int WATER_SLOT_ID = 0;
-    private static final int RESULT_SLOT_ID = 11;
+    private static final int RESULT_SLOT_ID = 0;
 
     private int progress = 0;
     private int maxProgress = 72;
 
-    public int getTemperature() {
-        return temperature;
-    }
-
-    //my own variables
-    private int temperature = 25;
-    private int minTemperature = 25;
-    private int maxTemperature = 200;
-
-    public static final int POT_DATA_SIZE = 5;
-    private int fluidFillAmount = 0;
+    public static final int CHURN_DATA_SIZE = 2;
     public ButterChurnBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
-        super(ModBlockEntities.POT_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
-        //@todo change how this works, this fields are only saved in the server
+        super(ModBlockEntities.BUTTER_CHURN_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
         this.data = new ContainerData() {
             public int get(int index) {
                 switch (index) {
                     case 0: return ButterChurnBlockEntity.this.progress;
                     case 1: return ButterChurnBlockEntity.this.maxProgress;
-                    case 2: return ButterChurnBlockEntity.this.temperature;
-                    case 3: return ButterChurnBlockEntity.this.maxTemperature;
-                    case 4: return ButterChurnBlockEntity.this.fluidFillAmount;
                     default: return 0;
                 }
             }
@@ -104,16 +88,12 @@ public class ButterChurnBlockEntity extends BlockEntity implements MenuProvider 
             public void set(int index, int value) {
                 switch(index) {
                     case 0: ButterChurnBlockEntity.this.progress = value; break;
-                    case 1: ButterChurnBlockEntity.this.maxProgress = value; break;
-                    case 2: ButterChurnBlockEntity.this.temperature = value; break;
-                    case 3: ButterChurnBlockEntity.this.maxTemperature = value;break;
-                    case 4: ButterChurnBlockEntity.this.fluidFillAmount = value;
-
+                    case 1: ButterChurnBlockEntity.this.maxProgress = value;
                 }
             }
 
             public int getCount() {
-                return POT_DATA_SIZE;
+                return CHURN_DATA_SIZE;
             }
         };
     }
@@ -127,13 +107,13 @@ public class ButterChurnBlockEntity extends BlockEntity implements MenuProvider 
     }
     @Override
     public Component getDisplayName() {
-        return new TextComponent("Pot Block");
+        return new TextComponent("Butter Churn");
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        return new PotBlockMenu(pContainerId, pPlayerInventory, this, this.data);
+        return new ButterChurnBlockMenu(pContainerId, pPlayerInventory, this, this.data);
     }
 
     @Nonnull
@@ -167,8 +147,7 @@ public class ButterChurnBlockEntity extends BlockEntity implements MenuProvider 
     @Override
     protected void saveAdditional(@NotNull CompoundTag tag) {
         tag.put("inventory", itemHandler.serializeNBT());
-        tag.putInt("pot_block.progress", progress);
-        tag.putInt("pot_block.temperature", temperature);
+        tag.putInt("butter_churn.progress", progress);
         tag = fluidTank.writeToNBT(tag);
 
         super.saveAdditional(tag);
@@ -178,8 +157,7 @@ public class ButterChurnBlockEntity extends BlockEntity implements MenuProvider 
     public void load(CompoundTag nbt) {
         super.load(nbt);
         itemHandler.deserializeNBT(nbt.getCompound("inventory"));
-        progress = nbt.getInt("pot_block.progress");
-        temperature = nbt.getInt("pot_block.temperature");
+        progress = nbt.getInt("butter_churn.progress");
         fluidTank.readFromNBT(nbt);
 
     }
@@ -204,18 +182,6 @@ public class ButterChurnBlockEntity extends BlockEntity implements MenuProvider 
             pBlockEntity.resetProgress();
             setChanged(pLevel, pPos, pState);
         }
-        //not good!!!
-        pBlockEntity.fluidFillAmount = pBlockEntity.fluidTank.getFluidAmount();
-
-        if(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature < 125){
-            pBlockEntity.temperature++;
-        }
-        if(Blocks.LAVA == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature < pBlockEntity.maxTemperature){
-            pBlockEntity.temperature++;
-        }
-        else if(!(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock()) && !(Blocks.LAVA == pLevel.getBlockState(pPos.below()).getBlock()) && pBlockEntity.temperature > pBlockEntity.minTemperature){
-            pBlockEntity.temperature--;
-        }
     }
 
     private static boolean hasRecipe(ButterChurnBlockEntity entity) {
@@ -225,31 +191,18 @@ public class ButterChurnBlockEntity extends BlockEntity implements MenuProvider 
             inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
         }
 
-        Optional<PotBlockRecipe> match = level.getRecipeManager()
-                .getRecipeFor(PotBlockRecipe.Type.INSTANCE, inventory, level);
+        Optional<ButterChurnBlockRecipe> match = level.getRecipeManager()
+                .getRecipeFor(ButterChurnBlockRecipe.Type.INSTANCE, inventory, level);
 
         return match.isPresent() && canInsertAmountIntoOutputSlot(inventory)
                 && canInsertItemIntoOutputSlot(inventory, match.get().getResultItem())
-                && hasRecipeFluidInTank(entity, match) && isInTemperatureRange(entity, match);
+                && hasRecipeFluidInTank(entity, match);
     }
 
-    private static boolean isInTemperatureRange(ButterChurnBlockEntity entity, Optional<PotBlockRecipe> match){
-        if(match.isPresent()){
-            int minTemperature = match.get().minTemperature;
-            int maxTemperature = match.get().maxTemperature;
-            return minTemperature <= entity.temperature && entity.temperature <= maxTemperature;
-        }
-        else return false;
-    }
-
-    private static boolean hasRecipeFluidInTank(ButterChurnBlockEntity entity, Optional<PotBlockRecipe> recipe) {
+    private static boolean hasRecipeFluidInTank(ButterChurnBlockEntity entity, Optional<ButterChurnBlockRecipe> recipe) {
         return entity.getFluidStack().getAmount() >= recipe.get().fluidStack.getAmount()
                 && entity.getFluidStack().getFluid().equals(recipe.get().fluidStack.getFluid());
     }
-
-//    private static boolean hasToolsInToolSlot(PotBlockEntity entity) {
-//        return entity.itemHandler.getStackInSlot(UTENSIL_SLOT_ID).getItem() == ModItems.TURMERIC.get();
-//    }
 
     private static void craftItem(ButterChurnBlockEntity entity) {
         Level level = entity.level;
@@ -258,25 +211,12 @@ public class ButterChurnBlockEntity extends BlockEntity implements MenuProvider 
             inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
         }
 
-        Optional<PotBlockRecipe> match = level.getRecipeManager()
-                .getRecipeFor(PotBlockRecipe.Type.INSTANCE, inventory, level);
+        Optional<ButterChurnBlockRecipe> match = level.getRecipeManager()
+                .getRecipeFor(ButterChurnBlockRecipe.Type.INSTANCE, inventory, level);
 
         if(match.isPresent()) {
-            for(int i = 1;i <= 9; ++i){
-                if(entity.itemHandler.getStackInSlot(i)!=ItemStack.EMPTY){
-                    entity.itemHandler.extractItem(i, 1, false);
-                }
-            }
-//            if(entity.itemHandler.getStackInSlot(UTENSIL_SLOT_ID).getDamageValue()>=entity.itemHandler.getStackInSlot(UTENSIL_SLOT_ID).getMaxDamage()){
-//                    entity.itemHandler.extractItem(UTENSIL_SLOT_ID, 1, false);
-//            }
-//            else {
-//                    entity.itemHandler.getStackInSlot(UTENSIL_SLOT_ID).hurt(1, new Random(), null);
-//            }
             entity.itemHandler.setStackInSlot(RESULT_SLOT_ID, new ItemStack(match.get().getResultItem().getItem(),
                     entity.itemHandler.getStackInSlot(RESULT_SLOT_ID).getCount() + 1));
-            //todo remember to remove this if it becomes annoying
-            entity.temperature-=5;
             entity.fluidTank.drain(match.get().getFluidStack().getAmount(), IFluidHandler.FluidAction.EXECUTE);
             entity.resetProgress();
         }

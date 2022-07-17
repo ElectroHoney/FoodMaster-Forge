@@ -12,10 +12,6 @@ import javax.annotation.Nonnull;
 
 @Mod.EventBusSubscriber(modid = FoodMaster.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModEventBusEvents {
-//    @SubscribeEvent
-//    public static void registerModifierSerializers(@Nonnull final RegistryEvent.Register<GlobalLootModifierSerializer<?>> event){
-//
-//    }
 
     @SubscribeEvent
     public static void registerRecipeTypes(@Nonnull final RegistryEvent.Register<RecipeSerializer<?>> event){

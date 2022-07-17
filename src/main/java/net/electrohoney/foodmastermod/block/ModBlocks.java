@@ -44,15 +44,14 @@ public class ModBlocks {
             () -> new BakerBlock(BlockBehaviour.Properties.of(Material.STONE).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
 
-    public static final RegistryObject<Block> SKILLET = registerBlock("skillet",
-            () -> new Skillet(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
-            ModCreativeModTab.FOODMASTER_TAB);
-//    public static final RegistryObject<Block> BREWERY = registerBlock("brewery",
-//            () -> new Skillet(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
-//            ModCreativeModTab.FOODMASTER_TAB);
     public static final RegistryObject<Block> BUTTER_CHURN = registerBlock("butter_churn",
             () -> new ButterChurn(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion(), ButterChurnBlockEntity.class),
             ModCreativeModTab.FOODMASTER_TAB);
+
+    public static final RegistryObject<Block> SKILLET = registerBlock("skillet",
+            () -> new Skillet(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            ModCreativeModTab.FOODMASTER_TAB);
+
     public static final RegistryObject<Block> DRYER = registerBlock("dryer",
             () -> new Dryer(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);

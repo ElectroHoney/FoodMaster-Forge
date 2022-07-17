@@ -1,8 +1,10 @@
 package net.electrohoney.foodmastermod.util.networking.packets;
 
 import net.electrohoney.foodmastermod.block.entity.custom.BakerBlockEntity;
+import net.electrohoney.foodmastermod.block.entity.custom.ButterChurnBlockEntity;
 import net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity;
 import net.electrohoney.foodmastermod.screen.menus.BakerBlockMenu;
+import net.electrohoney.foodmastermod.screen.menus.ButterChurnBlockMenu;
 import net.electrohoney.foodmastermod.screen.menus.PotBlockMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -48,6 +50,14 @@ public class PacketSyncOneFluidStackToClient {
                 blockEntity.setFluid(this.fluidStack);
             }
             if(Minecraft.getInstance().player.containerMenu instanceof BakerBlockMenu menu && menu.blockEntity.getBlockPos().equals(pos)){
+                menu.setFluid(this.fluidStack);
+            }
+
+            //CHURN
+            if(Minecraft.getInstance().level.getBlockEntity(pos) instanceof ButterChurnBlockEntity blockEntity){
+                blockEntity.setFluid(this.fluidStack);
+            }
+            if(Minecraft.getInstance().player.containerMenu instanceof ButterChurnBlockMenu menu && menu.blockEntity.getBlockPos().equals(pos)){
                 menu.setFluid(this.fluidStack);
             }
 

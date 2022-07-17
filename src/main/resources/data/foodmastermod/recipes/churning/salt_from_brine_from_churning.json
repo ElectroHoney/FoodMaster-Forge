@@ -1,0 +1,11 @@
+{
+  "type": "foodmastermod:churning",
+  "fluid": {
+    "fluidAmount": 1000,
+    "fluidNamespace": "mekanism",
+    "fluidName": "brine"
+  },
+  "output": {
+    "item": "mekanism:salt"
+  }
+}
