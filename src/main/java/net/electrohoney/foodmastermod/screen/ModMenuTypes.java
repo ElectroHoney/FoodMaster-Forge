@@ -1,10 +1,7 @@
 package net.electrohoney.foodmastermod.screen;
 
 import net.electrohoney.foodmastermod.FoodMaster;
-import net.electrohoney.foodmastermod.screen.menus.AgerBlockMenu;
-import net.electrohoney.foodmastermod.screen.menus.BakerBlockMenu;
-import net.electrohoney.foodmastermod.screen.menus.ButterChurnBlockMenu;
-import net.electrohoney.foodmastermod.screen.menus.PotBlockMenu;
+import net.electrohoney.foodmastermod.screen.menus.*;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
@@ -30,6 +27,9 @@ public class ModMenuTypes {
 
     public static final RegistryObject<MenuType<ButterChurnBlockMenu>> BUTTER_CHURNER_MENU =
             registerMenuType(ButterChurnBlockMenu::new, "churner_block_menu");
+
+    public static final RegistryObject<MenuType<ChopperBlockMenu>> CHOPPER_BLOCK_MENU =
+            registerMenuType(ChopperBlockMenu::new, "chopper_block_menu");
 
     public static <T extends AbstractContainerMenu>RegistryObject<MenuType<T>> registerMenuType(IContainerFactory<T> factory, String name){
         return MENUS.register(name, ()-> IForgeMenuType.create(factory));

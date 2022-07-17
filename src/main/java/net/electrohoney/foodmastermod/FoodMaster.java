@@ -6,10 +6,8 @@ import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
 import net.electrohoney.foodmastermod.item.ModItems;
 import net.electrohoney.foodmastermod.recipe.ModRecipes;
 import net.electrohoney.foodmastermod.screen.ModMenuTypes;
-import net.electrohoney.foodmastermod.screen.screens.AgerBlockScreen;
-import net.electrohoney.foodmastermod.screen.screens.BakerBlockScreen;
-import net.electrohoney.foodmastermod.screen.screens.ButterChurnBlockScreen;
-import net.electrohoney.foodmastermod.screen.screens.PotBlockScreen;
+import net.electrohoney.foodmastermod.screen.menus.ChopperBlockMenu;
+import net.electrohoney.foodmastermod.screen.screens.*;
 import net.electrohoney.foodmastermod.util.networking.ModMessages;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -57,6 +55,7 @@ public class FoodMaster
         MenuScreens.register(ModMenuTypes.AGER_BLOCK_MENU.get(), AgerBlockScreen::new);
         MenuScreens.register(ModMenuTypes.BAKER_BLOCK_MENU.get(), BakerBlockScreen::new);
         MenuScreens.register(ModMenuTypes.BUTTER_CHURNER_MENU.get(), ButterChurnBlockScreen::new);
+        MenuScreens.register(ModMenuTypes.CHOPPER_BLOCK_MENU.get(), ChopperBlockScreen::new);
     }
 
     private void setup(final FMLCommonSetupEvent event)

@@ -1,0 +1,13 @@
+{
+  "type": "foodmastermod:chopping",
+  "ingredient": {
+    "item": "minecraft:cake"
+  },
+  "tool": {
+    "item": "foodmastermod:ladle"
+  },
+  "output": {
+    "item": "minecraft:cookie",
+    "count": 12
+  }
+}

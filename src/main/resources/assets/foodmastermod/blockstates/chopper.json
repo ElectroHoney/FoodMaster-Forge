@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "foodmastermod:block/chopper" },
+    "facing=east": { "model": "foodmastermod:block/chopper", "y": 90 },
+    "facing=south": { "model": "foodmastermod:block/chopper", "y": 180 },
+    "facing=west": { "model": "foodmastermod:block/chopper", "y": 270 }
+  }
+}

@@ -4,6 +4,7 @@ package net.electrohoney.foodmastermod.recipe;
 import net.electrohoney.foodmastermod.FoodMaster;
 import net.electrohoney.foodmastermod.recipe.cooking.AgerBlockRecipe;
 import net.electrohoney.foodmastermod.recipe.cooking.ButterChurnBlockRecipe;
+import net.electrohoney.foodmastermod.recipe.cooking.ChopperBlockRecipe;
 import net.electrohoney.foodmastermod.recipe.cooking.baker.BakerBlockRecipe;
 import net.electrohoney.foodmastermod.recipe.cooking.PotBlockRecipe;
 import net.electrohoney.foodmastermod.recipe.cooking.baker.BroilerBlockRecipe;
@@ -31,6 +32,8 @@ public class ModRecipes {
     public static final RegistryObject<RecipeSerializer<ButterChurnBlockRecipe>> CHURNER_CHURNING_SERIALIZER =
             SERIALIZERS.register("churning", ()-> ButterChurnBlockRecipe.Serializer.INSTANCE);
 
+    public static final RegistryObject<RecipeSerializer<ChopperBlockRecipe>> CHOPPER_CHOPPING_SERIALIZER =
+            SERIALIZERS.register("chopping", ()-> ChopperBlockRecipe.Serializer.INSTANCE);
     public static void register(IEventBus eventBus){
         SERIALIZERS.register(eventBus);
     }

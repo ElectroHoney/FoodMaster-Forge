@@ -3,6 +3,7 @@ package net.electrohoney.foodmastermod.block;
 import net.electrohoney.foodmastermod.FoodMaster;
 import net.electrohoney.foodmastermod.block.custom.*;
 import net.electrohoney.foodmastermod.block.entity.custom.ButterChurnBlockEntity;
+import net.electrohoney.foodmastermod.block.entity.custom.ChopperBlockEntity;
 import net.electrohoney.foodmastermod.item.ModCreativeModTab;
 import net.electrohoney.foodmastermod.item.ModItems;
 import net.minecraft.world.item.BlockItem;
@@ -45,7 +46,11 @@ public class ModBlocks {
             ModCreativeModTab.FOODMASTER_TAB);
 
     public static final RegistryObject<Block> BUTTER_CHURN = registerBlock("butter_churn",
-            () -> new ButterChurn(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion(), ButterChurnBlockEntity.class),
+            () -> new ButterChurn(BlockBehaviour.Properties.of(Material.METAL).strength(1f).noOcclusion()),
+            ModCreativeModTab.FOODMASTER_TAB);
+
+    public static final RegistryObject<Block> CHOPPER_BLOCK = registerBlock("chopper",
+            () -> new ChopperBlock(BlockBehaviour.Properties.of(Material.WOOD).strength(0.2f).noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
 
     public static final RegistryObject<Block> SKILLET = registerBlock("skillet",

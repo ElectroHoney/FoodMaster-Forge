@@ -4,10 +4,11 @@
   "item.foodmastermod.ladle": "Ladle",
 
   "block.foodmastermod.ager": "Aging Barrels",
-  "block.foodmastermod.pot_block": "Iron Pot",
-  "block.foodmastermod.skillet": "Iron Skillet",
   "block.foodmastermod.baker": "Brick Oven",
   "block.foodmastermod.butter_churn": "Butter Churn",
+  "block.foodmastermod.chopper": "Chopping Board",
+  "block.foodmastermod.pot_block": "Iron Pot",
+  "block.foodmastermod.skillet": "Iron Skillet",
   "block.foodmastermod.drying_rack": "Drying Rack",
   "block.foodmastermod.freezer": "Freezer",
   "block.foodmastermod.grill": "Grill",

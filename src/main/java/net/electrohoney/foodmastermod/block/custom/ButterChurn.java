@@ -32,7 +32,7 @@ public class ButterChurn extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    public ButterChurn(Properties properties, Class<ButterChurnBlockEntity> entityBlockClass) {
+    public ButterChurn(Properties properties) {
         super(properties);
     }
     //needs tweaking

@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "foodmastermod:block/board",
-		"particle": "foodmastermod:block/board"
+		"0": "foodmastermod:block/chopper",
+		"particle": "foodmastermod:block/chopper"
 	},
 	"elements": [
 		{
