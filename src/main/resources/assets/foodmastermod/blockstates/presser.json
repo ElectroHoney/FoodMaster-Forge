@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "foodmastermod:block/presser" },
+    "facing=east": { "model": "foodmastermod:block/presser", "y": 90 },
+    "facing=south": { "model": "foodmastermod:block/presser", "y": 180 },
+    "facing=west": { "model": "foodmastermod:block/presser", "y": 270 }
+  }
+}

@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "foodmastermod:block/mortar_and_pestle",
-		"particle": "foodmastermod:block/mortar_and_pestle"
+		"0": "foodmastermod:block/mixer",
+		"particle": "foodmastermod:block/mixer"
 	},
 	"elements": [
 		{

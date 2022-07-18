@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "foodmastermod:block/grill",
-		"particle": "foodmastermod:block/grill"
+		"0": "foodmastermod:block/griller",
+		"particle": "foodmastermod:block/griller"
 	},
 	"elements": [
 		{

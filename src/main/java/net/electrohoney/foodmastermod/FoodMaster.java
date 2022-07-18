@@ -50,6 +50,7 @@ public class FoodMaster
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.POT_BLOCK.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.AGER_BLOCK.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.BUTTER_CHURN.get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.CHOPPER_BLOCK.get(), RenderType.translucent());
 
         MenuScreens.register(ModMenuTypes.POT_BLOCK_MENU.get(), PotBlockScreen::new);
         MenuScreens.register(ModMenuTypes.AGER_BLOCK_MENU.get(), AgerBlockScreen::new);

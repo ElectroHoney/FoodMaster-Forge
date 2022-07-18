@@ -24,11 +24,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-public class Distiller extends BaseEntityBlock {
+public class DistillerBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    public Distiller(Properties properties) {
+    public DistillerBlock(Properties properties) {
         super(properties);
     }
     //needs tweaking
