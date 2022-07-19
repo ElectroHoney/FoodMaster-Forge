@@ -7,11 +7,8 @@ import mezz.jei.api.registration.*;
 import net.electrohoney.foodmastermod.FoodMaster;
 import net.electrohoney.foodmastermod.block.ModBlocks;
 import net.electrohoney.foodmastermod.integration.categories.*;
-import net.electrohoney.foodmastermod.recipe.cooking.AgerBlockRecipe;
-import net.electrohoney.foodmastermod.recipe.cooking.ButterChurnBlockRecipe;
-import net.electrohoney.foodmastermod.recipe.cooking.ChopperBlockRecipe;
+import net.electrohoney.foodmastermod.recipe.cooking.*;
 import net.electrohoney.foodmastermod.recipe.cooking.baker.BakerBlockRecipe;
-import net.electrohoney.foodmastermod.recipe.cooking.PotBlockRecipe;
 import net.electrohoney.foodmastermod.recipe.cooking.baker.BroilerBlockRecipe;
 import net.electrohoney.foodmastermod.screen.screens.*;
 import net.minecraft.client.Minecraft;
@@ -49,6 +46,9 @@ public class JEIFoodMasterPlugin implements IModPlugin {
 
         registration.addRecipeCategories(new
                 ChopperChoppingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+
+        registration.addRecipeCategories(new
+                DistillerDistillingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
@@ -63,6 +63,8 @@ public class JEIFoodMasterPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.BUTTER_CHURN.get()),new RecipeType<>(ChurnerChurningRecipeCategory.UID, ButterChurnBlockRecipe.class));
 
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.CHOPPER_BLOCK.get()),new RecipeType<>(ChopperChoppingRecipeCategory.UID, ChopperBlockRecipe.class));
+
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.DISTILLER_BLOCK.get()),new RecipeType<>(ChopperChoppingRecipeCategory.UID, ChopperBlockRecipe.class));
     }
 
     @Override
@@ -77,6 +79,8 @@ public class JEIFoodMasterPlugin implements IModPlugin {
         registration.addRecipeClickArea(ButterChurnBlockScreen.class, 98, 37, 12, 27, new RecipeType<>(ChurnerChurningRecipeCategory.UID, ButterChurnBlockRecipe.class));
 
         registration.addRecipeClickArea(ChopperBlockScreen.class, 91, 40, 18, 18, new RecipeType<>(ChopperChoppingRecipeCategory.UID, ChopperBlockRecipe.class));
+
+        registration.addRecipeClickArea(DistillerBlockScreen.class, 106, 32, 10, 27, new RecipeType<>(DistillerDistillingRecipeCategory.UID, DistillerBlockRecipe.class));
     }
 
 
@@ -95,6 +99,8 @@ public class JEIFoodMasterPlugin implements IModPlugin {
 
         List<ChopperBlockRecipe> choppingRecipes = rm.getAllRecipesFor(ChopperBlockRecipe.Type.INSTANCE);
 
+        List<DistillerBlockRecipe> distillationRecipes = rm.getAllRecipesFor(DistillerBlockRecipe.Type.INSTANCE);
+
         registration.addRecipes(new RecipeType<>(PotBoilingRecipeCategory.UID, PotBlockRecipe.class), potRecipes);
 
         registration.addRecipes(new RecipeType<>(AgerAgeingRecipeCategory.UID, AgerBlockRecipe.class), agerRecipes);
@@ -105,5 +111,7 @@ public class JEIFoodMasterPlugin implements IModPlugin {
         registration.addRecipes(new RecipeType<>(ChurnerChurningRecipeCategory.UID, ButterChurnBlockRecipe.class), churningRecipes);
 
         registration.addRecipes(new RecipeType<>(ChopperChoppingRecipeCategory.UID, ChopperBlockRecipe.class), choppingRecipes);
+
+        registration.addRecipes(new RecipeType<>(DistillerDistillingRecipeCategory.UID, DistillerBlockRecipe.class), distillationRecipes);
     }
 }
