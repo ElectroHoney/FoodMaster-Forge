@@ -1,0 +1,18 @@
+{
+  "type": "foodmastermod:distilling",
+  "mush": {
+    "item": "mekanism:salt"
+  },
+  "minTemperature": 80,
+  "maxTemperature": 100,
+  "inputFluid": {
+    "fluidAmount": 2000,
+    "fluidNamespace": "minecraft",
+    "fluidName": "water"
+  },
+  "outputFluid": {
+    "fluidAmount": 250,
+    "fluidNamespace": "mekanism",
+    "fluidName": "brine"
+  }
+}

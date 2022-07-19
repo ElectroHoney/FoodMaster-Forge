@@ -79,7 +79,7 @@ public class ModBlocks {
             () -> new Mixer(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
 
-    public static final RegistryObject<Block> PRESSER = registerBlock("presser",
+    public static final RegistryObject<Block> PRESSER_BLOCK = registerBlock("presser",
             () -> new Presser(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
 

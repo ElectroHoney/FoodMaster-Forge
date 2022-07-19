@@ -51,12 +51,15 @@ public class FoodMaster
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.AGER_BLOCK.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.BUTTER_CHURN.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.CHOPPER_BLOCK.get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.PRESSER_BLOCK.get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.DISTILLER_BLOCK.get(), RenderType.translucent());
 
         MenuScreens.register(ModMenuTypes.POT_BLOCK_MENU.get(), PotBlockScreen::new);
         MenuScreens.register(ModMenuTypes.AGER_BLOCK_MENU.get(), AgerBlockScreen::new);
         MenuScreens.register(ModMenuTypes.BAKER_BLOCK_MENU.get(), BakerBlockScreen::new);
         MenuScreens.register(ModMenuTypes.BUTTER_CHURNER_MENU.get(), ButterChurnBlockScreen::new);
         MenuScreens.register(ModMenuTypes.CHOPPER_BLOCK_MENU.get(), ChopperBlockScreen::new);
+        MenuScreens.register(ModMenuTypes.DISTILLER_BLOCK_MENU.get(), DistillerBlockScreen::new);
     }
 
     private void setup(final FMLCommonSetupEvent event)
