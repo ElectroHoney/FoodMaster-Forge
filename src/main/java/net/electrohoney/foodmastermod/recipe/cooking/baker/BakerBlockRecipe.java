@@ -18,7 +18,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 
-public class BakerBlockRecipe implements Recipe<SimpleContainer> {
+public class BakerBlockRecipe implements Recipe<SimpleContainer>, ICookerBlockRecipe {
     private final ResourceLocation id;
     private final ItemStack output;
     private final NonNullList<Ingredient> recipeIngredients;
@@ -41,7 +41,15 @@ public class BakerBlockRecipe implements Recipe<SimpleContainer> {
         this.tool = tool;
         this.cookingTime = cookingTime;
     }
+    @Override
+    public int getMinTemperature() {
+        return minTemperature;
+    }
 
+    @Override
+    public int getMaxTemperature() {
+        return maxTemperature;
+    }
     public Ingredient getUtensil() {
         return this.tool;
     }

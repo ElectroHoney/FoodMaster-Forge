@@ -3,6 +3,7 @@ package net.electrohoney.foodmastermod.block.entity.custom;
 import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
 import net.electrohoney.foodmastermod.recipe.cooking.baker.BakerBlockRecipe;
 import net.electrohoney.foodmastermod.recipe.cooking.baker.BroilerBlockRecipe;
+import net.electrohoney.foodmastermod.recipe.cooking.baker.ICookerBlockRecipe;
 import net.electrohoney.foodmastermod.screen.menus.BakerBlockMenu;
 import net.electrohoney.foodmastermod.util.networking.ModMessages;
 import net.electrohoney.foodmastermod.util.networking.packets.PacketSyncOneFluidStackToClient;
@@ -254,7 +255,7 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
 
         if(!isBaking(entity) && matchBake.isPresent() && canInsertAmountIntoOutputSlot(inventory)
                 && canInsertItemIntoOutputSlot(inventory, matchBake.get().getResultItem())
-                && hasRecipeFluidInTank(entity, matchBake) && isInTemperatureRangeBaker(entity, matchBake))
+                && hasRecipeFluidInTank(entity, matchBake) && isInTemperatureRange(entity, matchBake))
         {
             entity.bakeTime = ForgeHooks.getBurnTime(inventory.getItem(BAKE_SLOT_ID), RecipeType.SMELTING);
             if(entity.bakeTime > 0 && entity.itemHandler.getStackInSlot(BAKE_SLOT_ID)!=ItemStack.EMPTY){
@@ -265,7 +266,7 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
 
         if(!isBroiling(entity) && matchBroil.isPresent() && canInsertAmountIntoOutputSlot(inventory)
                 && canInsertItemIntoOutputSlot(inventory, matchBroil.get().getResultItem())
-                && hasRecipeFluidInTankBroiler(entity, matchBroil) && isInTemperatureRangeBroiler(entity, matchBroil))
+                && hasRecipeFluidInTank(entity, matchBroil) && isInTemperatureRange(entity, matchBroil))
         {
             entity.broilTime = ForgeHooks.getBurnTime(inventory.getItem(BROIL_SLOT_ID), RecipeType.SMELTING);
             if(entity.broilTime > 0 && entity.itemHandler.getStackInSlot(BROIL_SLOT_ID)!=ItemStack.EMPTY){
@@ -276,13 +277,13 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
 
         return (matchBake.isPresent() && canInsertAmountIntoOutputSlot(inventory)
                 && canInsertItemIntoOutputSlot(inventory, matchBake.get().getResultItem())
-                && hasRecipeFluidInTank(entity, matchBake) && isInTemperatureRangeBaker(entity, matchBake) && isBaking(entity))
+                && hasRecipeFluidInTank(entity, matchBake) && isInTemperatureRange(entity, matchBake) && isBaking(entity))
 
                 ||
 
                 (matchBroil.isPresent() && canInsertAmountIntoOutputSlot(inventory)
                         && canInsertItemIntoOutputSlot(inventory, matchBroil.get().getResultItem())
-                        && hasRecipeFluidInTankBroiler(entity, matchBroil) && isInTemperatureRangeBroiler(entity, matchBroil) && isBroiling(entity));
+                        && hasRecipeFluidInTank(entity, matchBroil) && isInTemperatureRange(entity, matchBroil) && isBroiling(entity));
     }
 
     private static boolean isBaking(BakerBlockEntity entity) {
@@ -306,37 +307,24 @@ public class BakerBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     private static boolean isFuelInBakeSlot(BakerBlockEntity entity, SimpleContainer inventory){
-        System.out.println("ForgeHooks Works?-bake");
-        System.out.println(ForgeHooks.getBurnTime(inventory.getItem(BAKE_SLOT_ID), RecipeType.SMELTING));
-        System.out.println(inventory.getItem(BAKE_SLOT_ID));
+//        System.out.println("ForgeHooks Works?-bake");
+//        System.out.println(ForgeHooks.getBurnTime(inventory.getItem(BAKE_SLOT_ID), RecipeType.SMELTING));
+//        System.out.println(inventory.getItem(BAKE_SLOT_ID));
         return ForgeHooks.getBurnTime(inventory.getItem(BAKE_SLOT_ID), RecipeType.SMELTING) > 0;
     }
 
-    private static boolean isInTemperatureRangeBaker(BakerBlockEntity entity, Optional<BakerBlockRecipe> match){
+    private static boolean isInTemperatureRange(BakerBlockEntity entity, Optional<? extends ICookerBlockRecipe> match){
         if(match.isPresent()){
-            int minTemperature = match.get().minTemperature;
-            int maxTemperature = match.get().maxTemperature;
-            return minTemperature <= entity.temperature && entity.temperature <= maxTemperature;
-        }
-        else return false;
-    }
-    private static boolean isInTemperatureRangeBroiler(BakerBlockEntity entity, Optional<BroilerBlockRecipe> match){
-        if(match.isPresent()){
-            int minTemperature = match.get().minTemperature;
-            int maxTemperature = match.get().maxTemperature;
+            int minTemperature = match.get().getMinTemperature();
+            int maxTemperature = match.get().getMaxTemperature();
             return minTemperature <= entity.temperature && entity.temperature <= maxTemperature;
         }
         else return false;
     }
 
-    private static boolean hasRecipeFluidInTank(BakerBlockEntity entity, Optional<BakerBlockRecipe> recipe) {
-        return entity.getFluidStack().getAmount() >= recipe.get().fluidStack.getAmount()
-                && entity.getFluidStack().getFluid().equals(recipe.get().fluidStack.getFluid());
-    }
-
-    private static boolean hasRecipeFluidInTankBroiler(BakerBlockEntity entity, Optional<BroilerBlockRecipe> recipe) {
-        return entity.getFluidStack().getAmount() >= recipe.get().fluidStack.getAmount()
-                && entity.getFluidStack().getFluid().equals(recipe.get().fluidStack.getFluid());
+    private static boolean hasRecipeFluidInTank(BakerBlockEntity entity, Optional<? extends ICookerBlockRecipe> recipe) {
+        return entity.getFluidStack().getAmount() >= recipe.get().getFluidStack().getAmount()
+                && entity.getFluidStack().getFluid().equals(recipe.get().getFluidStack().getFluid());
     }
 
     private static void craftItem(BakerBlockEntity entity) {
