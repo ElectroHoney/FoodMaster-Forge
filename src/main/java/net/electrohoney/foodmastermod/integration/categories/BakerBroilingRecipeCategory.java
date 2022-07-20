@@ -12,7 +12,6 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.electrohoney.foodmastermod.FoodMaster;
 import net.electrohoney.foodmastermod.block.ModBlocks;
 import net.electrohoney.foodmastermod.block.entity.custom.BakerBlockEntity;
-import net.electrohoney.foodmastermod.recipe.cooking.baker.BakerBlockRecipe;
 import net.electrohoney.foodmastermod.recipe.cooking.baker.BroilerBlockRecipe;
 import net.electrohoney.foodmastermod.screen.renderer.FluidStackRenderer;
 import net.minecraft.network.chat.Component;
@@ -32,7 +31,7 @@ import java.util.List;
 
 //bad idea but I hate to see those warnings!
 @SuppressWarnings("removal")
-public class BroilerBakingRecipeCategory implements IRecipeCategory<BroilerBlockRecipe> {
+public class BakerBroilingRecipeCategory implements IRecipeCategory<BroilerBlockRecipe> {
     public final static ResourceLocation UID = new ResourceLocation(FoodMaster.MOD_ID, "broiling");
     public final static ResourceLocation TEXTURE =
             new ResourceLocation(FoodMaster.MOD_ID, "textures/gui/baker_gui.png");
@@ -49,7 +48,7 @@ public class BroilerBakingRecipeCategory implements IRecipeCategory<BroilerBlock
 
 
 
-    public BroilerBakingRecipeCategory(IGuiHelper helper) {
+    public BakerBroilingRecipeCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 176, 95+20);
 
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(ModBlocks.BAKER_BLOCK.get()));
