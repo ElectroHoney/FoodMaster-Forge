@@ -1,6 +1,7 @@
 package net.electrohoney.foodmastermod.block.custom;
 
 import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
+import net.electrohoney.foodmastermod.block.entity.custom.FermenterBlockEntity;
 import net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,15 +25,15 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-public class Fermenter extends BaseEntityBlock {
+public class FermenterBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    public Fermenter(Properties properties) {
+    public FermenterBlock(Properties properties) {
         super(properties);
     }
     //needs tweaking
-    private static final VoxelShape SHAPE = Block.box(3, 3,3, 13, 13, 13);
+    private static final VoxelShape SHAPE = Block.box(0, 1, 0, 16, 13, 16);
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
@@ -73,8 +74,8 @@ public class Fermenter extends BaseEntityBlock {
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if (blockEntity instanceof PotBlockEntity) {
-                ((PotBlockEntity) blockEntity).drops();
+            if (blockEntity instanceof FermenterBlockEntity) {
+                ((FermenterBlockEntity) blockEntity).drops();
             }
         }
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
@@ -85,8 +86,8 @@ public class Fermenter extends BaseEntityBlock {
                                  Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pPos);
-            if(entity instanceof PotBlockEntity) {
-                NetworkHooks.openGui(((ServerPlayer)pPlayer), (PotBlockEntity)entity, pPos);
+            if(entity instanceof FermenterBlockEntity) {
+                NetworkHooks.openGui(((ServerPlayer)pPlayer), (FermenterBlockEntity)entity, pPos);
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
@@ -98,14 +99,14 @@ public class Fermenter extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return new PotBlockEntity(pPos, pState);
+        return new FermenterBlockEntity(pPos, pState);
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return createTickerHelper(pBlockEntityType, ModBlockEntities.POT_BLOCK_ENTITY.get(),
-                PotBlockEntity::tick);
+        return createTickerHelper(pBlockEntityType, ModBlockEntities.FERMENTER_BLOCK_ENTITY.get(),
+                FermenterBlockEntity::tick);
     }
 }
 

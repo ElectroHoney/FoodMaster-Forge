@@ -8,15 +8,15 @@
   "block.foodmastermod.butter_churn": "Butter Churn",
   "block.foodmastermod.chopper": "Chopping Board",
   "block.foodmastermod.distiller": "Distiller",
-  "block.foodmastermod.dryer": "Drying Rack",
-  "block.foodmastermod.freezer": "Freezer",
   "block.foodmastermod.fermenter": "Fermenter",
+  "block.foodmastermod.freezer": "Freezer",
   "block.foodmastermod.griller": "Grill",
   "block.foodmastermod.infuser": "Kettle",
   "block.foodmastermod.mixer": "Mixing Bowl",
   "block.foodmastermod.pot_block": "Iron Pot",
   "block.foodmastermod.presser": "Squeezer",
   "block.foodmastermod.skillet": "Iron Skillet",
+  "block.foodmastermod.smoker": "Smoker",
 
 
   "itemGroup.foodmastermodtab": "Foodalicios",

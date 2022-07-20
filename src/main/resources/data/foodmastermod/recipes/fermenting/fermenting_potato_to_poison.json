@@ -1,0 +1,25 @@
+{
+  "type": "foodmastermod:fermenting",
+  "ingredients": [
+    {
+      "item": "minecraft:poisonous_potato"
+    },
+    {
+      "item": "mekanism:salt"
+    }
+  ],
+  "inputFluid": {
+    "fluidAmount": 2000,
+    "fluidNamespace": "minecraft",
+    "fluidName": "water"
+  },
+  "outputFluid": {
+    "fluidAmount": 2000,
+    "fluidNamespace": "mekanism",
+    "fluidName": "brine"
+  },
+  "output": {
+    "item": "minecraft:potato",
+    "count": 2
+  }
+}
