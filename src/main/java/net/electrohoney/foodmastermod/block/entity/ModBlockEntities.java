@@ -43,6 +43,12 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("distiller_block_entity",
                     ()-> BlockEntityType.Builder.of(DistillerBlockEntity::new,
                             ModBlocks.DISTILLER_BLOCK.get()).build(null));
+
+
+    public static final RegistryObject<BlockEntityType<FermenterBlockEntity>> FERMENTER_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("fermenter_block_entity",
+                    ()-> BlockEntityType.Builder.of(FermenterBlockEntity::new,
+                            ModBlocks.FERMENTER_BLOCK.get()).build(null));
     public static void register(IEventBus eventBus){
         BLOCK_ENTITIES.register(eventBus);
     }

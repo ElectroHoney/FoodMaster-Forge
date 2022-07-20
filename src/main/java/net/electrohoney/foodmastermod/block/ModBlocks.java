@@ -55,16 +55,12 @@ public class ModBlocks {
             () -> new DistillerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(0.8f).noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
 
-    public static final RegistryObject<Block> DRYER_BLOCK = registerBlock("dryer",
-            () -> new Dryer(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
-            ModCreativeModTab.FOODMASTER_TAB);
-
     public static final RegistryObject<Block> FERMENTER_BLOCK = registerBlock("fermenter",
-            () -> new Fermenter(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            () -> new FermenterBlock(BlockBehaviour.Properties.of(Material.CLAY).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
 
     public static final RegistryObject<Block> FREEZER = registerBlock("freezer",
-            () -> new Freezer(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            () -> new FreezerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
 
     public static final RegistryObject<Block> GRILLER = registerBlock("griller",
@@ -85,6 +81,11 @@ public class ModBlocks {
 
     public static final RegistryObject<Block> SKILLET = registerBlock("skillet",
             () -> new Skillet(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            ModCreativeModTab.FOODMASTER_TAB);
+
+
+    public static final RegistryObject<Block> SMOKER_BLOCK = registerBlock("smoker",
+            () -> new SmokerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
 
 

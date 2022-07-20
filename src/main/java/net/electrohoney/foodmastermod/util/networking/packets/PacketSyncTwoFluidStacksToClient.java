@@ -2,8 +2,10 @@ package net.electrohoney.foodmastermod.util.networking.packets;
 
 import net.electrohoney.foodmastermod.block.entity.custom.AgerBlockEntity;
 import net.electrohoney.foodmastermod.block.entity.custom.DistillerBlockEntity;
+import net.electrohoney.foodmastermod.block.entity.custom.FermenterBlockEntity;
 import net.electrohoney.foodmastermod.screen.menus.AgerBlockMenu;
 import net.electrohoney.foodmastermod.screen.menus.DistillerBlockMenu;
+import net.electrohoney.foodmastermod.screen.menus.FermenterBlockMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -71,6 +73,24 @@ public class PacketSyncTwoFluidStacksToClient {
                 }
             }
             if(Minecraft.getInstance().player.containerMenu instanceof DistillerBlockMenu menu && menu.blockEntity.getBlockPos().equals(pos)){
+                if(fluidInputType == 0) {
+                    menu.setOutputFluid(this.sentFluidStack);
+                }
+                else{
+                    menu.setInputFluid(this.sentFluidStack);
+                }
+            }
+
+            //fermenter
+            if(Minecraft.getInstance().level.getBlockEntity(pos) instanceof FermenterBlockEntity blockEntity){
+                if(fluidInputType == 0) {
+                    blockEntity.setOutputFluid(this.sentFluidStack);
+                }
+                else{
+                    blockEntity.setInputFluid(this.sentFluidStack);
+                }
+            }
+            if(Minecraft.getInstance().player.containerMenu instanceof FermenterBlockMenu menu && menu.blockEntity.getBlockPos().equals(pos)){
                 if(fluidInputType == 0) {
                     menu.setOutputFluid(this.sentFluidStack);
                 }

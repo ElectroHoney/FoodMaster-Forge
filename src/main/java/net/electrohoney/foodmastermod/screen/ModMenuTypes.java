@@ -34,6 +34,9 @@ public class ModMenuTypes {
     public static final RegistryObject<MenuType<DistillerBlockMenu>> DISTILLER_BLOCK_MENU =
             registerMenuType(DistillerBlockMenu::new, "distiller_block_menu");
 
+    public static final RegistryObject<MenuType<FermenterBlockMenu>> FERMENTER_BLOCK_MENU =
+            registerMenuType(FermenterBlockMenu::new, "fermenter_block_menu");
+
     public static <T extends AbstractContainerMenu>RegistryObject<MenuType<T>> registerMenuType(IContainerFactory<T> factory, String name){
         return MENUS.register(name, ()-> IForgeMenuType.create(factory));
     }

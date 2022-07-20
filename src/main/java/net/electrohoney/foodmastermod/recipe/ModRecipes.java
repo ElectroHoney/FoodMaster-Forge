@@ -34,6 +34,9 @@ public class ModRecipes {
 
     public static final RegistryObject<RecipeSerializer<DistillerBlockRecipe>> DISTILLER_DISTILLING_SERIALIZER =
             SERIALIZERS.register("distilling", ()-> DistillerBlockRecipe.Serializer.INSTANCE);
+
+    public static final RegistryObject<RecipeSerializer<FermenterBlockRecipe>> FERMENTER_FERMENTING_SERIALIZER =
+            SERIALIZERS.register("fermenting", ()-> FermenterBlockRecipe.Serializer.INSTANCE);
     public static void register(IEventBus eventBus){
         SERIALIZERS.register(eventBus);
     }
