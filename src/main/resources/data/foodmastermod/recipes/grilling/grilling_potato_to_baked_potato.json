@@ -1,0 +1,16 @@
+{
+  "type": "foodmastermod:grilling",
+  "ingredients": [
+    {
+      "item": "minecraft:potato"
+    }
+  ],
+  "minTemperature": 100,
+  "maxTemperature": 150,
+  "tool": {
+    "item": "foodmastermod:ladle"
+  },
+  "output": {
+    "item": "minecraft:baked_potato"
+  }
+}
