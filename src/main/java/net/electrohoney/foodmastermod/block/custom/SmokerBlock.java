@@ -24,11 +24,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-public class Dryer extends BaseEntityBlock {
+public class SmokerBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    public Dryer(Properties properties) {
+    public SmokerBlock(Properties properties) {
         super(properties);
     }
     //needs tweaking

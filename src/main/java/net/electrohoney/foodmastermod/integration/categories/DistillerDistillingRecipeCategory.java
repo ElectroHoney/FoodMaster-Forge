@@ -113,11 +113,11 @@ public class DistillerDistillingRecipeCategory implements IRecipeCategory<Distil
             int maxPossibleTemperature = 125; //degrees? I just set an arbitrary amount identical to the block entity, also it has nothing to do with the maxTemperature from the recipe
             int tMax = recipe.maxTemperature * temperatureBarHeight / maxPossibleTemperature; //i stole this from my menu function
             int tMin = recipe.minTemperature * temperatureBarHeight / maxPossibleTemperature; //i stole this from my menu function
-            temperatureBar = iGuiHelper.createDrawable(TEXTURE, 176, 70-tMax, 7, tMax);
-            this.temperatureBar.draw(stack, 9-7, 45 + 53 - tMax); //it is drawn correctly but I can't set it a varible size
+            temperatureBar = iGuiHelper.createDrawable(TEXTURE, 176, 99-tMax, 7, tMax);
+            this.temperatureBar.draw(stack, 9-7, 15 + 53 - tMax); //it is drawn correctly but I can't set it a varible size
 
-            temperatureBar = iGuiHelper.createDrawable(TEXTURE, 176, 70-tMin, 7, tMin);
-            this.temperatureBar.draw(stack, 9+7, 45 + 53 - tMin); //it is drawn correctly but I can't set it a varible size
+            temperatureBar = iGuiHelper.createDrawable(TEXTURE, 176, 99-tMin, 7, tMin);
+            this.temperatureBar.draw(stack, 9+7, 15 + 53 - tMin); //it is drawn correctly but I can't set it a varible size
         }
         //the xPosition and yPosition are the pixel location on the gui texture
         inputRenderer.render(stack, 26, 15,recipe.getInputFluidStack());

@@ -274,7 +274,7 @@ public class PotBlockEntity extends BlockEntity implements MenuProvider {
 //                    entity.itemHandler.getStackInSlot(UTENSIL_SLOT_ID).hurt(1, new Random(), null);
 //            }
             entity.itemHandler.setStackInSlot(RESULT_SLOT_ID, new ItemStack(match.get().getResultItem().getItem(),
-                    entity.itemHandler.getStackInSlot(RESULT_SLOT_ID).getCount() + 1));
+                    entity.itemHandler.getStackInSlot(RESULT_SLOT_ID).getCount() + match.get().getResultItem().getCount()));
             //todo remember to remove this if it becomes annoying
             entity.temperature-=5;
             entity.fluidTank.drain(match.get().getFluidStack().getAmount(), IFluidHandler.FluidAction.EXECUTE);
