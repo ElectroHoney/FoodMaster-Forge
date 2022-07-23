@@ -1,0 +1,21 @@
+{
+  "type": "foodmastermod:freezing",
+  "ingredients": [
+    {
+      "item": "minecraft:stick"
+    }
+  ],
+  "minTemperature": -60,
+  "maxTemperature": 0,
+  "fluid": {
+    "fluidAmount": 1000,
+    "fluidNamespace": "minecraft",
+    "fluidName": "water"
+  },
+  "tool": {
+    "item": "foodmastermod:ladle"
+  },
+  "output": {
+    "item": "minecraft:ice"
+  }
+}

@@ -1,6 +1,7 @@
 package net.electrohoney.foodmastermod.block.custom;
 
 import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
+import net.electrohoney.foodmastermod.block.entity.custom.FreezerBlockEntity;
 import net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,15 +25,15 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-public class Freezer extends BaseEntityBlock {
+public class FreezerBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    public Freezer(Properties properties) {
+    public FreezerBlock(Properties properties) {
         super(properties);
     }
     //needs tweaking
-    private static final VoxelShape SHAPE = Block.box(3, 3,3, 13, 13, 13);
+    private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 12, 16);
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
@@ -73,8 +74,8 @@ public class Freezer extends BaseEntityBlock {
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if (blockEntity instanceof PotBlockEntity) {
-                ((PotBlockEntity) blockEntity).drops();
+            if (blockEntity instanceof FreezerBlockEntity) {
+                ((FreezerBlockEntity) blockEntity).drops();
             }
         }
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
@@ -85,8 +86,8 @@ public class Freezer extends BaseEntityBlock {
                                  Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pPos);
-            if(entity instanceof PotBlockEntity) {
-                NetworkHooks.openGui(((ServerPlayer)pPlayer), (PotBlockEntity)entity, pPos);
+            if(entity instanceof FreezerBlockEntity) {
+                NetworkHooks.openGui(((ServerPlayer)pPlayer), (FreezerBlockEntity)entity, pPos);
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
@@ -98,14 +99,14 @@ public class Freezer extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return new PotBlockEntity(pPos, pState);
+        return new FreezerBlockEntity(pPos, pState);
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return createTickerHelper(pBlockEntityType, ModBlockEntities.POT_BLOCK_ENTITY.get(),
-                PotBlockEntity::tick);
+        return createTickerHelper(pBlockEntityType, ModBlockEntities.FREEZER_BLOCK_ENTITY.get(),
+                FreezerBlockEntity::tick);
     }
 }
 
