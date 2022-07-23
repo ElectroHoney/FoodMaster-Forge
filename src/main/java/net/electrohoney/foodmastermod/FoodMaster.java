@@ -60,6 +60,9 @@ public class FoodMaster
         MenuScreens.register(ModMenuTypes.BUTTER_CHURNER_MENU.get(), ButterChurnBlockScreen::new);
         MenuScreens.register(ModMenuTypes.CHOPPER_BLOCK_MENU.get(), ChopperBlockScreen::new);
         MenuScreens.register(ModMenuTypes.DISTILLER_BLOCK_MENU.get(), DistillerBlockScreen::new);
+        MenuScreens.register(ModMenuTypes.FERMENTER_BLOCK_MENU.get(), FermenterBlockScreen::new);
+        MenuScreens.register(ModMenuTypes.FREEZER_BLOCK_MENU.get(), FreezerBlockScreen::new);
+        MenuScreens.register(ModMenuTypes.GRILLER_BLOCK_MENU.get(), GrillerBlockScreen::new);
     }
 
     private void setup(final FMLCommonSetupEvent event)

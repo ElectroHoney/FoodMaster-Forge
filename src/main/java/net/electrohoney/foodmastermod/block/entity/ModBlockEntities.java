@@ -49,6 +49,17 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("fermenter_block_entity",
                     ()-> BlockEntityType.Builder.of(FermenterBlockEntity::new,
                             ModBlocks.FERMENTER_BLOCK.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<FreezerBlockEntity>> FREEZER_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("freezer_block_entity",
+                    ()-> BlockEntityType.Builder.of(FreezerBlockEntity::new,
+                            ModBlocks.FREEZER_BLOCK.get()).build(null));
+
+
+    public static final RegistryObject<BlockEntityType<GrillerBlockEntity>> GRILLER_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("griller_block_entity",
+                    ()-> BlockEntityType.Builder.of(GrillerBlockEntity::new,
+                            ModBlocks.GRILLER_BLOCK.get()).build(null));
     public static void register(IEventBus eventBus){
         BLOCK_ENTITIES.register(eventBus);
     }

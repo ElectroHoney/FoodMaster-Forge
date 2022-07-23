@@ -59,12 +59,11 @@ public class ModBlocks {
             () -> new FermenterBlock(BlockBehaviour.Properties.of(Material.CLAY).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
 
-    public static final RegistryObject<Block> FREEZER = registerBlock("freezer",
-            () -> new FreezerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+    public static final RegistryObject<Block> FREEZER_BLOCK = registerBlock("freezer",
+            () -> new FreezerBlock(BlockBehaviour.Properties.of(Material.WOOD).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
-
-    public static final RegistryObject<Block> GRILLER = registerBlock("griller",
-            () -> new Griller(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+    public static final RegistryObject<Block> GRILLER_BLOCK = registerBlock("griller",
+            () -> new GrillerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
 
     public static final RegistryObject<Block> INFUSER = registerBlock("infuser",
