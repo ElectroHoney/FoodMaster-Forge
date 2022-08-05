@@ -60,6 +60,12 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("griller_block_entity",
                     ()-> BlockEntityType.Builder.of(GrillerBlockEntity::new,
                             ModBlocks.GRILLER_BLOCK.get()).build(null));
+
+
+    public static final RegistryObject<BlockEntityType<InfuserBlockEntity>> INFUSER_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("infuser_block_entity",
+                    ()-> BlockEntityType.Builder.of(InfuserBlockEntity::new,
+                            ModBlocks.INFUSER_BLOCK.get()).build(null));
     public static void register(IEventBus eventBus){
         BLOCK_ENTITIES.register(eventBus);
     }

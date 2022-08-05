@@ -1,0 +1,21 @@
+{
+  "type": "foodmastermod:infusing",
+  "infusingInput": {
+    "item": "minecraft:basalt"
+  },
+  "inputFluid": {
+    "fluidAmount": 500,
+    "fluidNamespace": "minecraft",
+    "fluidName": "water"
+  },
+  "minTemperature": 10,
+  "maxTemperature": 100,
+  "outputFluid": {
+    "fluidAmount": 250,
+    "fluidNamespace": "minecraft",
+    "fluidName": "lava"
+  },
+  "output": {
+    "item": "minecraft:cobblestone"
+  }
+}

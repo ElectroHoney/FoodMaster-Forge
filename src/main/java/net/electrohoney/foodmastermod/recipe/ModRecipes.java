@@ -43,6 +43,9 @@ public class ModRecipes {
 
     public static final RegistryObject<RecipeSerializer<GrillerBlockRecipe>> GRILLER_GRILLING_SERIALIZER =
             SERIALIZERS.register("grilling", ()-> GrillerBlockRecipe.Serializer.INSTANCE);
+
+    public static final RegistryObject<RecipeSerializer<InfuserBlockRecipe>> INFUSER_INFUSING_SERIALIZER =
+            SERIALIZERS.register("infusing", ()-> InfuserBlockRecipe.Serializer.INSTANCE);
     public static void register(IEventBus eventBus){
         SERIALIZERS.register(eventBus);
     }

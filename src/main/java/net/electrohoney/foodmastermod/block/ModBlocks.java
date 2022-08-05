@@ -66,8 +66,8 @@ public class ModBlocks {
             () -> new GrillerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
 
-    public static final RegistryObject<Block> INFUSER = registerBlock("infuser",
-            () -> new Infuser(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+    public static final RegistryObject<Block> INFUSER_BLOCK = registerBlock("infuser",
+            () -> new InfuserBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
 
     public static final RegistryObject<Block> MIXER = registerBlock("mixer",
