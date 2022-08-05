@@ -112,10 +112,10 @@ public class GrillerGrillingRecipeCategory implements IRecipeCategory<GrillerBlo
             int maxPossibleTemperature = 300; //degrees? I just set an arbitrary amount identical to the block entity, also it has nothing to do with the maxTemperature from the recipe
             int tMax = recipe.maxTemperature * temperatureBarHeight / maxPossibleTemperature; //i stole this from my menu function
             int tMin = recipe.minTemperature * temperatureBarHeight / maxPossibleTemperature; //i stole this from my menu function
-            temperatureBar = iGuiHelper.createDrawable(TEXTURE, 176, 70-tMax, 7, tMax);
+            temperatureBar = iGuiHelper.createDrawable(TEXTURE, 176, 85-tMax, 7, tMax);
             this.temperatureBar.draw(stack, 23-7, 16 + 53 - tMax); //it is drawn correctly but I can't set it a varible size
 
-            temperatureBar = iGuiHelper.createDrawable(TEXTURE, 176, 70-tMin, 7, tMin);
+            temperatureBar = iGuiHelper.createDrawable(TEXTURE, 176, 85-tMin, 7, tMin);
             this.temperatureBar.draw(stack, 23+7, 16 + 53 - tMin); //it is drawn correctly but I can't set it a varible size
         }
         //the xPosition and yPosition are the pixel location on the gui texture
