@@ -126,7 +126,7 @@ public class InfuserInfusingRecipeCategory implements IRecipeCategory<InfuserBlo
             return inputRenderer.getTooltip(recipe.getInputFluidStack(), TooltipFlag.Default.NORMAL);
         }
         if (mouseX >= 112 && mouseX <= 112+outputRenderer.getWidth() && mouseY >= 45 && mouseY <= 45+outputRenderer.getHeight()){
-            return outputRenderer.getTooltip(recipe.getInputFluidStack(), TooltipFlag.Default.NORMAL);
+            return outputRenderer.getTooltip(recipe.getOutputFluidStack(), TooltipFlag.Default.NORMAL);
         }
 
         if(mouseX >= 11-7 && mouseX <= 11 && mouseY >= 16 && mouseY <= 16 + temperatureBar.getHeight()){
