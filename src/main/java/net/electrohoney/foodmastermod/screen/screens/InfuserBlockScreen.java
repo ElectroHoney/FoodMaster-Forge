@@ -93,7 +93,7 @@ public class InfuserBlockScreen extends AbstractContainerScreen<InfuserBlockMenu
         int t = this.menu.getScaledTemperature();
         //System.out.print("Temp:" + t + "\n");
         //todo this is good but for some reason the bar is too low(nope its perfect)(I looked at how the furnace was drawing the flame)
-        blit(pPoseStack, x + 11, y + 16 + 53 - t, 176,  70-t,  7, t);
+        blit(pPoseStack, x + 12, y + 16 + 53 - t, 176,  70-t,  7, t);
 
 
         if(menu.isCrafting()){

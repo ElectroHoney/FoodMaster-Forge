@@ -85,7 +85,7 @@ public class InfuserBlockEntity extends BlockEntity implements MenuProvider {
     public static final int RESULT_SLOT_ID = 1;
 
     private int progress = 0;
-    private int maxProgress = 1000;
+    private int maxProgress = 100;
 
     private int temperature = 25;
     private final int minTemperature = 25;
@@ -223,7 +223,7 @@ public class InfuserBlockEntity extends BlockEntity implements MenuProvider {
             setChanged(pLevel, pPos, pState);
         }
 
-        if(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature < 125){
+        if(Blocks.FIRE == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature < 0.6*pBlockEntity.maxTemperature){
             pBlockEntity.temperature++;
         }
         if(Blocks.LAVA == pLevel.getBlockState(pPos.below()).getBlock() && pBlockEntity.temperature < pBlockEntity.maxTemperature){

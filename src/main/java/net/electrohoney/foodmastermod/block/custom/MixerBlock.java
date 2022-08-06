@@ -24,11 +24,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-public class Mixer extends BaseEntityBlock {
+public class MixerBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    public Mixer(Properties properties) {
+    public MixerBlock(Properties properties) {
         super(properties);
     }
     //needs tweaking

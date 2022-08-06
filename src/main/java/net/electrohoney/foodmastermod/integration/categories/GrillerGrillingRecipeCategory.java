@@ -129,14 +129,14 @@ public class GrillerGrillingRecipeCategory implements IRecipeCategory<GrillerBlo
         int tMax = recipe.maxTemperature * temperatureBarHeight / maxPossibleTemperature; //i stole this from my menu function
         int tMin = recipe.minTemperature * temperatureBarHeight / maxPossibleTemperature; //i stole this from my menu function
 
-        if(mouseX >= 35-7 && mouseX <= 35 && mouseY >= 16 && mouseY <= 69){
+        if(mouseX >= 23-7 && mouseX <= 23 && mouseY >= 16 && mouseY <= 69){
             Component displayMaxTemperature =
                     new TranslatableComponent("foodmaster.tooltip.temperature.out.of.max", nf.format(recipe.maxTemperature), nf.format(maxPossibleTemperature));
             List<Component> componentList = new ArrayList<>(Collections.emptyList());
             componentList.add(displayMaxTemperature);
             return componentList;
         }
-        if(mouseX >= 35+7 && mouseX <= 35+14 && mouseY >= 16 && mouseY <= 69){
+        if(mouseX >= 23+7 && mouseX <= 23+14 && mouseY >= 16 && mouseY <= 69){
             Component displayMinTemperature =
                     new TranslatableComponent("foodmaster.tooltip.temperature.out.of.max", nf.format(recipe.minTemperature), nf.format(maxPossibleTemperature));
             List<Component> componentList = new ArrayList<>(Collections.emptyList());
