@@ -40,6 +40,9 @@ public class ModMenuTypes {
     public static final RegistryObject<MenuType<FreezerBlockMenu>> FREEZER_BLOCK_MENU =
             registerMenuType(FreezerBlockMenu::new, "freezer_block_menu");
 
+    public static final RegistryObject<MenuType<FryerBlockMenu>> FRYER_BLOCK_MENU =
+            registerMenuType(FryerBlockMenu::new, "fryer_block_menu");
+
     public static final RegistryObject<MenuType<GrillerBlockMenu>> GRILLER_BLOCK_MENU =
             registerMenuType(GrillerBlockMenu::new, "griller_block_menu");
 

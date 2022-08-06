@@ -62,6 +62,7 @@ public class FoodMaster
         MenuScreens.register(ModMenuTypes.DISTILLER_BLOCK_MENU.get(), DistillerBlockScreen::new);
         MenuScreens.register(ModMenuTypes.FERMENTER_BLOCK_MENU.get(), FermenterBlockScreen::new);
         MenuScreens.register(ModMenuTypes.FREEZER_BLOCK_MENU.get(), FreezerBlockScreen::new);
+        MenuScreens.register(ModMenuTypes.FRYER_BLOCK_MENU.get(), FryerBlockScreen::new);
         MenuScreens.register(ModMenuTypes.GRILLER_BLOCK_MENU.get(), GrillerBlockScreen::new);
         MenuScreens.register(ModMenuTypes.INFUSER_BLOCK_MENU.get(), InfuserBlockScreen::new);
     }

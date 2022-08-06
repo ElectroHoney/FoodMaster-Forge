@@ -1,7 +1,7 @@
 package net.electrohoney.foodmastermod.block.custom;
 
 import net.electrohoney.foodmastermod.block.entity.ModBlockEntities;
-import net.electrohoney.foodmastermod.block.entity.custom.PotBlockEntity;
+import net.electrohoney.foodmastermod.block.entity.custom.FryerBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -24,11 +24,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-public class Skillet extends BaseEntityBlock {
+public class FryerBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    public Skillet(Properties properties) {
+    public FryerBlock(Properties properties) {
         super(properties);
     }
     //needs tweaking
@@ -73,8 +73,8 @@ public class Skillet extends BaseEntityBlock {
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
         if (pState.getBlock() != pNewState.getBlock()) {
             BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if (blockEntity instanceof PotBlockEntity) {
-                ((PotBlockEntity) blockEntity).drops();
+            if (blockEntity instanceof FryerBlockEntity) {
+                ((FryerBlockEntity) blockEntity).drops();
             }
         }
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
@@ -85,8 +85,8 @@ public class Skillet extends BaseEntityBlock {
                                  Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pPos);
-            if(entity instanceof PotBlockEntity) {
-                NetworkHooks.openGui(((ServerPlayer)pPlayer), (PotBlockEntity)entity, pPos);
+            if(entity instanceof FryerBlockEntity) {
+                NetworkHooks.openGui(((ServerPlayer)pPlayer), (FryerBlockEntity)entity, pPos);
             } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
@@ -98,14 +98,14 @@ public class Skillet extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return new PotBlockEntity(pPos, pState);
+        return new FryerBlockEntity(pPos, pState);
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return createTickerHelper(pBlockEntityType, ModBlockEntities.POT_BLOCK_ENTITY.get(),
-                PotBlockEntity::tick);
+        return createTickerHelper(pBlockEntityType, ModBlockEntities.FRYER_BLOCK_ENTITY.get(),
+                FryerBlockEntity::tick);
     }
 }
 

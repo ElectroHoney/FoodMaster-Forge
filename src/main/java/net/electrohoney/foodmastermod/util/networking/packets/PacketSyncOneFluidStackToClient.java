@@ -66,6 +66,14 @@ public class PacketSyncOneFluidStackToClient {
                 menu.setFluid(this.fluidStack);
             }
 
+            //FRYER
+            if(Minecraft.getInstance().level.getBlockEntity(pos) instanceof FryerBlockEntity blockEntity){
+                blockEntity.setFluid(this.fluidStack);
+            }
+            if(Minecraft.getInstance().player.containerMenu instanceof FryerBlockMenu menu && menu.blockEntity.getBlockPos().equals(pos)){
+                menu.setFluid(this.fluidStack);
+            }
+
         });
         return true;
     }

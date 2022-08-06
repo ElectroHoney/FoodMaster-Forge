@@ -58,6 +58,9 @@ public class JEIFoodMasterPlugin implements IModPlugin {
                 FreezerFreezingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 
         registration.addRecipeCategories(new
+                FryerFryingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+
+        registration.addRecipeCategories(new
                 GrillerGrillingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 
         registration.addRecipeCategories(new
@@ -83,6 +86,8 @@ public class JEIFoodMasterPlugin implements IModPlugin {
 
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.FREEZER_BLOCK.get()),new RecipeType<>(FreezerFreezingRecipeCategory.UID, FreezerBlockRecipe.class));
 
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.FRYER_BLOCK.get()),new RecipeType<>(FryerFryingRecipeCategory.UID, FryerBlockRecipe.class));
+
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.GRILLER_BLOCK.get()),new RecipeType<>(GrillerGrillingRecipeCategory.UID, GrillerBlockRecipe.class));
 
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.INFUSER_BLOCK.get()),new RecipeType<>(InfuserInfusingRecipeCategory.UID, InfuserBlockRecipe.class));
@@ -107,9 +112,12 @@ public class JEIFoodMasterPlugin implements IModPlugin {
 
         registration.addRecipeClickArea(FreezerBlockScreen.class, 106, 34, 18, 19, new RecipeType<>(FreezerFreezingRecipeCategory.UID, FreezerBlockRecipe.class));
 
+        registration.addRecipeClickArea(FryerBlockScreen.class, 123, 20, 23, 15, new RecipeType<>(FryerFryingRecipeCategory.UID, FryerBlockRecipe.class));
+
         registration.addRecipeClickArea(GrillerBlockScreen.class, 108, 36, 13, 14, new RecipeType<>(GrillerGrillingRecipeCategory.UID, GrillerBlockRecipe.class));
 
         registration.addRecipeClickArea(InfuserBlockScreen.class, 28, 37, 48, 16, new RecipeType<>(InfuserInfusingRecipeCategory.UID, InfuserBlockScreen.class));
+
     }
 
 
@@ -138,6 +146,8 @@ public class JEIFoodMasterPlugin implements IModPlugin {
 
         List<InfuserBlockRecipe> infuserRecipes = rm.getAllRecipesFor(InfuserBlockRecipe.Type.INSTANCE);
 
+        List<FryerBlockRecipe> fryingRecipes = rm.getAllRecipesFor(FryerBlockRecipe.Type.INSTANCE);
+
         registration.addRecipes(new RecipeType<>(PotBoilingRecipeCategory.UID, PotBlockRecipe.class), potRecipes);
 
         registration.addRecipes(new RecipeType<>(AgerAgeingRecipeCategory.UID, AgerBlockRecipe.class), agerRecipes);
@@ -155,8 +165,11 @@ public class JEIFoodMasterPlugin implements IModPlugin {
 
         registration.addRecipes(new RecipeType<>(FreezerFreezingRecipeCategory.UID, FreezerBlockRecipe.class), freezingRecipes);
 
+        registration.addRecipes(new RecipeType<>(FryerFryingRecipeCategory.UID, FryerBlockRecipe.class), fryingRecipes);
+
         registration.addRecipes(new RecipeType<>(GrillerGrillingRecipeCategory.UID, GrillerBlockRecipe.class), grillingRecipes);
 
         registration.addRecipes(new RecipeType<>(InfuserInfusingRecipeCategory.UID, InfuserBlockRecipe.class), infuserRecipes);
+
     }
 }

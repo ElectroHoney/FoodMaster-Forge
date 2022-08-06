@@ -1,0 +1,24 @@
+{
+  "type": "foodmastermod:frying",
+  "ingredients": [
+    {
+      "item": "minecraft:porkchop"
+    },
+    {
+      "item": "minecraft:egg"
+    }
+  ],
+  "minTemperature": 100,
+  "maxTemperature": 150,
+  "fluid": {
+    "fluidAmount": 1000,
+    "fluidNamespace": "mekanism",
+    "fluidName": "nutritional_paste"
+  },
+  "tool": {
+    "item": "foodmastermod:ladle"
+  },
+  "output": {
+    "item": "minecraft:cooked_porkchop"
+  }
+}
