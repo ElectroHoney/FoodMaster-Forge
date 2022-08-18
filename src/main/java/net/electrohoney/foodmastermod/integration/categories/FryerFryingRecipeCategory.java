@@ -53,7 +53,7 @@ public class FryerFryingRecipeCategory implements IRecipeCategory<FryerBlockReci
 
         this.temperatureBar = helper.createDrawable(TEXTURE, 195, 16, 7, 55);
 
-        this.renderer = new FluidStackRenderer(FryerBlockEntity.FRYER_MAX_FLUID_CAPACITY, true, 12, 34);
+        this.renderer = new FluidStackRenderer(FryerBlockEntity.FRYER_MAX_FLUID_CAPACITY, true, 12, 53);
 
         iGuiHelper = helper;
     }
@@ -129,7 +129,7 @@ public class FryerFryingRecipeCategory implements IRecipeCategory<FryerBlockReci
         int tMax = recipe.maxTemperature * temperatureBarHeight / maxPossibleTemperature; //i stole this from my menu function
         int tMin = recipe.minTemperature * temperatureBarHeight / maxPossibleTemperature; //i stole this from my menu function
 
-        if (mouseX >= 10 && mouseX <= 10+12 && mouseY >= 17 && mouseY <= 17+34){
+        if (mouseX >= 10 && mouseX <= 10+12 && mouseY >= 17 && mouseY <= 17+52){
             return renderer.getTooltip(recipe.getFluidStack(), TooltipFlag.Default.NORMAL);
         }
 

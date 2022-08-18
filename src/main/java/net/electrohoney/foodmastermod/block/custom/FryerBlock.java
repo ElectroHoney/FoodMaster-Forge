@@ -32,7 +32,7 @@ public class FryerBlock extends BaseEntityBlock {
         super(properties);
     }
     //needs tweaking
-    private static final VoxelShape SHAPE = Block.box(3, 3,3, 13, 13, 13);
+    private static final VoxelShape SHAPE = Block.box(2, 5,2, 14, 7, 14);
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
