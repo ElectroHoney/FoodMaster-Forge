@@ -74,6 +74,14 @@ public class PacketSyncOneFluidStackToClient {
                 menu.setFluid(this.fluidStack);
             }
 
+            //PRESSER
+            if(Minecraft.getInstance().level.getBlockEntity(pos) instanceof PresserBlockEntity blockEntity){
+                blockEntity.setOutputFluid(this.fluidStack);
+            }
+            if(Minecraft.getInstance().player.containerMenu instanceof PresserBlockMenu menu && menu.blockEntity.getBlockPos().equals(pos)){
+                menu.setOutputFluid(this.fluidStack);
+            }
+
         });
         return true;
     }

@@ -1,0 +1,19 @@
+{
+  "type": "foodmastermod:pressing",
+  "pressedItem": {
+    "item": "minecraft:wheat_seeds"
+  },
+  "outputFluid": {
+    "fluidAmount": 250,
+    "fluidNamespace": "minecraft",
+    "fluidName": "water"
+  },
+  "output1": {
+    "item": "minecraft:wheat"
+  },
+  "output2": {
+    "item": "minecraft:apple"
+  },
+  "percentageOutput1": 20,
+  "percentageOutput2": 80
+}

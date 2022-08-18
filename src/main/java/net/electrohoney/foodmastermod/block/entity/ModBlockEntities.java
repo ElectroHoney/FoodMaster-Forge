@@ -72,6 +72,11 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("fryer_block_entity",
                     ()-> BlockEntityType.Builder.of(FryerBlockEntity::new,
                             ModBlocks.FRYER_BLOCK.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<PresserBlockEntity>> PRESSER_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("presser_block_entity",
+                    ()-> BlockEntityType.Builder.of(PresserBlockEntity::new,
+                            ModBlocks.PRESSER_BLOCK.get()).build(null));
     public static void register(IEventBus eventBus){
         BLOCK_ENTITIES.register(eventBus);
     }

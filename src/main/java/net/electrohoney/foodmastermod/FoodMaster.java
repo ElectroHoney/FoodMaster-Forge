@@ -65,6 +65,7 @@ public class FoodMaster
         MenuScreens.register(ModMenuTypes.FRYER_BLOCK_MENU.get(), FryerBlockScreen::new);
         MenuScreens.register(ModMenuTypes.GRILLER_BLOCK_MENU.get(), GrillerBlockScreen::new);
         MenuScreens.register(ModMenuTypes.INFUSER_BLOCK_MENU.get(), InfuserBlockScreen::new);
+        MenuScreens.register(ModMenuTypes.PRESSER_BLOCK_MENU.get(), PresserBlockScreen::new);
     }
 
     private void setup(final FMLCommonSetupEvent event)

@@ -75,14 +75,12 @@ public class ModBlocks {
             ModCreativeModTab.FOODMASTER_TAB);
 
     public static final RegistryObject<Block> MIXER = registerBlock("mixer",
-            () -> new MixerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            () -> new MixerBlock(BlockBehaviour.Properties.of(Material.STONE).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
 
     public static final RegistryObject<Block> PRESSER_BLOCK = registerBlock("presser",
-            () -> new Presser(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
+            () -> new PresserBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
-
-
 
 
     public static final RegistryObject<Block> SMOKER_BLOCK = registerBlock("smoker",

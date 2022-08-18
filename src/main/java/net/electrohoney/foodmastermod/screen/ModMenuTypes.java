@@ -49,6 +49,9 @@ public class ModMenuTypes {
     public static final RegistryObject<MenuType<InfuserBlockMenu>> INFUSER_BLOCK_MENU =
             registerMenuType(InfuserBlockMenu::new, "infuser_block_menu");
 
+    public static final RegistryObject<MenuType<PresserBlockMenu>> PRESSER_BLOCK_MENU =
+            registerMenuType(PresserBlockMenu::new, "presser_block_menu");
+
     public static <T extends AbstractContainerMenu>RegistryObject<MenuType<T>> registerMenuType(IContainerFactory<T> factory, String name){
         return MENUS.register(name, ()-> IForgeMenuType.create(factory));
     }

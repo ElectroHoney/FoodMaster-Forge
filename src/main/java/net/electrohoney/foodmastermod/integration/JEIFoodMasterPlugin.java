@@ -65,6 +65,9 @@ public class JEIFoodMasterPlugin implements IModPlugin {
 
         registration.addRecipeCategories(new
                 InfuserInfusingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+
+        registration.addRecipeCategories(new
+                PresserPressingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
@@ -91,6 +94,8 @@ public class JEIFoodMasterPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.GRILLER_BLOCK.get()),new RecipeType<>(GrillerGrillingRecipeCategory.UID, GrillerBlockRecipe.class));
 
         registration.addRecipeCatalyst(new ItemStack(ModBlocks.INFUSER_BLOCK.get()),new RecipeType<>(InfuserInfusingRecipeCategory.UID, InfuserBlockRecipe.class));
+
+        registration.addRecipeCatalyst(new ItemStack(ModBlocks.PRESSER_BLOCK.get()),new RecipeType<>(PresserPressingRecipeCategory.UID, PresserBlockRecipe.class));
     }
 
     @Override
@@ -117,6 +122,8 @@ public class JEIFoodMasterPlugin implements IModPlugin {
         registration.addRecipeClickArea(GrillerBlockScreen.class, 108, 36, 13, 14, new RecipeType<>(GrillerGrillingRecipeCategory.UID, GrillerBlockRecipe.class));
 
         registration.addRecipeClickArea(InfuserBlockScreen.class, 28, 37, 48, 16, new RecipeType<>(InfuserInfusingRecipeCategory.UID, InfuserBlockScreen.class));
+
+        registration.addRecipeClickArea(PresserBlockScreen.class, 66, 21, 11, 35, new RecipeType<>(PresserPressingRecipeCategory.UID, PresserBlockScreen.class));
 
     }
 
@@ -148,6 +155,8 @@ public class JEIFoodMasterPlugin implements IModPlugin {
 
         List<FryerBlockRecipe> fryingRecipes = rm.getAllRecipesFor(FryerBlockRecipe.Type.INSTANCE);
 
+        List<PresserBlockRecipe> pressingRecipes = rm.getAllRecipesFor(PresserBlockRecipe.Type.INSTANCE);
+
         registration.addRecipes(new RecipeType<>(PotBoilingRecipeCategory.UID, PotBlockRecipe.class), potRecipes);
 
         registration.addRecipes(new RecipeType<>(AgerAgeingRecipeCategory.UID, AgerBlockRecipe.class), agerRecipes);
@@ -170,6 +179,8 @@ public class JEIFoodMasterPlugin implements IModPlugin {
         registration.addRecipes(new RecipeType<>(GrillerGrillingRecipeCategory.UID, GrillerBlockRecipe.class), grillingRecipes);
 
         registration.addRecipes(new RecipeType<>(InfuserInfusingRecipeCategory.UID, InfuserBlockRecipe.class), infuserRecipes);
+
+        registration.addRecipes(new RecipeType<>(PresserPressingRecipeCategory.UID, PresserBlockRecipe.class), pressingRecipes);
 
     }
 }

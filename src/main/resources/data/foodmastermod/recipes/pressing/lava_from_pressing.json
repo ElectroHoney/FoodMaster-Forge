@@ -1,0 +1,19 @@
+{
+  "type": "foodmastermod:pressing",
+  "pressedItem": {
+    "item": "minecraft:basalt"
+  },
+  "outputFluid": {
+    "fluidAmount": 3000,
+    "fluidNamespace": "minecraft",
+    "fluidName": "lava"
+  },
+  "output1": {
+    "item": "minecraft:stone"
+  },
+  "output2": {
+    "item": "minecraft:sand"
+  },
+  "percentageOutput1": 50,
+  "percentageOutput2": 70
+}

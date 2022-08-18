@@ -32,7 +32,7 @@ public class MixerBlock extends BaseEntityBlock {
         super(properties);
     }
     //needs tweaking
-    private static final VoxelShape SHAPE = Block.box(3, 3,3, 13, 13, 13);
+    private static final VoxelShape SHAPE = Block.box(4, 0,4, 12, 6, 12);
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
