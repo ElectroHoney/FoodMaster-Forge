@@ -52,6 +52,9 @@ public class ModRecipes {
 
     public static final RegistryObject<RecipeSerializer<PresserBlockRecipe>> PRESSER_PRESSING_SERIALIZER =
             SERIALIZERS.register("pressing", ()-> PresserBlockRecipe.Serializer.INSTANCE);
+
+    public static final RegistryObject<RecipeSerializer<SmokerBlockRecipe>> SMOKER_SMOKING_SERIALIZER =
+            SERIALIZERS.register("smoking", ()-> SmokerBlockRecipe.Serializer.INSTANCE);
     public static void register(IEventBus eventBus){
         SERIALIZERS.register(eventBus);
     }

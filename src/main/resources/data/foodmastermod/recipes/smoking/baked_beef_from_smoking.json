@@ -1,0 +1,17 @@
+{
+  "type": "foodmastermod:smoking",
+  "ingredients": [
+    {
+      "item": "minecraft:beef"
+    }
+  ],
+  "minTemperature": 10,
+  "maxTemperature": 100,
+  "maxProgress": 1000,
+  "woodLog": {
+    "item": "minecraft:jungle_log"
+  },
+  "output": {
+    "item": "minecraft:cooked_beef"
+  }
+}

@@ -82,7 +82,6 @@ public class ModBlocks {
             () -> new PresserBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);
 
-
     public static final RegistryObject<Block> SMOKER_BLOCK = registerBlock("smoker",
             () -> new SmokerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1f).requiresCorrectToolForDrops().noOcclusion()),
             ModCreativeModTab.FOODMASTER_TAB);

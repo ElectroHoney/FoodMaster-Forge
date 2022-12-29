@@ -53,6 +53,7 @@ public class FoodMaster
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.CHOPPER_BLOCK.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.PRESSER_BLOCK.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.DISTILLER_BLOCK.get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.SMOKER_BLOCK.get(), RenderType.translucent());
 
         MenuScreens.register(ModMenuTypes.POT_BLOCK_MENU.get(), PotBlockScreen::new);
         MenuScreens.register(ModMenuTypes.AGER_BLOCK_MENU.get(), AgerBlockScreen::new);
@@ -66,6 +67,7 @@ public class FoodMaster
         MenuScreens.register(ModMenuTypes.GRILLER_BLOCK_MENU.get(), GrillerBlockScreen::new);
         MenuScreens.register(ModMenuTypes.INFUSER_BLOCK_MENU.get(), InfuserBlockScreen::new);
         MenuScreens.register(ModMenuTypes.PRESSER_BLOCK_MENU.get(), PresserBlockScreen::new);
+        MenuScreens.register(ModMenuTypes.SMOKER_BLOCK_MENU.get(), SmokerBlockScreen::new);
     }
 
     private void setup(final FMLCommonSetupEvent event)

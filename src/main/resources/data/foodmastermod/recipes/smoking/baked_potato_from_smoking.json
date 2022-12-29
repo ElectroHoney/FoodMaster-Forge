@@ -1,0 +1,17 @@
+{
+  "type": "foodmastermod:smoking",
+  "ingredients": [
+    {
+      "item": "minecraft:potato"
+    }
+  ],
+  "minTemperature": 10,
+  "maxTemperature": 100,
+  "maxProgress": 300,
+  "woodLog": {
+    "item": "minecraft:spruce_log"
+  },
+  "output": {
+    "item": "minecraft:baked_potato"
+  }
+}

@@ -2,8 +2,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "foodmastermod:block/dryer",
-		"particle": "foodmastermod:block/dryer"
+		"0": "foodmastermod:block/smoker",
+		"particle": "foodmastermod:block/smoker"
 	},
 	"elements": [
 		{

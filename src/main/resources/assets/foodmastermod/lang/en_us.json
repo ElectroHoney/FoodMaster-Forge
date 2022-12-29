@@ -24,5 +24,6 @@
   "jei.tooltip.liquid.amount.with.capacity": "%s / %s mB",
 
   "foodmaster.tooltip.temperature.out.of.max": "%s / %s °C",
-  "foodmaster.tooltip.ageing.out.of.max": "%s / %s Days"
+  "foodmaster.tooltip.ageing.out.of.max": "%s / %s Days",
+  "foodmaster.tooltip.smoketype.out.of.max": "%s %s %s"
 }
